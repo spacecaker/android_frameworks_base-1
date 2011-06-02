@@ -68,15 +68,27 @@ public class LightsService {
 
     private static final String FLASHLIGHT_FILE;
     private static final String FLASHLIGHT_FILE_SPOTLIGHT = "/sys/class/leds/spotlight/brightness";
+    private static final String FLASHLIGHT_FILE_FLED = "/sys/class/leds/lv5219lg:fled/brightness";
+    private static final String FLASHLIGHT_FILE_XMINI = "/sys/devices/platform/msm_pmic_flash_led/spotlight::enable";
+ 
     static {
         File ff = new File(FLASHLIGHT_FILE_SPOTLIGHT);
-        if (ff.exists()) {
-            FLASHLIGHT_FILE = FLASHLIGHT_FILE_SPOTLIGHT;
+        File fd = new File(FLASHLIGHT_FILE_FLED);        
+        File fx = new File(FLASHLIGHT_FILE_XMINI);     
+        if (fd.exists()) {
+             FLASHLIGHT_FILE = FLASHLIGHT_FILE_FLED;
         } else {
-            FLASHLIGHT_FILE = "/sys/class/leds/flashlight/brightness";
-        }
-    }
-
+         	if (ff.exists()) {
+            		FLASHLIGHT_FILE = FLASHLIGHT_FILE_SPOTLIGHT;
+        	} else {
+            		if (fx.exists()) {
+            		FLASHLIGHT_FILE = FLASHLIGHT_FILE_XMINI;
+        		} else {
+            			FLASHLIGHT_FILE = "/sys/class/leds/flashlight/brightness";
+        		}
+        		}
+    	}
+	}
     public final class Light {
 
         private Light(int id) {
