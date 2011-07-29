@@ -9608,4 +9608,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
 
     }
+
+    // dx
+    protected final boolean shouldMirror() {
+        return true;
+    }
+    
 }

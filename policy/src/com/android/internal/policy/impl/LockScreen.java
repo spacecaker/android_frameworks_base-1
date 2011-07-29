@@ -135,6 +135,10 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
     private String mCharging = null;
     private Drawable mChargingIcon = null;
 
+    //dx
+    private TextView mdxLeft;
+    private TextView mdxRight;
+
     private boolean mSilentMode;
     private AudioManager mAudioManager;
     private String mDateFormatString;
@@ -457,6 +461,16 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
 
         mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
         mSilentMode = isSilentMode();
+
+        //Label setup
+        mdxLeft = (TextView) findViewById(R.id.dxLeft);
+        mdxRight = (TextView) findViewById(R.id.dxRight);
+        mdxLeft.setVisibility(View.VISIBLE);
+        mdxLeft.setText("GingerDX." + android.os.SystemProperties.get("ro.build.display.id"));
+        mdxLeft.setTextColor(0xffffffff);
+        mdxRight.setVisibility(View.VISIBLE);
+        mdxRight.setText("doixanh@xda");
+        mdxRight.setTextColor(0xffffffff);
 
         //Rotary setup
         if(!mRotaryUnlockDown){

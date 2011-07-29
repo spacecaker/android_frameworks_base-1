@@ -76,6 +76,9 @@ import java.util.List;
 public abstract class AbsListView extends AdapterView<ListAdapter> implements TextWatcher,
         ViewTreeObserver.OnGlobalLayoutListener, Filter.FilterListener,
         ViewTreeObserver.OnTouchModeChangeListener {
+	// dx: apply experiment or not
+	public boolean dxExperiment = true;
+	// dx end
 
     /**
      * Disables the transcript mode.
@@ -4465,6 +4468,13 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
         
         public void markChildrenDirty() {
+        	// dx: experimenting
+        	if (AbsListView.this.dxExperiment) {
+        		// we keep all cached. don't scrap anything!
+	        	//Log.i("ListView", "dx: markChildrenDirty");
+	        	return;
+        	}
+        	// dx end        
             if (mViewTypeCount == 1) {
                 final ArrayList<View> scrap = mCurrentScrap;
                 final int scrapCount = scrap.size();
@@ -4617,6 +4627,13 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
          * Move all views remaining in mActiveViews to mScrapViews.
          */
         void scrapActiveViews() {
+        	// dx: experimenting
+        	if (AbsListView.this.dxExperiment) {
+        		// we keep all cached. don't scrap anything!
+        		return;
+        	}
+        	// dx end        
+
             final View[] activeViews = mActiveViews;
             final boolean hasListener = mRecyclerListener != null;
             final boolean multipleScraps = mViewTypeCount > 1;
