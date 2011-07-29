@@ -1116,6 +1116,27 @@ public final class Settings {
          */
         public static final Uri CONTENT_URI =
             Uri.parse("content://" + AUTHORITY + "/system");
+            
+        // dx: settings.system
+        /**
+         * Whether the notification LED is disabled during nights or not
+         * The value is boolean (1 or 0).
+         * @hide
+         */
+        public static final String NOTIFICATION_LIGHT_DISABLED = "notification_light_disabled";
+
+        /**
+         * Start time for LED disabled night
+         * @hide
+         */
+        public static final String NOTIFICATION_LIGHT_DISABLED_START = "notification_light_disabled_start";
+
+        /**
+         * End time for LED disabled night
+         * @hide
+         */
+        public static final String NOTIFICATION_LIGHT_DISABLED_END = "notification_light_disabled_end";
+
 
         /**
          * Whether we keep the device on while the device is plugged in.
