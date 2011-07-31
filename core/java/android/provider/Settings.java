@@ -1137,6 +1137,23 @@ public final class Settings {
          */
         public static final String NOTIFICATION_LIGHT_DISABLED_END = "notification_light_disabled_end";
 
+        /**
+         * CallMeLouder: louder ringer when phone is inside bags
+         *
+         * @hide
+         */
+        public static final String CALL_ME_LOUDER = "call_me_louder";
+
+        /**
+         * Whether flipping down mutes ringer or not
+         */
+        public static final String FLIPPING_DOWN_MUTES_RINGER = "flipping_down_mutes_ringer";
+
+        /**
+         * Whether flipping down snoozes alarm or not
+         */
+        public static final String FLIPPING_DOWN_SNOOZES_ALARM = "flipping_down_snoozes_alarm";
+
 
         /**
          * Whether we keep the device on while the device is plugged in.
