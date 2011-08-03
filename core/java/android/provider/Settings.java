@@ -1154,6 +1154,13 @@ public final class Settings {
          */
         public static final String FLIPPING_DOWN_SNOOZES_ALARM = "flipping_down_snoozes_alarm";
 
+        /**
+         * Whether back button ends call or not
+         *
+         * @hide
+         */
+        public static final String BACK_BUTTON_ENDS_CALL = "back_button_ends_call";
+
 
         /**
          * Whether we keep the device on while the device is plugged in.
