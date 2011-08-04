@@ -110,6 +110,7 @@ import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RemoteViews.RemoteView;
+import android.provider.Settings;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -7822,6 +7823,11 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
         
         public void show() {
+        	// only show when enabled
+            if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.QUICK_COPY_PASTE, 1) == 0) {
+            	return;
+        	}
+    	
             mContainer.setContentView(this);
             final int[] coords = mTempCoords;
             TextView.this.getLocationInWindow(coords);
