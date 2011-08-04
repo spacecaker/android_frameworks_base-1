@@ -1160,12 +1160,20 @@ public final class Settings {
          * @hide
          */
         public static final String BACK_BUTTON_ENDS_CALL = "back_button_ends_call";
+
         /**
          * Transparent notification bar
          *
          * @hide
          */
         public static final String TRANSPARENT_STATUS_BAR = "transparent_status_bar";
+
+        /**
+         * Hide avatar in message
+         *
+         * @hide
+         */
+        public static final String HIDE_AVATAR_MESSAGE = "hide_avatar_message";
 
 
         /**
