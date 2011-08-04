@@ -1183,6 +1183,13 @@ public final class Settings {
         public static final String QUICK_COPY_PASTE = "quick_copy_paste";
 
         /**
+         * Ringer loop
+         *
+         * @hide
+         */
+        public static final String RINGER_LOOP = "ringer_loop";
+
+        /**
          * Whether we keep the device on while the device is plugged in.
          * Supported values are:
          * <ul>
