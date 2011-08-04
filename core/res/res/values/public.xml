@@ -1283,5 +1283,7 @@
   <public type="drawable" name="semc_button_corner_bottomright" id="0x010802c8" />
   <public type="drawable" name="semc_button_corner_topleft" id="0x010802cd" />
   <public type="drawable" name="semc_button_corner_topright" id="0x010802ce" />
+  <public type="attr" name="quickCopy" id="0x010102cf" />
+  <public type="attr" name="quickPaste" id="0x010102d0" />
   
 </resources>
