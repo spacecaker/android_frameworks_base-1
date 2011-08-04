@@ -383,6 +383,22 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         CmStatusBarView sb = (CmStatusBarView)View.inflate(context, R.layout.status_bar, null);
         sb.mService = this;
 
+        // apply transparent status bar drawables
+        int transStatusBar = Settings.System.getInt(getContentResolver(), Settings.System.TRANSPARENT_STATUS_BAR, 0);
+        if (transStatusBar != 0) {
+        	switch (transStatusBar) {
+        	case 1 : // based on theme
+        		sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.statusbar_background));
+        		break;
+        	case 2 : // semi transparent
+        		sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.statusbar_background_semi));
+        		break;
+        	case 3 : // gradient
+        		sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.statusbar_background_gradient));
+        		break;
+        	}
+        }
+
         // figure out which pixel-format to use for the status bar.
         mPixelFormat = PixelFormat.TRANSLUCENT;
         Drawable bg = sb.getBackground();
@@ -537,13 +553,20 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         final int height= res.getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
 
         final View view = mStatusBarContainer;
+
+        int mPixelFormat = PixelFormat.RGBX_8888;
+        if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.TRANSPARENT_STATUS_BAR, 0) != 0) {
+        	// transparent statusbar enabled?
+        	mPixelFormat = PixelFormat.TRANSLUCENT;
+        }
+
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 height,
                 WindowManager.LayoutParams.TYPE_STATUS_BAR,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     | WindowManager.LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING,
-                PixelFormat.RGBX_8888);
+                mPixelFormat);
         lp.gravity = Gravity.TOP | Gravity.FILL_HORIZONTAL;
         lp.setTitle("StatusBar");
         lp.windowAnimations = com.android.internal.R.style.Animation_StatusBar;
