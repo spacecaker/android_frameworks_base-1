@@ -1190,6 +1190,13 @@ public final class Settings {
         public static final String RINGER_LOOP = "ringer_loop";
 
         /**
+         * Custom carrier string in lockscreen
+         *
+         * @hide
+         */
+        public static final String CUSTOM_CARRIER_TEXT = "custom_carrier_text";
+
+        /**
          * Whether we keep the device on while the device is plugged in.
          * Supported values are:
          * <ul>

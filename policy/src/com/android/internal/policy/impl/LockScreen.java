@@ -997,7 +997,7 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
             case Normal:
                 // text
                 mCarrier.setText(
-                        getCarrierString(
+                        getCarrierString(/* dx: */ mContext,
                                 mUpdateMonitor.getTelephonyPlmn(),
                                 mUpdateMonitor.getTelephonySpn()));
 
@@ -1031,7 +1031,7 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
                 // The carrier string shows both sim card status (i.e. No Sim Card) and
                 // carrier's name and/or "Emergency Calls Only" status
                 mCarrier.setText(
-                        getCarrierString(
+                        getCarrierString(/* dx: */ mContext,
                                 mUpdateMonitor.getTelephonyPlmn(),
                                 getContext().getText(R.string.lockscreen_network_locked_message)));
                 mScreenLocked.setText(R.string.lockscreen_instructions_when_pattern_disabled);
@@ -1091,7 +1091,7 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
             case SimMissingLocked:
                 // text
                 mCarrier.setText(
-                        getCarrierString(
+                        getCarrierString(/* dx: */ mContext,
                                 mUpdateMonitor.getTelephonyPlmn(),
                                 getContext().getText(R.string.lockscreen_missing_sim_message_short)));
                 mScreenLocked.setText(R.string.lockscreen_missing_sim_instructions);
@@ -1109,7 +1109,7 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
             case SimLocked:
                 // text
                 mCarrier.setText(
-                        getCarrierString(
+                        getCarrierString(/* dx: */ mContext,
                                 mUpdateMonitor.getTelephonyPlmn(),
                                 getContext().getText(R.string.lockscreen_sim_locked_message)));
 
@@ -1139,7 +1139,7 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
             case SimPukLocked:
                 // text
                 mCarrier.setText(
-                        getCarrierString(
+                        getCarrierString(/* dx: */ mContext,
                                 mUpdateMonitor.getTelephonyPlmn(),
                                 getContext().getText(R.string.lockscreen_sim_puk_locked_message)));
                 mScreenLocked.setText(R.string.lockscreen_sim_puk_locked_instructions);
@@ -1162,6 +1162,20 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
     }
 
     static CharSequence getCarrierString(CharSequence telephonyPlmn, CharSequence telephonySpn) {
+    	return getCarrierString(null, telephonyPlmn, telephonySpn);
+    }
+
+    static CharSequence getCarrierString(Context context, CharSequence telephonyPlmn, CharSequence telephonySpn) {
+    	if (context != null) {
+    		// custom carrier text
+			String customCarrierString = Settings.System.getString(context.getContentResolver(), Settings.System.CUSTOM_CARRIER_TEXT);
+			// are we set?
+			if (customCarrierString != null && customCarrierString.length() > 0) {
+				// yes, go!
+				return customCarrierString;
+			}
+    	}
+
         if (telephonyPlmn != null && (telephonySpn == null || "".contentEquals(telephonySpn))) {
             return telephonyPlmn;
         } else if (telephonySpn != null && (telephonyPlmn == null || "".contentEquals(telephonyPlmn))) {
