@@ -436,6 +436,9 @@
     <!-- Configure lense unlock time label offset -->
     <integer name="config_lenseTimeLabelOffsetDIP">0</integer>
 
+    <!-- Configure sense unlock time label offset -->
+    <integer name="config_senseTimeLabelOffsetDIP">5</integer>
+
     <!-- Enable permissions management -->
     <bool name="config_enablePermissionsManagement">false</bool>
 

@@ -177,8 +177,10 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
     private String mCustomAppActivity = (Settings.System.getString(mContext.getContentResolver(),
             Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITY));
 
-    private int mLockscreenStyle = (Settings.System.getInt(mContext.getContentResolver(),
-            Settings.System.LOCKSCREEN_STYLE_PREF, 3));
+    private int mLockscreenStyleSetting = (Settings.System.getInt(mContext.getContentResolver(),
+         Settings.System.LOCKSCREEN_STYLE_PREF, 3));
+	
+    private int mLockscreenStyle = (mLockscreenStyleSetting != 0 ? mLockscreenStyleSetting : (new java.util.Random()).nextInt(5)+1);
 
     private int mCustomIconStyle = Settings.System.getInt(mContext.getContentResolver(),
             Settings.System.LOCKSCREEN_CUSTOM_ICON_STYLE, 1);
@@ -194,6 +196,9 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
     private boolean mUseRotaryRevLockscreen = (mLockscreenStyle == 3);
 
     private boolean mUseLenseSquareLockscreen = (mLockscreenStyle == 4);
+    
+    private boolean mUseSenseLockscreen = (mLockscreenStyle == 5);
+    
     private boolean mLensePortrait = false;
 
     private double mGestureSensitivity;
@@ -483,11 +488,12 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
         mRotarySelector.enableCustomAppDimple(mCustomAppToggle);
         mRotarySelector.setRevamped(mUseRotaryRevLockscreen);
         mRotarySelector.setLenseSquare(mUseRotaryRevLockscreen);
+        mRotarySelector.setSenseSquare(mUseRotaryRevLockscreen);
         if(mRotaryHideArrows)
             mRotarySelector.hideArrows(true);
 
         //hide most items when we are in potrait lense mode
-        mLensePortrait=(mUseLenseSquareLockscreen && mCreationOrientation != Configuration.ORIENTATION_LANDSCAPE);
+        mLensePortrait=(mUseLenseSquareLockscreen || mUseSenseLockscreen && mCreationOrientation != Configuration.ORIENTATION_LANDSCAPE);
         if (mLensePortrait)
             setLenseWidgetsVisibility(View.INVISIBLE);
 
@@ -1006,10 +1012,11 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
 
                 // layout
                 mScreenLocked.setVisibility(View.VISIBLE);
-                if (mUseRotaryLockscreen || mUseRotaryRevLockscreen || mUseLenseSquareLockscreen) {
+                if (mUseRotaryLockscreen || mUseRotaryRevLockscreen || mUseLenseSquareLockscreen || mUseSenseLockscreen) {
                     mRotarySelector.setVisibility(View.VISIBLE);
                     mRotarySelector.setRevamped(mUseRotaryRevLockscreen);
                     mRotarySelector.setLenseSquare(mUseLenseSquareLockscreen);
+                    mRotarySelector.setSenseSquare(mUseSenseLockscreen);
                     mTabSelector.setVisibility(View.GONE);
                     if (mSelector2 != null) {
                         mSelector2.setVisibility(View.GONE);
@@ -1038,10 +1045,11 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
 
                 // layout
                 mScreenLocked.setVisibility(View.VISIBLE);
-                if (mUseRotaryLockscreen || mUseRotaryRevLockscreen || mUseLenseSquareLockscreen) {
+                if (mUseRotaryLockscreen || mUseRotaryRevLockscreen || mUseLenseSquareLockscreen || mUseSenseLockscreen) {
                     mRotarySelector.setVisibility(View.VISIBLE);
                     mRotarySelector.setRevamped(mUseRotaryRevLockscreen);
                     mRotarySelector.setLenseSquare(mUseLenseSquareLockscreen);
+                    mRotarySelector.setSenseSquare(mUseSenseLockscreen);
                     mTabSelector.setVisibility(View.GONE);
                     if (mSelector2 != null) {
                         mSelector2.setVisibility(View.GONE);
@@ -1066,10 +1074,11 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
 
                 // layout
                 mScreenLocked.setVisibility(View.VISIBLE);
-                if (mUseRotaryLockscreen || mUseRotaryRevLockscreen || mUseLenseSquareLockscreen) {
+                if (mUseRotaryLockscreen || mUseRotaryRevLockscreen || mUseLenseSquareLockscreen || mUseSenseLockscreen) {
                     mRotarySelector.setVisibility(View.VISIBLE);
                     mRotarySelector.setRevamped(mUseRotaryRevLockscreen);
                     mRotarySelector.setLenseSquare(mUseLenseSquareLockscreen);
+                    mRotarySelector.setSenseSquare(mUseSenseLockscreen);
                     mTabSelector.setVisibility(View.GONE);
                     if (mSelector2 != null) {
                         mSelector2.setVisibility(View.GONE);
@@ -1115,10 +1124,11 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
 
                 // layout
                 mScreenLocked.setVisibility(View.INVISIBLE);
-                if (mUseRotaryLockscreen || mUseRotaryRevLockscreen || mUseLenseSquareLockscreen) {
+                if (mUseRotaryLockscreen || mUseRotaryRevLockscreen || mUseLenseSquareLockscreen || mUseSenseLockscreen) {
                     mRotarySelector.setVisibility(View.VISIBLE);
                     mRotarySelector.setRevamped(mUseRotaryRevLockscreen);
                     mRotarySelector.setLenseSquare(mUseLenseSquareLockscreen);
+                    mRotarySelector.setSenseSquare(mUseSenseLockscreen);
                     mTabSelector.setVisibility(View.GONE);
                     if (mSelector2 != null) {
                         mSelector2.setVisibility(View.GONE);
