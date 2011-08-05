@@ -564,7 +564,7 @@ public class RotarySelector extends View {
                 mSensePaint.setTextAlign(Paint.Align.CENTER);
                 canvas.drawText(dateString,
                                 mBackgroundWidth / 2 * mDensityScaleFactor,
-                                mRotaryOffsetY + mMarginBottom + SENSE_DATE_SIZE_DIP * mDensity * 5 + customTimeOffset + 5,
+                                mRotaryOffsetY + mMarginBottom + SENSE_DATE_SIZE_DIP * mDensity * 5 + customTimeOffset + 8,
                                 mSensePaint);
         	}
         	return;
