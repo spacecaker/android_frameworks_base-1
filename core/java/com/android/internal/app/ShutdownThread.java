@@ -111,12 +111,13 @@ public final class ShutdownThread extends Thread {
                 dialog = new AlertDialog.Builder(context)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setTitle(com.android.internal.R.string.reboot_system)
-                        .setSingleChoiceItems(com.android.internal.R.array.shutdown_reboot_options, 0, new DialogInterface.OnClickListener() {
+                        // global (all language) reboot to xRec or CWM
+                        .setSingleChoiceItems(com.android.internal.R.array.shutdown_reboot_options_gdx, 0, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 if (which < 0)
                                     return;
 
-                                String actions[] = context.getResources().getStringArray(com.android.internal.R.array.shutdown_reboot_actions);
+                                String actions[] = context.getResources().getStringArray(com.android.internal.R.array.shutdown_reboot_actions_gdx);
 
                                 if (actions != null && which < actions.length)
                                     mRebootReason = actions[which];

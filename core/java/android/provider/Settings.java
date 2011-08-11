@@ -1197,6 +1197,13 @@ public final class Settings {
         public static final String CUSTOM_CARRIER_TEXT = "custom_carrier_text";
 
         /**
+         * Number of about clicks
+         *
+         * @hide
+         */
+        public static final String ABOUT_CLICKED = "about_clicked";
+
+        /**
          * Whether we keep the device on while the device is plugged in.
          * Supported values are:
          * <ul>

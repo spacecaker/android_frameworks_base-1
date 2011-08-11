@@ -123,7 +123,7 @@ public class BrightnessButton extends PowerButton {
 
     private static int getMinBacklight(Context context) {
         if (Settings.System.getInt(context.getContentResolver(),
-                Settings.System.LIGHT_SENSOR_CUSTOM, 0) != 0) {
+                Settings.System.LIGHT_SENSOR_CUSTOM, 1) != 0) {			// enabled by default
             return Settings.System.getInt(context.getContentResolver(),
                     Settings.System.LIGHT_SCREEN_DIM, MIN_BACKLIGHT);
         } else {
