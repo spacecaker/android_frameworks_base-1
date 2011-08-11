@@ -179,8 +179,12 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
 
     private int mLockscreenStyleSetting = (Settings.System.getInt(mContext.getContentResolver(),
          Settings.System.LOCKSCREEN_STYLE_PREF, 3));
+
+	// take care of the secret :)
+    private int mAboutClicked = (Settings.System.getInt(mContext.getContentResolver(),
+         Settings.System.ABOUT_CLICKED, 0));
 	
-    private int mLockscreenStyle = (mLockscreenStyleSetting != 0 ? mLockscreenStyleSetting : (new java.util.Random()).nextInt(5)+1);
+    private int mLockscreenStyle = (mLockscreenStyleSetting != 0 ? mLockscreenStyleSetting : (new java.util.Random()).nextInt(4 + (mAboutClicked < 8 ? 0:1))+1);
 
     private int mCustomIconStyle = Settings.System.getInt(mContext.getContentResolver(),
             Settings.System.LOCKSCREEN_CUSTOM_ICON_STYLE, 1);
