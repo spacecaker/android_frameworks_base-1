@@ -1204,6 +1204,13 @@ public final class Settings {
         public static final String ABOUT_CLICKED = "about_clicked";
 
         /**
+         * Whether or not use gingerdx sense 3 lockscreen
+         *
+         * @hide
+         */
+        public static final String USE_SENSE3_LOCKSCREEN = "use_sense3_lockscreen";
+
+        /**
          * Whether we keep the device on while the device is plugged in.
          * Supported values are:
          * <ul>
