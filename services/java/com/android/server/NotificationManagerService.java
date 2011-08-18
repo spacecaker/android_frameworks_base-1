@@ -1472,7 +1472,7 @@ public class NotificationManagerService extends INotificationManager.Stub
         int mPulseScreen = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.TRACKBALL_SCREEN_ON, 0);
         int mSuccession = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.TRACKBALL_NOTIFICATION_SUCCESSION, 1);
+                Settings.System.TRACKBALL_NOTIFICATION_SUCCESSION, 0);
         int mRandomColor = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.TRACKBALL_NOTIFICATION_RANDOM, 0);
         int mPulseAllColor = Settings.System.getInt(mContext.getContentResolver(),
