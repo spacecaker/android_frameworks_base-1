@@ -505,13 +505,20 @@ public class RotarySelector extends View {
         	if(isHoriz()){
         	    Date now = new Date();
         	    
-        	    // currently fixed AM/PM always on
         	    int hour = now.getHours();
         	    String ampm = "AM";
-        	    if (hour >= 12) {
-        	    	ampm = "PM";
-        	    	if (hour >= 13) hour -= 12;
-        	    }
+   	            if (DateFormat.is24HourFormat(mContext)) {
+   	            	ampm = "";
+   	            }
+   	            else {
+   	            	if (hour == 0) hour = 12;
+   	            	else {
+						if (hour >= 12) {
+		    	    		ampm = "PM";
+			    	    	if (hour >= 13) hour -= 12;
+			    	    }
+			    	} 	            
+   	            }
         	    String minuteString = String.valueOf(now.getMinutes()); 
         	    if (minuteString.length() < 2)
         	    	minuteString = "0" + minuteString;		// this should have more performance compared to String.format
