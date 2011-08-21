@@ -435,7 +435,7 @@ public final class ShutdownThread extends Thread {
 						e.printStackTrace();
 					}
 		        }
-				if (reason.equals("cwm")) {
+				if (reason.equals("recovery")) {
 					Log.d(TAG, "dx: Rebooting to ClockworkMod recovery...");
 					try { 
 						File file = new File("/data/local/tmp/cwmrecovery");

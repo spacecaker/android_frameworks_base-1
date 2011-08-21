@@ -134,6 +134,6 @@
     <string-array name="shutdown_reboot_actions_gdx">
         <item></item>
         <item>xrec</item>
-        <item>cwm</item>
+        <item>recovery</item>
     </string-array>
 </resources>
