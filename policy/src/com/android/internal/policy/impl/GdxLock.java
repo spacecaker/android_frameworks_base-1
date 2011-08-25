@@ -27,14 +27,16 @@ import android.graphics.drawable.BitmapDrawable;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
+import android.view.WindowManager;
 import android.widget.*;
 
 public class GdxLock extends LinearLayout implements KeyguardScreen {
@@ -45,8 +47,8 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
 	private int ringWidth = 160;
 	private int ringHeight = 160;
 
-	private static int SCREEN_WIDTH = 320;
-	private static int SCREEN_HEIGHT = 480;
+	private int mDisplayWidth;
+	private int mDisplayHeight;
 
 	// controls
 	private ImageView ring;
@@ -81,13 +83,18 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
 		// initialize lockscreen layout
 		final LayoutInflater inflater = LayoutInflater.from(context);
 		inflater.inflate(R.layout.gdxlock_sense3, this, true);
+		
+		// init screen width and height
+        Display d = ((WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        mDisplayWidth = d.getWidth();
+        mDisplayHeight = d.getHeight();
 
 		// init ring
 		ring = (ImageView) findViewById(R.id.ring);
 
 		// move the ring to default position
-		int left = (int) (SCREEN_WIDTH / 2 - ringWidth / 2);
-		int top = (int) (SCREEN_HEIGHT - ringHeight / 2 - 20 + 110);
+		int left = (int) (mDisplayWidth / 2 - ringWidth / 2);
+		int top = (int) (mDisplayHeight - ringHeight / 2 - 20 + 110);
 		ring.setPadding(left, top, 0, 0);
 
 		// set background...
@@ -120,11 +127,11 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
 	// moves the ring to a specific position
 	private void moveRing(int left, int top) {
 		// check screen border
-		if (left < -ringWidth / 2 || left > SCREEN_WIDTH - ringWidth / 2 || 
-			top < -ringHeight / 2 || top > SCREEN_HEIGHT - ringHeight / 4)
+		if (left < -ringWidth / 2 || left > mDisplayWidth - ringWidth / 2 || 
+			top < -ringHeight / 2 || top > mDisplayHeight - ringHeight / 4)
 			return;
 		// above half?
-		if ((int) (top + ringWidth / 2) < SCREEN_HEIGHT / 2) {
+		if ((int) (top + ringWidth / 2) < mDisplayHeight / 2) {
 			// unlock it
 			mCallback.goToUnlockScreen();			
 		}
