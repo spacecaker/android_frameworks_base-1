@@ -67,7 +67,10 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
 	private int totalAnimDy;
 	private int startFlingX;
 	private int startFlingY;
+	private int endFlingX;
+	private int endFlingY;
 	private boolean isFlinging;
+	private boolean isZooming;
 
     public GdxLock(Context context, Configuration configuration, LockPatternUtils lockPatternUtils,
             KeyguardUpdateMonitor updateMonitor,
@@ -131,10 +134,10 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
 			top < -ringHeight / 2 || top > mDisplayHeight - ringHeight / 4)
 			return;
 		// above half?
-		if ((int) (top + ringWidth / 2) < mDisplayHeight / 2) {
-			// unlock it
-			mCallback.goToUnlockScreen();			
-		}
+//		if ((int) (top + ringWidth / 2) < mDisplayHeight / 2) {
+//			// unlock it
+//			mCallback.goToUnlockScreen();			
+//		}
 		ring.setPadding(left, top, 0, 0);
 	}
 
@@ -156,12 +159,72 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
 				// move the ring
 				moveRing(left, top);
 				// and check flinging
-				gestureDetector.onTouchEvent(event);
+				// gestureDetector.onTouchEvent(event);
+				
+				// released?
+				if (event.getAction() == MotionEvent.ACTION_UP) {
+					// check place, 
+					if ((int) (top + ringWidth / 2) < 3 * mDisplayHeight / 4) {
+						// start moving to center animation 
+						startAnimateToCenter(150);						
+					}
+				}
 			}
 		}
 		return false;
 	}
+	
+	// initialize moving to center animation
+	private void startAnimateToCenter(long duration) {
+		startFlingX = ring.getPaddingLeft();
+		startFlingY = ring.getPaddingTop();
+		endFlingX = (mDisplayWidth - ringWidth) / 2;
+		endFlingY = (mDisplayHeight - ringHeight) / 2;
+		startTime = System.currentTimeMillis();
+		endTime = startTime + duration;
+		interpolator = new DecelerateInterpolator();
+		isFlinging = true;
+		
+		if (DBG) Log.i(TAG, "startAnimateToCenter: sx=" + startFlingX + " sy=" + startFlingY + " ex=" + endFlingX + " ey=" + endFlingY);
+		post(new Runnable() {
+			@Override
+			public void run() {
+				animateToCenterStep();
+			}
+		});
+	}
+	
+	private void animateToCenterStep() {
+		long curTime = System.currentTimeMillis();
+		float percentTime = (float) (curTime - startTime)
+				/ (float) (endTime - startTime);
+		float percentDistance = interpolator.getInterpolation(percentTime);
+		
+		if (DBG) Log.i(TAG, "animateToCenterStep: %t=" + percentDistance + " %d=" + percentDistance + 
+							" x=" + (int) (percentDistance * (endFlingX - startFlingX)) + 
+							" y=" + (int) (percentDistance * (endFlingY - startFlingY)));
+		moveRing((int) (startFlingX + percentDistance * (endFlingX - startFlingX)), 
+				(int) (startFlingY + percentDistance * (endFlingY - startFlingY)));
 
+		// not yet finished?
+		if (percentTime < 1.0f) {
+			// more!
+			post(new Runnable() {
+				@Override
+				public void run() {
+					animateToCenterStep();
+				}
+			});
+		} else {
+			// finished
+			isFlinging = false;
+			mCallback.goToUnlockScreen();
+		}
+		
+	}
+	
+	
+	/* 
 	// detects fling gesture
 	class MyGestureDetector extends SimpleOnGestureListener {
 		@Override
@@ -187,7 +250,7 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
 	
 	// initalize fling
 	public void animateFling(int sx, int sy, float dx, float dy, long duration) {
-		interpolator = new DecelerateInterpolator();
+		//interpolator = new DecelerateInterpolator();
 		startTime = System.currentTimeMillis();
 		endTime = startTime + duration;
 		totalAnimDx = (int) dx;
@@ -255,6 +318,8 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
 			}
 		}
 	}
+	
+	*/
 	
     public boolean needsInput() {
         return false;
