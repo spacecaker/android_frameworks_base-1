@@ -81,7 +81,7 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
 		mCallback = callback;		
 
 		// init gesture detector
-		gestureDetector = new GestureDetector(new MyGestureDetector());
+		//gestureDetector = new GestureDetector(new MyGestureDetector());
 
 		// initialize lockscreen layout
 		final LayoutInflater inflater = LayoutInflater.from(context);
@@ -290,7 +290,7 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
 			// finished
 			isFlinging = false;
 		}
-	}
+	} */
 
 	// set wallpaper as background
 	private void setBackground(Context bcontext, ViewGroup layout) {
@@ -318,8 +318,6 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
 			}
 		}
 	}
-	
-	*/
 	
     public boolean needsInput() {
         return false;
