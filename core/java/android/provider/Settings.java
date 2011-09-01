@@ -1211,6 +1211,13 @@ public final class Settings {
         public static final String USE_SENSE3_LOCKSCREEN = "use_sense3_lockscreen";
 
         /**
+         * Whether or not use smart dialer 
+         *
+         * @hide
+         */
+        public static final String SMART_DIALER = "smart_dialer";
+
+        /**
          * Whether we keep the device on while the device is plugged in.
          * Supported values are:
          * <ul>
