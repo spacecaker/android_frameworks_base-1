@@ -79,6 +79,7 @@ import com.android.internal.statusbar.StatusBarIconList;
 import com.android.internal.statusbar.StatusBarNotification;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.powerwidget.PowerWidget;
+import com.android.systemui.statusbar.recentapps.RecentApps;
 
 public class StatusBarService extends Service implements CommandQueue.Callbacks {
     private static final String DATA_TYPE_TMOBILE_STYLE = "vnd.tmobile.cursor.item/style";
@@ -164,6 +165,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 
     // the power widget
     PowerWidget mPowerWidget;
+
+    // recent apps
+    //RecentApps mRecentApps;
 
     //Carrier label stuff
     LinearLayout mCarrierLabelLayout;
@@ -453,6 +457,23 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
                    }
                });
 
+        mRecentApps = (RecentApps)expanded.findViewById(R.id.recent_apps);
+        mRecentApps.setupSettingsObserver(mHandler);
+        mRecentApps.setGlobalButtonOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        if(Settings.System.getInt(getContentResolver(),
+                                Settings.System.EXPANDED_HIDE_ONCHANGE, 0) == 1) {
+                            animateCollapse();
+                        }
+                    }
+                });
+        mRecentApps.setGlobalButtonOnLongClickListener(new View.OnLongClickListener() {
+                   public boolean onLongClick(View v) {
+                       animateCollapse();
+                       return true;
+                   }
+               });
+
         mCarrierLabelLayout = (LinearLayout)expanded.findViewById(R.id.carrier_label_layout);
         mCompactCarrierLayout = (LinearLayout)expanded.findViewById(R.id.compact_carrier_layout);
 
@@ -505,15 +526,18 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         // handle expanded view reording for bottom bar
         LinearLayout powerAndCarrier=(LinearLayout)mExpandedView.findViewById(R.id.power_and_carrier);
         PowerWidget power=(PowerWidget)mExpandedView.findViewById(R.id.exp_power_stat);
+        //RecentApps recent=(RecentApps)mExpandedView.findViewById(R.id.recent_apps);
         //FrameLayout notifications=(FrameLayout)mExpandedView.findViewById(R.id.notifications);
 
         // remove involved views
         powerAndCarrier.removeView(power);
+        //powerAndCarrier.removeView(recent);
         mExpandedView.removeView(powerAndCarrier);
 
         // readd in right order
         mExpandedView.addView(powerAndCarrier, mBottomBar ? 1 : 0);
         powerAndCarrier.addView(power, mBottomBar && !mCompactCarrier ? 1 : 0);
+        //powerAndCarrier.addView(recent, mBottomBar && !mCompactCarrier ? 1 : 0);
 
         // Remove all notification views
         mNotificationLinearLayout.removeAllViews();
@@ -574,6 +598,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         WindowManagerImpl.getDefault().addView(view, lp);
 
         mPowerWidget.setupWidget();
+        //mRecentApps.setupRecentApps();
     }
 
     public void addIcon(String slot, int index, int viewIndex, StatusBarIcon icon) {
@@ -933,6 +958,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         visibilityChanged(true);
 
         mPowerWidget.updateWidget();
+        mRecentApps.setupRecentApps();
 
         updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
         mExpandedParams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
