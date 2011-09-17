@@ -39,10 +39,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
-            
+
         <com.android.systemui.statusbar.recentapps.RecentApps android:id="@+id/recent_apps"
 		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
+		        android:layout_height="40dp"
 		        />
 
         <LinearLayout android:id="@+id/carrier_label_layout"

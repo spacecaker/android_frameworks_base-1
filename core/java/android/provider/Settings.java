@@ -1218,6 +1218,13 @@ public final class Settings {
         public static final String SMART_DIALER = "smart_dialer";
 
         /**
+         * Whether or not use recent apps in status bar
+         *
+         * @hide
+         */
+        public static final String RECENT_APPS_STATUS_BAR = "recent_apps_status_bar";
+
+        /**
          * Whether we keep the device on while the device is plugged in.
          * Supported values are:
          * <ul>

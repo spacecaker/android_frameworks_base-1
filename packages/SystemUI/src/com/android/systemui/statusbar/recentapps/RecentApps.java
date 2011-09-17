@@ -58,31 +58,28 @@ public class RecentApps extends FrameLayout {
                                         );
 
     private static final LinearLayout.LayoutParams BUTTON_LAYOUT_PARAMS = new LinearLayout.LayoutParams(
-                                        ViewGroup.LayoutParams.WRAP_CONTENT, // width = wrap_content
-                                        ViewGroup.LayoutParams.MATCH_PARENT, // height = match_parent
+    									40,
+                                        40,
                                         1.0f                                    // weight = 1
                                         );
 
     private static final int LAYOUT_SCROLL_BUTTON_THRESHOLD = 6;
-    private static int NUM_BUTTONS = 8;
+    private static int NUM_BUTTONS = 16;
     private static int MAX_RECENT_TASKS = NUM_BUTTONS * 2; // allow for some discards
 
     private Context mContext;
     private LayoutInflater mInflater;
     private RecentAppsBroadcastReceiver mBroadcastReceiver = null;
     private RecentAppsSettingsObserver mObserver = null;
+	private View.OnClickListener globalOnClickListener = null;
 
     private HorizontalScrollView mScrollView;
-    private TextView[] mIcons = new TextView[NUM_BUTTONS];
     
     public RecentApps(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         mContext = context;
         mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        // get an initial width
-        updateButtonLayoutWidth();
     }
 
     public void setupRecentApps() {
@@ -100,36 +97,23 @@ public class RecentApps extends FrameLayout {
             mObserver.unobserve();
         }
 
-        // clear the button instances
-        //PowerButton.unloadAllButtons();
-
         Log.i(TAG, "Setting up recent apps");
-
-        String buttons = Settings.System.getString(mContext.getContentResolver(), Settings.System.WIDGET_BUTTONS);
-        Log.i(TAG, "Button list: " + buttons);
-        
-        mIcons[0] = (TextView) findViewById(com.android.internal.R.id.button0);
-        mIcons[1] = (TextView) findViewById(com.android.internal.R.id.button1);
-        mIcons[2] = (TextView) findViewById(com.android.internal.R.id.button2);
-        mIcons[3] = (TextView) findViewById(com.android.internal.R.id.button3);
-        mIcons[4] = (TextView) findViewById(com.android.internal.R.id.button4);
-        mIcons[5] = (TextView) findViewById(com.android.internal.R.id.button5);
-        mIcons[6] = (TextView) findViewById(com.android.internal.R.id.button6);
-        mIcons[7] = (TextView) findViewById(com.android.internal.R.id.button7);
 
         // create a linearlayout to hold our buttons
         LinearLayout ll = new LinearLayout(mContext);
         ll.setOrientation(LinearLayout.HORIZONTAL);
-        ll.setGravity(Gravity.CENTER_HORIZONTAL);
+        ll.setGravity(Gravity.LEFT);
 
         int buttonCount = 0;
 
+		// retrieve recent app list
         final PackageManager pm = mContext.getPackageManager();
         final ActivityManager am = (ActivityManager)
                 mContext.getSystemService(Context.ACTIVITY_SERVICE);
         final List<ActivityManager.RecentTaskInfo> recentTasks =
                 am.getRecentTasks(MAX_RECENT_TASKS, ActivityManager.RECENT_IGNORE_UNAVAILABLE);
 
+		// get info about home app
         ActivityInfo homeInfo = 
             new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
                     .resolveActivityInfo(pm, 0);
@@ -165,17 +149,30 @@ public class RecentApps extends FrameLayout {
                 Drawable icon = activityInfo.loadIcon(pm);
 
                 if (title != null && title.length() > 0 && icon != null) {
-	                //View buttonView = mInflater.inflate(R.layout.power_widget_button, null, false);
-                    final TextView buttonView = mIcons[index];
-                    buttonView.setText(title);
+	                View buttonView = mInflater.inflate(R.layout.recent_app_button, null, false);
                     icon = iconUtilities.createIconDrawable(icon);
-                    buttonView.setCompoundDrawables(null, icon, null, null);
-                    //buttonView.setBackgroundDrawable(icon);
+                    buttonView.setBackgroundDrawable(icon);
                     buttonView.setTag(intent);
                     buttonView.setVisibility(View.VISIBLE);
                     buttonView.setPressed(false);
                     buttonView.clearFocus();
-                    //ll.addView(buttonView, BUTTON_LAYOUT_PARAMS);
+                    buttonView.setOnClickListener(new View.OnClickListener() {
+				        public void onClick(View v) {
+				        	// close the bar
+				        	if (globalOnClickListener != null) globalOnClickListener.onClick(v);
+				        	// execute the prepared intent
+							if (v.getTag() != null && v.getTag() instanceof Intent) {
+								Intent intent = (Intent)v.getTag();
+								intent.addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
+								try {
+								    getContext().startActivity(intent);
+								} catch (Exception e) {
+								    Log.w("Recent", "Unable to launch recent task", e);
+								}
+							}
+				        }
+			        });
+                    ll.addView(buttonView);
                     ++index;
                     buttonCount++;
                 }
@@ -184,22 +181,22 @@ public class RecentApps extends FrameLayout {
 
 
         // we determine if we're using a horizontal scroll view based on a threshold of button counts
-//        if(buttonCount > LAYOUT_SCROLL_BUTTON_THRESHOLD) {
-//            // we need our horizontal scroll view to wrap the linear layout
-//            mScrollView = new HorizontalScrollView(mContext);
-//            // make the fading edge the size of a button (makes it more noticible that we can scroll
-//            mScrollView.setFadingEdgeLength(mContext.getResources().getDisplayMetrics().widthPixels / LAYOUT_SCROLL_BUTTON_THRESHOLD);
-//            mScrollView.setScrollBarStyle(View.SCROLLBARS_INSIDE_INSET);
-//            mScrollView.setOverScrollMode(View.OVER_SCROLL_NEVER);
-//            // set the padding on the linear layout to the size of our scrollbar, so we don't have them overlap
-//            ll.setPadding(ll.getPaddingLeft(), ll.getPaddingTop(), ll.getPaddingRight(), mScrollView.getVerticalScrollbarWidth());
-//            mScrollView.addView(ll, WIDGET_LAYOUT_PARAMS);
-//            updateScrollbar();
-//            addView(mScrollView, WIDGET_LAYOUT_PARAMS);
-//        } else {
-//            // not needed, just add the linear layout
-//            addView(ll, WIDGET_LAYOUT_PARAMS);
-//        }
+        if(buttonCount > LAYOUT_SCROLL_BUTTON_THRESHOLD) {
+            // we need our horizontal scroll view to wrap the linear layout
+            mScrollView = new HorizontalScrollView(mContext);
+            // make the fading edge the size of a button (makes it more noticible that we can scroll
+            mScrollView.setFadingEdgeLength(mContext.getResources().getDisplayMetrics().widthPixels / LAYOUT_SCROLL_BUTTON_THRESHOLD);
+            mScrollView.setScrollBarStyle(View.SCROLLBARS_INSIDE_INSET);
+            mScrollView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+            // set the padding on the linear layout to the size of our scrollbar, so we don't have them overlap
+            ll.setPadding(ll.getPaddingLeft(), ll.getPaddingTop(), ll.getPaddingRight(), mScrollView.getVerticalScrollbarWidth());
+            mScrollView.addView(ll, WIDGET_LAYOUT_PARAMS);
+            updateScrollbar();
+            addView(mScrollView, WIDGET_LAYOUT_PARAMS);
+        } else {
+            // not needed, just add the linear layout
+            addView(ll, WIDGET_LAYOUT_PARAMS);
+        }
 
         // set up a broadcast receiver for our intents, based off of what our power buttons have been loaded
         setupBroadcastReceiver();
@@ -218,10 +215,6 @@ public class RecentApps extends FrameLayout {
         }
     }
 
-    public void updateRecentApps() {
-    //
-    }
-
     public void setupSettingsObserver(Handler handler) {
         if(mObserver == null) {
             mObserver = new RecentAppsSettingsObserver(handler);
@@ -229,11 +222,10 @@ public class RecentApps extends FrameLayout {
     }
     
     public void setGlobalButtonOnClickListener(View.OnClickListener listener) {
-//        PowerButton.setGlobalOnClickListener(listener);
+    	globalOnClickListener = listener;
     }
-
+    
     public void setGlobalButtonOnLongClickListener(View.OnLongClickListener listener) {
-//        PowerButton.setGlobalOnLongClickListener(listener);
     }
 
     private void setupBroadcastReceiver() {
@@ -242,15 +234,10 @@ public class RecentApps extends FrameLayout {
         }
     }
 
-    private void updateButtonLayoutWidth() {
-        // use our context to set a valid button width
-        BUTTON_LAYOUT_PARAMS.width = mContext.getResources().getDisplayMetrics().widthPixels / LAYOUT_SCROLL_BUTTON_THRESHOLD;
-    }
-
     private void updateVisibility() {
         // now check if we need to display the widget still
         boolean displayPowerRecentApps = Settings.System.getInt(mContext.getContentResolver(),
-                   Settings.System.EXPANDED_VIEW_WIDGET, 1) == 1;
+                   Settings.System.RECENT_APPS_STATUS_BAR, 1) == 1;
         if(!displayPowerRecentApps) {
             setVisibility(View.GONE);
         } else {
@@ -272,15 +259,10 @@ public class RecentApps extends FrameLayout {
                 setupRecentApps();
                 updateVisibility();
             } else if(intent.getAction().equals(Intent.ACTION_CONFIGURATION_CHANGED)) {
-                updateButtonLayoutWidth();
                 setupRecentApps();
             } else {
                 // handle the intent through our power buttons
-                //PowerButton.handleOnReceive(context, intent);
             }
-
-            // update our widget
-            updateRecentApps();
         }
     };
 
@@ -292,36 +274,11 @@ public class RecentApps extends FrameLayout {
 
         public void observe() {
             ContentResolver resolver = mContext.getContentResolver();
-			/*
-            // watch for display widget
+			
+            // watch for display list
             resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.EXPANDED_VIEW_WIDGET),
+                    Settings.System.getUriFor(Settings.System.RECENT_APPS_STATUS_BAR),
                             false, this);
-
-            // watch for scrollbar hiding
-            resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.EXPANDED_HIDE_SCROLLBAR),
-                            false, this);
-
-            // watch for haptic feedback
-            resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.EXPANDED_HAPTIC_FEEDBACK),
-                            false, this);
-
-            // watch for changes in buttons
-            resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.WIDGET_BUTTONS),
-                            false, this);
-
-            // watch for changes in color
-            resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.EXPANDED_VIEW_WIDGET_COLOR),
-                            false, this);
-
-            // watch for power-button specifc stuff that has been loaded
-            for(Uri uri : PowerButton.getAllObservedUris()) {
-                resolver.registerContentObserver(uri, false, this);
-            }*/
         }
 
         public void unobserve() {
@@ -332,25 +289,15 @@ public class RecentApps extends FrameLayout {
 
         @Override
         public void onChangeUri(Uri uri, boolean selfChange) {
-            /*ContentResolver resolver = mContext.getContentResolver();
+            ContentResolver resolver = mContext.getContentResolver();
             Resources res = mContext.getResources();
 
-            // first check if our widget buttons have changed
-            if(uri.equals(Settings.System.getUriFor(Settings.System.WIDGET_BUTTONS))) {
-                setupRecentApps();
-            // now check if we change visibility
-            } else if(uri.equals(Settings.System.getUriFor(Settings.System.EXPANDED_VIEW_WIDGET))) {
+            // check for visibility
+            if(uri.equals(Settings.System.getUriFor(Settings.System.RECENT_APPS_STATUS_BAR))) {
                 updateVisibility();
-            // now check for scrollbar hiding
-            } else if(uri.equals(Settings.System.getUriFor(Settings.System.EXPANDED_HIDE_SCROLLBAR))) {
-                updateScrollbar();
-            }
-
-            // do whatever the individual buttons must
-            PowerButton.handleOnChangeUri(uri);
-
-            // something happened so update the widget
-            updateRecentApps();*/
+            } 
+            
         }
     }
+    
 }
