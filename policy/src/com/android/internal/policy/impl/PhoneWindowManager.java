@@ -234,6 +234,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int mLidKeyboardAccessibility;
     int mLidNavigationAccessibility;
     boolean mScreenOn = false;
+    int mScreenOffReason;
     boolean mOrientationSensorEnabled = false;
     int mCurrentAppOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
     static final int DEFAULT_ACCELEROMETER_ROTATION = 0;
@@ -1390,9 +1391,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         }
 
-        // Handle "Quick Keys" on Vision
-        if ("vision".equals(Build.DEVICE)
-                && (keyCode == KeyEvent.KEYCODE_USER1 || keyCode == KeyEvent.KEYCODE_USER2 || keyCode == KeyEvent.KEYCODE_USER3)) {
+        if (keyCode == KeyEvent.KEYCODE_ENVELOPE || keyCode == KeyEvent.KEYCODE_EXPLORER
+                || keyCode == KeyEvent.KEYCODE_USER1 || keyCode == KeyEvent.KEYCODE_USER2 || keyCode == KeyEvent.KEYCODE_USER3) {
             return handleQuickKeys(win, keyCode, down, keyguardOn);
         }
 
@@ -1418,7 +1418,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     /**
-     * Quick Keys for Vision (HTC - G2)
+     * Quick Keys
      */
     private boolean handleQuickKeys(WindowState win, int code, boolean down, boolean keyguardOn) {
 
@@ -1442,6 +1442,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             break;
                         case KeyEvent.KEYCODE_USER3:
                             property = Settings.System.USER_DEFINED_KEY3_APP;
+                            break;
+                        case KeyEvent.KEYCODE_ENVELOPE:
+                            property = Settings.System.USER_DEFINED_KEY_ENVELOPE;
+                            break;
+                        case KeyEvent.KEYCODE_EXPLORER:
+                            property = Settings.System.USER_DEFINED_KEY_EXPLORER;
                             break;
                         default:
                             return false;
@@ -2061,18 +2067,19 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     || ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) && mVolumeWakeScreen);
 
             // Don't wake the screen if we have not set the option "wake with volume" in CMParts
+            // OR if "wake with volume" is set but screen is off due to proximity sensor
             // regardless if WAKE Flag is set in keylayout
-            if (!isScreenOn
-                    && isWakeKey
-                    && !mVolumeWakeScreen
+            final boolean isOffByProx = (mScreenOffReason == WindowManagerPolicy.OFF_BECAUSE_OF_PROX_SENSOR);
+            if (isWakeKey
+                    && (!mVolumeWakeScreen || isOffByProx)
                     && ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))) {
                 isWakeKey = false;
             }
 
             // make sure keyevent get's handled as power key on volume-wake
-            if(!isScreenOn && mVolumeWakeScreen && isWakeKey && ((keyCode == KeyEvent.KEYCODE_VOLUME_UP)
+            if(mVolumeWakeScreen && isWakeKey && ((keyCode == KeyEvent.KEYCODE_VOLUME_UP)
                     || (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)))
-                keyCode=KeyEvent.KEYCODE_POWER;
+                keyCode = KeyEvent.KEYCODE_POWER;
 
             if (down && isWakeKey) {
                 if (keyguardActive) {
@@ -2333,6 +2340,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mKeyguardMediator.onScreenTurnedOff(why);
         synchronized (mLock) {
             mScreenOn = false;
+            mScreenOffReason = why;
             updateOrientationListenerLp();
             updateLockScreenTimeout();
         }

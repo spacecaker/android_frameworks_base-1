@@ -92,6 +92,9 @@ public class StatusBarPolicy {
     private final Handler mHandler = new StatusBarHandler();
     private final IBatteryStats mBatteryStats;
 
+    // headset
+    private boolean mHeadsetPlugged = false;
+
     // storage
     private StorageManager mStorageManager;
 
@@ -437,7 +440,6 @@ public class StatusBarPolicy {
               R.drawable.stat_sys_data_fully_out_h,
               R.drawable.stat_sys_data_fully_inandout_h }
     };
-
     //CDMA
     // Use 3G icons for EVDO data and 1x icons for 1XRTT data
     private static final int[][] sDataNetType_1x = {
@@ -450,6 +452,20 @@ public class StatusBarPolicy {
               R.drawable.stat_sys_data_fully_out_1x,
               R.drawable.stat_sys_data_fully_inandout_1x }
             };
+
+    //LTE, + stuff like HSPAP+, which is still
+    //3.5G but carriers like to pretend it's 4G
+    private static final int[][] sDataNetType_4g = {
+            { R.drawable.stat_sys_data_connected_4g,
+              R.drawable.stat_sys_data_in_4g,
+              R.drawable.stat_sys_data_out_4g,
+              R.drawable.stat_sys_data_inandout_4g },
+            { R.drawable.stat_sys_data_fully_connected_4g,
+              R.drawable.stat_sys_data_fully_in_4g,
+              R.drawable.stat_sys_data_fully_out_4g,
+              R.drawable.stat_sys_data_fully_inandout_4g }
+    };
+
 
     // Assume it's all good unless we hear otherwise.  We don't always seem
     // to get broadcasts that it *is* there.
@@ -591,6 +607,8 @@ public class StatusBarPolicy {
     // need another var that superceding mPhoneSignalHidden
     private boolean mShowCmSignal;
 
+    private boolean mShowHeadset;
+
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
@@ -603,6 +621,9 @@ public class StatusBarPolicy {
 
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.STATUS_BAR_CM_SIGNAL_TEXT), false, this);
+
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.STATUS_BAR_HEADSET), false, this);
         }
 
         @Override public void onChange(boolean selfChange) {
@@ -1273,7 +1294,12 @@ public class StatusBarPolicy {
         case TelephonyManager.NETWORK_TYPE_EVDO_0: //fall through
         case TelephonyManager.NETWORK_TYPE_EVDO_A:
         case TelephonyManager.NETWORK_TYPE_EVDO_B:
+        case TelephonyManager.NETWORK_TYPE_EHRPD:
             mDataIconList = sDataNetType_3g[mInetCondition];
+            break;
+        case TelephonyManager.NETWORK_TYPE_LTE:
+        case TelephonyManager.NETWORK_TYPE_HSPAP:
+            mDataIconList = sDataNetType_4g[mInetCondition];
             break;
         default:
             mDataIconList = sDataNetType_g[mInetCondition];
@@ -1368,16 +1394,16 @@ public class StatusBarPolicy {
     }
 
     private final void updateHeadset(Intent intent) {
-        final boolean isConnected = intent.getIntExtra("state", 0) == 1;
+        mHeadsetPlugged = intent.getIntExtra("state", 0) == 1;
 
-        if (isConnected) {
+        if (mHeadsetPlugged) {
             final boolean hasMicrophone = intent.getIntExtra("microphone", 1) == 1;
             final int iconId = hasMicrophone
                     ? com.android.internal.R.drawable.stat_sys_headset
                     : R.drawable.stat_sys_headset_no_mic;
             mService.setIcon("headset", iconId, 0);
         }
-        mService.setIconVisibility("headset", isConnected);
+        mService.setIconVisibility("headset", mShowHeadset && mHeadsetPlugged);
     }
 
     private final void updateBluetooth(Intent intent) {
@@ -1637,10 +1663,13 @@ public class StatusBarPolicy {
         mCmBatteryStatus = !mShowCmBattery;
         mService.setIconVisibility("battery", !mShowCmBattery);
 
-      //0 will hide the cmsignaltext and show the signal bars
-       mShowCmSignal = Settings.System.getInt(mContext.getContentResolver(),
-       Settings.System.STATUS_BAR_CM_SIGNAL_TEXT, 0) != 0;
-       mService.setIconVisibility("phone_signal", !mShowCmSignal);
+        //0 will hide the cmsignaltext and show the signal bars
+        mShowCmSignal = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_CM_SIGNAL_TEXT, 0) != 0;
+        mService.setIconVisibility("phone_signal", !mShowCmSignal);
 
+        mShowHeadset = (Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_HEADSET, 1) == 1);
+        mService.setIconVisibility("headset", mShowHeadset && mHeadsetPlugged);
     }
 }

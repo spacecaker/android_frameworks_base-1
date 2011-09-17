@@ -74,6 +74,7 @@ public class RecentApps extends FrameLayout {
 	private View.OnClickListener globalOnClickListener = null;
 
     private HorizontalScrollView mScrollView;
+    private int buttonCount = 0;
     
     public RecentApps(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -103,8 +104,6 @@ public class RecentApps extends FrameLayout {
         LinearLayout ll = new LinearLayout(mContext);
         ll.setOrientation(LinearLayout.HORIZONTAL);
         ll.setGravity(Gravity.LEFT);
-
-        int buttonCount = 0;
 
 		// retrieve recent app list
         final PackageManager pm = mContext.getPackageManager();
@@ -213,6 +212,8 @@ public class RecentApps extends FrameLayout {
         if(mObserver != null) {
             mObserver.observe();
         }
+
+        updateVisibility();
     }
 
     public void setupSettingsObserver(Handler handler) {
@@ -238,7 +239,7 @@ public class RecentApps extends FrameLayout {
         // now check if we need to display the widget still
         boolean displayPowerRecentApps = Settings.System.getInt(mContext.getContentResolver(),
                    Settings.System.RECENT_APPS_STATUS_BAR, 1) == 1;
-        if(!displayPowerRecentApps) {
+        if(!displayPowerRecentApps || buttonCount == 0) {
             setVisibility(View.GONE);
         } else {
             setVisibility(View.VISIBLE);
@@ -257,11 +258,9 @@ public class RecentApps extends FrameLayout {
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
                 setupRecentApps();
-                updateVisibility();
             } else if(intent.getAction().equals(Intent.ACTION_CONFIGURATION_CHANGED)) {
                 setupRecentApps();
             } else {
-                // handle the intent through our power buttons
             }
         }
     };
