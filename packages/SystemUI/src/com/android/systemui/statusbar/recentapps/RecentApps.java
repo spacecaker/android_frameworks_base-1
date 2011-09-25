@@ -235,7 +235,7 @@ public class RecentApps extends FrameLayout {
         }
     }
 
-    private void updateVisibility() {
+    public void updateVisibility() {
         // now check if we need to display the widget still
         boolean displayPowerRecentApps = Settings.System.getInt(mContext.getContentResolver(),
                    Settings.System.RECENT_APPS_STATUS_BAR, 1) == 1;

@@ -1837,6 +1837,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
                 AlarmManager alarmMgr = (AlarmManager) getSystemService(ALARM_SERVICE);
                 alarmMgr.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000, restartIntent);
                 android.os.Process.killProcess(android.os.Process.myPid());
+                
+                // dx: update recent apps visibility
+                mRecentApps.updateVisibility();
             }
         }
     };
