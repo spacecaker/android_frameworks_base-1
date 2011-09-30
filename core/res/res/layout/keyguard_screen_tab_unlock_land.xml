@@ -37,7 +37,7 @@
         android:background="#70000000"
         android:gravity="left"
         android:id="@+id/root">
-        
+
         <TextView
             android:id="@+id/carrier"
             android:layout_width="wrap_content"
@@ -232,7 +232,7 @@
             android:layout_alignWithParentIfMissing="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             />
-        
+
         <!-- right side -->
         <com.android.internal.widget.SlidingTab
             android:id="@+id/tab_selector2"
@@ -241,7 +241,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             />
-    
+
         <com.android.internal.widget.SlidingTab
             android:id="@+id/tab_selector"
             android:orientation="vertical"
@@ -250,7 +250,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="60dip"
             />
-    
+
         <com.android.internal.widget.RotarySelector
             android:id="@+id/rotary_selector"
             android:orientation="vertical"
@@ -258,7 +258,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             />
-    
+
         <!-- emergency call button shown when sim is PUKd and tab_selector is
              hidden -->
         <Button
@@ -272,7 +272,7 @@
             android:layout_alignParentRight="true"
             android:visibility="gone"
             />
-    
+
         <com.android.internal.widget.RingSelector
             android:id="@+id/ring_selector"
             android:orientation="vertical"
