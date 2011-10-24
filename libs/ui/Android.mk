@@ -31,6 +31,22 @@ LOCAL_SHARED_LIBRARIES := \
 	libpixelflinger \
 	libhardware \
 	libhardware_legacy
+	
+LOCAL_SRC_FILES+= \
+	../camera/Camera.cpp \
+	../camera/CameraParameters.cpp \
+	../camera/ICamera.cpp \
+	../camera/ICameraClient.cpp \
+	../camera/ICameraService.cpp
+
+LOCAL_SRC_FILES+= \
+	../surfaceflinger_client/ISurfaceComposer.cpp \
+	../surfaceflinger_client/ISurface.cpp \
+	../surfaceflinger_client/ISurfaceComposerClient.cpp \
+	../surfaceflinger_client/LayerState.cpp \
+	../surfaceflinger_client/SharedBufferStack.cpp \
+	../surfaceflinger_client/Surface.cpp \
+	../surfaceflinger_client/SurfaceComposerClient.cpp
 
 LOCAL_MODULE:= libui
 

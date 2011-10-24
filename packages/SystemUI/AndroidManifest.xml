@@ -10,8 +10,8 @@
     <application
         android:persistent="true"
         android:allowClearUserData="false"
-        android:label="@string/app_label"
-        android:icon="@drawable/ic_launcher_settings">
+        android:label="@string/app_label_gdx"
+        android:icon="@drawable/gingerdx_logo">
                  
         <service
             android:name=".statusbar.StatusBarService"

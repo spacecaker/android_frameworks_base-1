@@ -427,6 +427,10 @@
         <!-- Reference to a style that will be used for the window containing a text
              selection anchor. -->
         <attr name="textSelectHandleWindowStyle" format="reference" />
+        <!-- Reference to a drawable that will be used to display a quick copy tool -->
+        <attr name="quickCopy" format="reference" />
+        <!-- Reference to a drawable that will be used to display a quick paste tool -->
+        <attr name="quickPaste" format="reference" />
 
         <!-- =================== -->
         <!-- Preference styles   -->
@@ -2197,6 +2201,10 @@
         <!-- Reference to a drawable that will be used to display a text selection
              anchor for positioning the cursor within text. -->
         <attr name="textSelectHandle" />
+        <!-- Reference to a drawable that will be used to display a quick copy tool -->
+        <attr name="quickCopy"/>
+        <!-- Reference to a drawable that will be used to display a quick paste tool -->
+        <attr name="quickPaste"/>
     </declare-styleable>
     <!-- An <code>input-extras</code> is a container for extra data to supply to
          an input method.  Contains

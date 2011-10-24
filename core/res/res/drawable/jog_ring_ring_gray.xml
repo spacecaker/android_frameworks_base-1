@@ -24,5 +24,4 @@
 
     <item android:state_active="true"
         android:drawable="@drawable/jog_ring_ring_pressed_gray" />
-
 </selector>

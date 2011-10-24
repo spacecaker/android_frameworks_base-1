@@ -42,4 +42,8 @@
     <dimen name="password_keyboard_key_height">56dip</dimen>
     <!-- Default correction for the space key in the password keyboard -->
     <dimen name="password_keyboard_spacebar_vertical_correction">4dip</dimen>
+    
+    <!-- dx -->
+    <dimen name="semc_cornerbutton_fixedpady">20dp</dimen>
+    <dimen name="semc_text_size_extra_large">52dp</dimen>
 </resources>

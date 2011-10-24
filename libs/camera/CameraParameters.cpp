@@ -212,6 +212,12 @@ const char CameraParameters::CAF_ON[] = "caf-on";
 const char CameraParameters::CONTINUOUS_AF_OFF[] = "caf-off";
 const char CameraParameters::CONTINUOUS_AF_ON[] = "caf-on";
 
+//dx: f**kin SE .!.
+const char CameraParameters::ORIENTATION[] = "orientation";
+const char CameraParameters::ORIENTATION_PORTRAIT[] = "orientation-portrait";
+const char CameraParameters::ORIENTATION_LANDSCAPE[] = "orientation-landscape";
+
+
 CameraParameters::CameraParameters()
                 : mMap()
 {
