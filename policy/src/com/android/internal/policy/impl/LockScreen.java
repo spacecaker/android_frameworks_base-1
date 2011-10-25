@@ -237,8 +237,6 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
     
     private boolean mUseRingLockscreen = (mLockscreenStyle == 6);
 
-    private boolean mUseRingLockscreen = (mLockscreenStyle == 5);
-
     private double mGestureSensitivity;
     private boolean mGestureTrail;
     private boolean mGestureActive;
@@ -430,27 +428,6 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
         }
         
         float density = getResources().getDisplayMetrics().density;
-        int ringAppIconSize = context.getResources().getInteger(R.integer.config_ringAppIconSizeDIP);
-        for (int q = 0; q < 4; q++) {
-            if (mCustomRingAppActivities[q] != null) {
-                mRingSelector.showRing(q);
-                try {
-                    Intent i = Intent.parseUri(mCustomRingAppActivities[q], 0);
-                    PackageManager pm = context.getPackageManager();
-                    ActivityInfo ai = i.resolveActivityInfo(pm, PackageManager.GET_ACTIVITIES);
-                    if (ai != null) {
-                        Bitmap iconBmp = ((BitmapDrawable)ai.loadIcon(pm)).getBitmap();
-                        mCustomRingAppIcons[q] = Bitmap.createScaledBitmap(iconBmp, (int) density * ringAppIconSize, (int) density * ringAppIconSize, true);
-                        mRingSelector.setAppRingResources(q, mCustomRingAppIcons[q], R.drawable.jog_ring_appback_normal);
-                    }
-                } catch (URISyntaxException e) {
-                }
-            } else {
-                mRingSelector.hideRing(q);
-            }
-        }
-
-        float density = getResources().getDisplayMetrics().density;
         int ringAppIconSize = context.getResources().getInteger(R.integer.config_ringSecIconSizeDIP);
         for (int q = 0; q < 4; q++) {
             if (mCustomRingAppActivities[q] != null) {
@@ -585,8 +562,6 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
         if (mLensePortrait || mWidgetLayout == 1 )
             setLenseWidgetsVisibility(View.INVISIBLE);
         
-        mRingSelector.enableCustomAppsRing(mCustomAppToggle);
-
         mRingSelector.enableMiddleRing(mCustomAppToggle);
 
         mTabSelector.setLeftTabResources(
@@ -854,42 +829,6 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
         }
     }
     
-    /** {@inheritDoc} */
-    public void onRingTrigger(View v, int whichRing, int whichApp) {
-        if (whichRing == RingSelector.OnRingTriggerListener.LEFT_RING) {
-            mCallback.goToUnlockScreen();
-        } else if (whichRing == RingSelector.OnRingTriggerListener.RIGHT_RING) {
-            toggleSilentMode();
-            updateRightTabResources();
-
-            String message = mSilentMode ?
-                    getContext().getString(R.string.global_action_silent_mode_on_status) :
-                    getContext().getString(R.string.global_action_silent_mode_off_status);
-
-            final int toastIcon = mSilentMode
-                ? R.drawable.ic_lock_ringer_off
-                : R.drawable.ic_lock_ringer_on;
-
-            final int toastColor = mSilentMode
-                ? getContext().getResources().getColor(R.color.keyguard_text_color_soundoff)
-                : getContext().getResources().getColor(R.color.keyguard_text_color_soundon);
-            toastMessage(mScreenLocked, message, toastColor, toastIcon);
-            mCallback.pokeWakelock();
-        } else if (whichRing == RingSelector.OnRingTriggerListener.MIDDLE_RING) {
-            if (mCustomRingAppActivities[whichApp] != null) {
-                try {
-                    Intent i = Intent.parseUri(mCustomRingAppActivities[whichApp], 0);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                    mContext.startActivity(i);
-                    mCallback.goToUnlockScreen();
-                } catch (URISyntaxException e) {
-                } catch (ActivityNotFoundException e) {
-                }
-            }
-        }
-    }
-
     /** {@inheritDoc} */
     public void onGrabbedStateChange(View v, int grabbedState) {
         if (grabbedState == SlidingTab.OnTriggerListener.RIGHT_HANDLE) {

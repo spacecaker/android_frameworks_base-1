@@ -2627,17 +2627,6 @@ public final class Settings {
             "lockscreen_custom_app_activity_3",
             "lockscreen_custom_app_activity_4"
         };
-        
-        /**
-         * Ring Apps to launch with ring style and custom app toggle enabled
-         * @hide
-         */
-        public static final String[] LOCKSCREEN_CUSTOM_RING_APP_ACTIVITIES = new String[] {
-            "lockscreen_custom_app_activity_1",
-            "lockscreen_custom_app_activity_2",
-            "lockscreen_custom_app_activity_3",
-            "lockscreen_custom_app_activity_4"
-        };
 
         /**
          * 1: Show custom app icon (currently cm logo) as with new patch

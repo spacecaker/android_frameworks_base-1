@@ -167,7 +167,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
     PowerWidget mPowerWidget;
 
     // recent apps
-    RecentApps mRecentApps;
+    ///RecentApps mRecentApps;
 
     //Carrier label stuff
     LinearLayout mCarrierLabelLayout;
@@ -457,7 +457,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
                    }
                });
 
-        mRecentApps = (RecentApps)expanded.findViewById(R.id.recent_apps);
+        /*mRecentApps = (RecentApps)expanded.findViewById(R.id.recent_apps);
         mRecentApps.setupSettingsObserver(mHandler);
         mRecentApps.setGlobalButtonOnClickListener(new View.OnClickListener() {
                    public void onClick(View v) {
@@ -469,7 +469,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
                        animateCollapse();
                        return true;
                    }
-               });
+               });*/
 
         mCarrierLabelLayout = (LinearLayout)expanded.findViewById(R.id.carrier_label_layout);
         mCompactCarrierLayout = (LinearLayout)expanded.findViewById(R.id.compact_carrier_layout);
@@ -523,17 +523,17 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         // handle expanded view reording for bottom bar
         LinearLayout powerAndCarrier=(LinearLayout)mExpandedView.findViewById(R.id.power_and_carrier);
         PowerWidget power=(PowerWidget)mExpandedView.findViewById(R.id.exp_power_stat);
-        RecentApps recent=(RecentApps)mExpandedView.findViewById(R.id.recent_apps);
+        //RecentApps recent=(RecentApps)mExpandedView.findViewById(R.id.recent_apps);
         //FrameLayout notifications=(FrameLayout)mExpandedView.findViewById(R.id.notifications);
 
         // remove involved views
         powerAndCarrier.removeView(power);
-        powerAndCarrier.removeView(recent);
+        //powerAndCarrier.removeView(recent);
         mExpandedView.removeView(powerAndCarrier);
 
         // readd in right order
         mExpandedView.addView(powerAndCarrier, mBottomBar ? 1 : 0);
-        powerAndCarrier.addView(recent, mBottomBar && !mCompactCarrier ? 1 : 0);
+        ///powerAndCarrier.addView(recent, mBottomBar && !mCompactCarrier ? 1 : 0);
         powerAndCarrier.addView(power, mBottomBar && !mCompactCarrier ? 1 : 0);
 
         // Remove all notification views
@@ -594,7 +594,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 
         WindowManagerImpl.getDefault().addView(view, lp);
 
-        mRecentApps.setupRecentApps();
+        //mRecentApps.setupRecentApps();
         mPowerWidget.setupWidget();
     }
 
@@ -954,7 +954,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         mExpandedVisible = true;
         visibilityChanged(true);
 
-        mRecentApps.setupRecentApps();
+        //mRecentApps.setupRecentApps();
         mPowerWidget.updateWidget();
 
         updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
@@ -1839,7 +1839,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
                 android.os.Process.killProcess(android.os.Process.myPid());
                 
                 // dx: update recent apps visibility
-                mRecentApps.updateVisibility();
+                //mRecentApps.updateVisibility();
             }
         }
     };
