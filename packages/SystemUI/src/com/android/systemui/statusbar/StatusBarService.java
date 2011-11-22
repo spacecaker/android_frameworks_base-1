@@ -384,7 +384,12 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
                                                 R.layout.status_bar_expanded, null);
         expanded.mService = this;
 
-        CmStatusBarView sb = (CmStatusBarView)View.inflate(context, R.layout.status_bar, null);
+        // center clock option
+        CmStatusBarView sb = null;
+        if (Settings.System.getInt(getContentResolver(), Settings.System.CENTER_CLOCK_STATUS_BAR, 0)==0)
+            sb = (CmStatusBarView)View.inflate(context, R.layout.status_bar, null);
+        else
+            sb = (CmStatusBarView)View.inflate(context, R.layout.status_bar_middle_clock, null);
         sb.mService = this;
 
         // apply transparent status bar drawables
