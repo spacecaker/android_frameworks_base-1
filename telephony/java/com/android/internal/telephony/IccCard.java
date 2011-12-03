@@ -28,6 +28,7 @@ import android.util.Log;
 
 import com.android.internal.telephony.PhoneBase;
 import com.android.internal.telephony.CommandsInterface.RadioState;
+import android.os.SystemProperties;
 
 /**
  * {@hide}
@@ -422,9 +423,13 @@ public abstract class IccCard {
             broadcastIccStateChangedIntent(INTENT_VALUE_ICC_ABSENT, null);
         } else if (transitionedIntoNetworkLocked) {
             if(mDbg) log("Notify SIM network locked.");
-            mNetworkLockedRegistrants.notifyRegistrants();
-            broadcastIccStateChangedIntent(INTENT_VALUE_ICC_LOCKED,
-                  INTENT_VALUE_LOCKED_NETWORK);
+            String RILskip_locked = SystemProperties.get("ro.telephony.ril_skip_locked");
+            Log.e(mLogTag, "RILskip_locked is " + RILskip_locked);
+            if (!"true".equals(RILskip_locked)) {
+		        mNetworkLockedRegistrants.notifyRegistrants();
+		        broadcastIccStateChangedIntent(INTENT_VALUE_ICC_LOCKED,
+		              INTENT_VALUE_LOCKED_NETWORK);
+		    }
         }
     }
 
