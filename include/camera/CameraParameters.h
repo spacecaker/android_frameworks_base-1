@@ -493,7 +493,11 @@ public:
     // Values for Lens Shading
     static const char LENSSHADE_ENABLE[] ;
     static const char LENSSHADE_DISABLE[] ;
-
+	
+	// dx
+    static const char ORIENTATION_LANDSCAPE[];
+    static const char ORIENTATION_PORTRAIT[];
+    static const char ORIENTATION[];
 
 private:
     DefaultKeyedVector<String8,String8>    mMap;

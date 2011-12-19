@@ -59,7 +59,6 @@ public class RingSelector extends ViewGroup {
     private final float mThresholdRadiusDIP;
     private final float mThresholdRadius;
     private final float mThresholdRadiusSq;
-
     private static final int ANIM_CENTER_FADE_TIME = 250; //fade time for center ring (ms)
     private static final int ANIM_DURATION = 250; // Time for most animations (in ms)
     private static final int ANIM_TARGET_TIME = 500; // Time to show targets (in ms)
@@ -197,7 +196,6 @@ public class RingSelector extends ViewGroup {
         private static final int STATE_NORMAL = 0;
         private static final int STATE_PRESSED = 1;
         private static final int STATE_ACTIVE = 2;
-
         private boolean isHidden = false;
 
         private final ImageView ring;
@@ -258,7 +256,6 @@ public class RingSelector extends ViewGroup {
         void hide() {
             if (isHidden) return;
             if (ring.getVisibility() == View.INVISIBLE) return;
-
             if (alignment == ALIGN_CENTER || alignment == ALIGN_MIDDLE) {
                 AlphaAnimation alphaAnim = new AlphaAnimation(1.0f, 0.0f);
                 alphaAnim.setDuration(ANIM_CENTER_FADE_TIME);
@@ -611,6 +608,7 @@ public class RingSelector extends ViewGroup {
             final int hRingWidth = ringWidth / 2;
             final int hRingHeight = ringHeight / 2;
 
+
             //perhaps make this formula-based, but i can't think of a good one for now
             final boolean shift = totalRings < 3 ||
                     (totalRings == 3 && ringNum == 1) ||
@@ -686,6 +684,7 @@ public class RingSelector extends ViewGroup {
          * phones. keep in mind changing build.prop and density
          * isnt officially supported, but this should do for most cases
          */
+
         if (densityDpi < 240 && densityDpi > 180)
             mDensityScaleFactor = (float) (240.0 / densityDpi);
         if (densityDpi < 160 && densityDpi > 120)
@@ -1118,6 +1117,7 @@ public class RingSelector extends ViewGroup {
         mMiddleRing.setRingBackgroundResource(ringId);
         mMiddleRing.updateDrawableStates();
     }
+
 
     /**
      * Sets a certain secondary ring icon to a given resource.

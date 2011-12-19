@@ -3766,4 +3766,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewOpacityM
             bottomMargin = bottom;
         }
     }
+
+    // dx
+    public void setDirectionality(int drawingCacheToKeep) {
+        return;
+    }
+	// dx end
+    
 }

@@ -2940,7 +2940,7 @@ status_t OMXCodec::allocateBuffersOnPort(OMX_U32 portIndex) {
 
     sp<IMemory> mem;
 #else
-    mDealer[portIndex] = new MemoryDealer(totalSize, "OMXCodec");
+    mDealer[portIndex] = new MemoryDealer(totalSize/*, "OMXCodec"*/);
 #endif
 
 #ifdef USE_GETBUFFERINFO
