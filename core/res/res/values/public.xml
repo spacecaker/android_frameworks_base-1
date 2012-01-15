@@ -1286,4 +1286,13 @@
   <public type="attr" name="quickCopy" id="0x010102cf" />
   <public type="attr" name="quickPaste" id="0x010102d0" />
   
+  <public type="style" name="Theme.Holo.Wallpaper.NoTitleBar" id="0x01030069" />
+  <public type="attr" name="textAllCaps" id="0x010102d1" />
+  <public type="attr" name="alpha" id="0x010102d2" />
+  <public type="attr" name="valueFrom" id="0x010102d3" />
+  <public type="attr" name="valueTo" id="0x010102d4" />
+  <public type="attr" name="valueType" id="0x010102d5" />
+  <public type="attr" name="propertyName" id="0x010102d6" />
+  <public type="attr" name="staticWallpaperPreview" id="0x010102d7" />
+  
 </resources>

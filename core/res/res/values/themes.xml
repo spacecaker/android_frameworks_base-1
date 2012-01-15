@@ -538,4 +538,12 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
     
+    <style name="Theme.Holo" />
+    <style name="Theme.Holo.Wallpaper" />
+    <!-- Variant of the holographic (dark) theme with no title bar -->
+    <style name="Theme.Holo.Wallpaper.NoTitleBar">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    
 </resources>
