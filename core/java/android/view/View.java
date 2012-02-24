@@ -3756,6 +3756,10 @@ public class View implements Drawable.Callback, Drawable.Callback2, KeyEvent.Cal
         }
     }
 
+    protected final boolean shouldMirror() {
+        return true;
+    }
+
     /**
      * Called to clear the focus of a view that is about to be removed.
      * Doesn't call clearChildFocus, which prevents this view from taking

@@ -4459,6 +4459,10 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         mPersistentDrawingCache = drawingCacheToKeep & PERSISTENT_ALL_CACHES;
     }
 
+    public void setDirectionality(int drawingCacheToKeep) {
+        return;
+    }
+
     /**
      * Returns a new set of layout parameters based on the supplied attributes set.
      *
