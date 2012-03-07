@@ -44,7 +44,7 @@ static int doCommand(const char *cmd, char *replybuf, int replybuflen)
     LOGV("CMD [%s]:", cmd);
 
     if ((err = ::wifi_command(cmd, replybuf, &reply_len)) != 0) {
-        LOGD("ERR %d, returns -1", err);
+        //LOGD("ERR %d, returns -1", err);
         return -1;
     }
     else {
