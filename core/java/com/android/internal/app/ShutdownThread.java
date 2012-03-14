@@ -43,6 +43,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 
+//dx
+import java.io.File;
+import java.io.IOException;
+
+
 public final class ShutdownThread extends Thread {
     // constants
     private static final String TAG = "ShutdownThread";
@@ -106,12 +111,13 @@ public final class ShutdownThread extends Thread {
                 dialog = new AlertDialog.Builder(context)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setTitle(com.android.internal.R.string.reboot_system)
-                        .setSingleChoiceItems(com.android.internal.R.array.shutdown_reboot_options, 0, new DialogInterface.OnClickListener() {
+                        // global (all language) reboot to xRec or CWM
+                        .setSingleChoiceItems(com.android.internal.R.array.shutdown_reboot_options_gdx, 0, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 if (which < 0)
                                     return;
 
-                                String actions[] = context.getResources().getStringArray(com.android.internal.R.array.shutdown_reboot_actions);
+                                String actions[] = context.getResources().getStringArray(com.android.internal.R.array.shutdown_reboot_actions_gdx);
 
                                 if (actions != null && which < actions.length)
                                     mRebootReason = actions[which];
@@ -415,7 +421,36 @@ public final class ShutdownThread extends Thread {
      */
     public static void rebootOrShutdown(boolean reboot, String reason) {
         if (reboot) {
+	        // dx: reboot to xrecovery / clockworkmod recovery
+	        if (reason != null) {
+				/*if (reason.equals("xrec")) {
+					Log.d(TAG, "dx: Rebooting to xRecovery...");
+					try { 
+						File file = new File("/data/local/tmp/xrecovery");
+						if(!file.exists())
+							file.createNewFile();
+					}
+					catch(IOException e) { 
+						Log.d(TAG, "dx: cannot create file?");
+						e.printStackTrace();
+					}
+		        }*/
+				if (reason.equals("recovery")) {
+					Log.d(TAG, "dx: Rebooting to ClockworkMod recovery...");
+					try { 
+						File file = new File("/data/local/tmp/cwmrecovery");
+						if(!file.exists())
+							file.createNewFile();
+					}
+					catch(IOException e) { 
+						Log.d(TAG, "dx: cannot create file?");
+						e.printStackTrace();
+					}
+		        }
+		    }
+
             Log.i(TAG, "Rebooting, reason: " + reason);
+
             try {
                 Power.reboot(reason);
             } catch (Exception e) {
@@ -426,8 +461,8 @@ public final class ShutdownThread extends Thread {
             Vibrator vibrator = new Vibrator();
             try {
                 vibrator.vibrate(SHUTDOWN_VIBRATE_MS);
-            } catch (Exception e) {
                 // Failure to vibrate shouldn't interrupt shutdown.  Just log it.
+            } catch (Exception e) {
                 Log.w(TAG, "Failed to vibrate during shutdown.", e);
             }
 

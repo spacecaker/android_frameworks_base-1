@@ -2122,6 +2122,20 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         // Handle special keys.
         switch (keyCode) {
+        	case KeyEvent.KEYCODE_BACK:
+        		if (down) {
+		            // back button ends call?
+		        	if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.BACK_BUTTON_ENDS_CALL, 0) == 1) {
+				    	ITelephony telephonyService = getTelephonyService();
+				        if (telephonyService != null) {
+				        	try {
+				        		telephonyService.endCall();
+				        	} catch (RemoteException ex) {
+				            	Log.w(TAG, "ITelephony threw RemoteException" + ex);
+				        	}
+				        } 
+			        }
+		        }
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_VOLUME_UP: {
                 // cm71 nightlies: will be replaced by CmPhoneWindowManager's new volume handling
