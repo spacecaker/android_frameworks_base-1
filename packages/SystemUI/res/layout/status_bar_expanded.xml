@@ -40,6 +40,11 @@
             android:layout_height="wrap_content"
             />
 
+<!--        <com.android.systemui.statusbar.recentapps.RecentApps android:id="@+id/recent_apps"-->
+<!--		        android:layout_width="match_parent"-->
+<!--		        android:layout_height="50dp"-->
+<!--		        />-->
+
         <LinearLayout android:id="@+id/carrier_label_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,8 +75,9 @@
                 android:paddingRight="15dp"
             />
         </LinearLayout>
+        
     </LinearLayout>
-
+    
     <FrameLayout android:id="@+id/notifications"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

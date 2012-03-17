@@ -44,6 +44,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -688,12 +689,23 @@ public class LockPatternKeyguardView extends KeyguardViewBase {
     }
 
     View createLockScreen() {
-        return new LockScreen(
-                mContext,
-                mConfiguration,
-                mLockPatternUtils,
-                mUpdateMonitor,
-                mKeyguardScreenCallback);
+    	// use sense 3 lockscreen?
+    	if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.USE_SENSE3_LOCKSCREEN, 0) == 1) {
+		    return new GdxLock(
+		            mContext,
+		            mConfiguration,
+		            mLockPatternUtils,
+		            mUpdateMonitor,
+		            mKeyguardScreenCallback);
+        }
+        else {
+	        return new LockScreen(
+		            mContext,
+		            mConfiguration,
+		            mLockPatternUtils,
+		            mUpdateMonitor,
+		            mKeyguardScreenCallback);
+        }
     }
 
     View createUnlockScreenFor(UnlockMode unlockMode) {
@@ -948,5 +960,15 @@ public class LockPatternKeyguardView extends KeyguardViewBase {
             return mBitmap.getHeight();
         }
     }
+    
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+        if (mLockScreen != null && mLockScreen.getVisibility() == View.VISIBLE) {
+        	// in lockscreen, send touch events
+        	mLockScreen.onTouchEvent(event);
+		}
+		return true;
+	}
+
 }
 

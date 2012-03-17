@@ -2860,9 +2860,9 @@ class PowerManagerService extends IPowerManager.Stub
         }
         mLightSettingsTag = tag;
         mCustomLightEnabled = Settings.System.getInt(cr,
-                Settings.System.LIGHT_SENSOR_CUSTOM, 0) != 0;
+                Settings.System.LIGHT_SENSOR_CUSTOM, 1) != 0;		// enabled by default
         mLightDecrease = Settings.System.getInt(cr,
-                Settings.System.LIGHT_DECREASE, 0) != 0;
+                Settings.System.LIGHT_DECREASE, 1) != 0;			// allow decrease by default
         mLightHysteresis = Settings.System.getInt(cr,
                 Settings.System.LIGHT_HYSTERESIS, 50) / 100f;
         mLightFilterEnabled = Settings.System.getInt(cr,
