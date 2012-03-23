@@ -1377,13 +1377,13 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
     private void setUnlockWidgetsState(boolean show) {
         if (show) {
             if (mUseRotaryLockscreen || mUseRotaryRevLockscreen || mUseLenseSquareLockscreen || mUseSenseLockscreen) {
-				int i = 0;
+				/*int i = 0;
 				Log.i("dx", "is rotary");
 				try {
 					i = 5/i;
 				} catch (Exception e) {
 					e.printStackTrace();
-				}
+				}*/
                 mRotarySelector.setVisibility(View.VISIBLE);
                 mRotarySelector.setRevamped(mUseRotaryRevLockscreen);
                 mRotarySelector.setLenseSquare(mUseLenseSquareLockscreen);
@@ -1394,13 +1394,13 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
                     mSelector2.setVisibility(View.GONE);
                 }
             } else if (mUseRingLockscreen) {
-				int i = 0;
+				/*int i = 0;
 				Log.i("dx", "is ring");
 				try {
 					i = 5/i;
 				} catch (Exception e) {
 					e.printStackTrace();
-				}
+				}*/
                 mRingSelector.setVisibility(View.VISIBLE);
                 mRotarySelector.setVisibility(View.GONE);
                 mTabSelector.setVisibility(View.GONE);
@@ -1408,13 +1408,13 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
                     mSelector2.setVisibility(View.GONE);
                 }
             } else {
-				int i = 0;
+				/*int i = 0;
 				Log.i("dx", "is tab");
 				try {
 					i = 5/i;
 				} catch (Exception e) {
 					e.printStackTrace();
-				}
+				}*/
                 mRotarySelector.setVisibility(View.GONE);
                 mRingSelector.setVisibility(View.GONE);
                 mTabSelector.setVisibility(View.VISIBLE);
@@ -1427,13 +1427,13 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
                 }
             }
         } else {
-			int i = 0;
-				Log.i("dx", "is hidden!");
-				try {
-					i = 5/i;
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			/*int i = 0;
+			Log.i("dx", "is hidden!");
+			try {
+				i = 5/i;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}*/
             mRotarySelector.setVisibility(View.GONE);
             mRingSelector.setVisibility(View.GONE);
             mTabSelector.setVisibility(View.GONE);
