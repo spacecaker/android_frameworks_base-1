@@ -85,12 +85,16 @@ public class SemcRIL extends RIL {
     responseIccCardStatus(Parcel p) {
         IccCardApplication ca;
 
+        boolean oldRil = needsOldRilFeature("icccardstatus");
+
         IccCardStatus status = new IccCardStatus();
         status.setCardState(p.readInt());
         status.setUniversalPinState(p.readInt());
         status.setGsmUmtsSubscriptionAppIndex(p.readInt());
         status.setCdmaSubscriptionAppIndex(p.readInt());
-        status.setImsSubscriptionAppIndex(p.readInt());
+
+        if (!oldRil)
+            status.setImsSubscriptionAppIndex(p.readInt());
 
         int numApplications = p.readInt();
 
@@ -113,7 +117,8 @@ public class SemcRIL extends RIL {
             status.addApplication(ca);
         }
 
-        updateIccType(status);
+        if (!oldRil)
+            updateIccType(status);
         return status;
     }
 
