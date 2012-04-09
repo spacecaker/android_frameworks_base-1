@@ -287,7 +287,11 @@ status_t Harness::testStateTransitions(
         return OK;
     }
 
+#ifdef ECLAIR_LIBCAMERA
+    sp<MemoryDealer> dealer = new MemoryDealer(16 * 1024 * 1024);
+#else
     sp<MemoryDealer> dealer = new MemoryDealer(16 * 1024 * 1024, "OMXHarness");
+#endif
     IOMX::node_id node;
 
     status_t err =

@@ -393,6 +393,11 @@ void CameraParameters::setOrientation(int orientation)
          set("orientation", landscape);
     }
 }
+#ifdef ECLAIR_LIBCAMERA
+const char CameraParameters::ORIENTATION[] = "orientation";
+const char CameraParameters::ORIENTATION_PORTRAIT[] = "orientation-portrait";
+const char CameraParameters::ORIENTATION_LANDSCAPE[] = "orientation-landscape";
+#endif
 #endif
 
 
