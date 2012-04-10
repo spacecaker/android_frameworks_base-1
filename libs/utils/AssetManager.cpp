@@ -91,6 +91,7 @@ AssetManager::~AssetManager(void)
     delete[] mVendor;
 }
 
+
 bool AssetManager::addAssetPath(const String8& path, void** cookie, bool asSkin)
 {
     AutoMutex _l(mLock);
@@ -137,6 +138,13 @@ bool AssetManager::addAssetPath(const String8& path, void** cookie, bool asSkin)
 
     return true;
 }
+
+// dx: sense live wallpaper compatibility
+bool AssetManager::addAssetPath(const String8& path, void** cookie)
+{
+	return addAssetPath(path, cookie, false);
+}
+
 
 bool AssetManager::addDefaultAssets()
 {

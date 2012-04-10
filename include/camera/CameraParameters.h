@@ -544,7 +544,6 @@ public:
     // Values for Lens Shading
     static const char LENSSHADE_ENABLE[] ;
     static const char LENSSHADE_DISABLE[] ;
-
     static const char KEY_LUMA_ADAPTION[];
     static const char FOCUS_MODE_MANUAL[];
     static const char KEY_MANUAL_FOCUS[];
@@ -558,6 +557,11 @@ public:
     int getOrientation() const;
     void setOrientation(int orientation);
     void setPreviewFpsRange(int minFPS,int maxFPS);
+	
+	// dx
+    static const char ORIENTATION_LANDSCAPE[];
+    static const char ORIENTATION_PORTRAIT[];
+    static const char ORIENTATION[];
 
 private:
     DefaultKeyedVector<String8,String8>    mMap;
