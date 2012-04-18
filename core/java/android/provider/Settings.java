@@ -2416,6 +2416,11 @@ public final class Settings {
          */
         public static final String STATUS_BAR_BATTERY = "status_bar_battery";
 
+		/**
+		 * Color for the status bar battery style
+		 */
+		public static final String STATUS_BAR_BATTERY_COLOR = "status_bar_battery_color";
+
         /**
          * Whether to show the clock in status bar
          * of the stock battery icon
