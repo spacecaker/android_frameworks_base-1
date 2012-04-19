@@ -48,6 +48,8 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.VolumePanel;
+import android.view.WindowManager;
+import android.view.Display;
 import android.os.SystemProperties;
 
 import com.android.internal.app.ThemeUtils;
@@ -62,6 +64,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+
+import static android.provider.Settings.System.SWAP_VOLUME_KEYS_ORIENTATION;
 
 /**
  * The implementation of the volume manager service.
@@ -170,7 +174,7 @@ public class AudioService extends IAudioService.Stub {
         5,  // STREAM_VOICE_CALL
         7,  // STREAM_SYSTEM
         7,  // STREAM_RING
-        15, // STREAM_MUSIC
+        30, // STREAM_MUSIC
         7,  // STREAM_ALARM
         7,  // STREAM_NOTIFICATION
         15, // STREAM_BLUETOOTH_SCO
@@ -199,6 +203,8 @@ public class AudioService extends IAudioService.Stub {
 
     private final static String SETTING_LAST_HEADSET_MEDIA_VOL = "android.media.AudioService.LAST_HEADSET_MEDIA_VOL";
     private final static String SETTING_LAST_SPEAKER_MEDIA_VOL = "android.media.AudioService.LAST_SPEAKER_MEDIA_VOL";
+	static Display mDisplay = null;
+	static int mSwapOrientation = -1;
 
     private AudioSystem.ErrorCallback mAudioSystemCallback = new AudioSystem.ErrorCallback() {
         public void onError(int error) {
@@ -356,6 +362,11 @@ public class AudioService extends IAudioService.Stub {
         TelephonyManager tmgr = (TelephonyManager)
                 context.getSystemService(Context.TELEPHONY_SERVICE);
         tmgr.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+
+		mDisplay = ((WindowManager)  mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+		mSwapOrientation = Settings.System.getInt(mContext.getContentResolver(),
+			SWAP_VOLUME_KEYS_ORIENTATION,
+			mContext.getResources().getInteger(com.android.internal.R.integer.swap_volume_keys_orientation));
     }
 
     private void createAudioSystemThread() {
@@ -473,6 +484,12 @@ public class AudioService extends IAudioService.Stub {
         ensureValidDirection(direction);
         ensureValidStreamType(streamType);
 
+		if (mDisplay != null) {
+			int currentOrientation = mDisplay.getRotation();
+			if (currentOrientation = mSwapOrientation) {
+				direction = -direction;
+			}
+		}
 
         VolumeStreamState streamState = mStreamStates[STREAM_VOLUME_ALIAS[streamType]];
         final int oldIndex = (streamState.muteCount() != 0) ? streamState.mLastAudibleIndex : streamState.mIndex;
@@ -953,6 +970,10 @@ public class AudioService extends IAudioService.Stub {
                 setStreamVolumeIndex(streamType, streamState.mIndex);
             }
         }
+
+		mSwapOrientation = Settings.System.getInt(mContext.getContentResolver(),
+			SWAP_VOLUME_KEYS_ORIENTATION,
+			mContext.getResources().getInteger(com.android.internal.R.integer.swap_volume_keys_orientation));
 
         // apply new ringer mode
         setRingerModeInt(getRingerMode(), false);
@@ -2626,6 +2647,29 @@ public class AudioService extends IAudioService.Stub {
         // TODO probably a lot more to do here than just the audio focus and remote control stacks
         dumpFocusStack(pw);
         dumpRCStack(pw);
+    }
+ 
+ 	// dx
+    /** Hack for getting SE FM app working */
+    public boolean isSpeakerMediaOn() {
+        if (mForcedUseForComm == AudioSystem.FORCE_SPEAKER) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /** @see AudioManager#setSpeakerMediaOn() */
+    public void setSpeakerMediaOn(boolean on){
+        if (on) {
+			Log.e(TAG, "Routing to speaker");
+		        AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_SPEAKER);
+		        mForcedUseForComm = AudioSystem.FORCE_SPEAKER;
+        } else {
+			Log.e(TAG, "Routing to headphones");
+		        AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_WIRED_ACCESSORY);
+		        mForcedUseForComm = AudioSystem.FORCE_WIRED_ACCESSORY;
+        }
     }
 
 
