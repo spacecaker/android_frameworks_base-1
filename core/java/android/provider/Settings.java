@@ -1161,6 +1161,13 @@ public final class Settings {
          */
         public static final String BACK_BUTTON_ENDS_CALL = "back_button_ends_call";
 
+	/**
+         * Whether back button ends call or not
+         *
+         * @hide
+         */
+        public static final String MENU_BUTTON_ANSWERS_CALL = "menu_button_answers_call";
+
         /**
          * Transparent notification bar
          *

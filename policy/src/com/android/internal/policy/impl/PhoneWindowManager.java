@@ -2147,6 +2147,20 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 				        } 
 			        }
 		        }
+case KeyEvent.KEYCODE_MENU:
+        		if (down) {
+		            // menu button answers call
+		        	if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.MENU_BUTTON_ANSWERS_CALL, 0) == 1) {
+				    	ITelephony telephonyService = getTelephonyService();
+				        if (telephonyService != null) {
+				        	try {
+				        		telephonyService.answerRingingCall();
+				        	} catch (RemoteException ex) {
+				            	Log.w(TAG, "ITelephony threw RemoteException" + ex);
+				        	}
+				        } 
+			        }
+		        }
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_VOLUME_UP: {
                 // cm71 nightlies: will be replaced by CmPhoneWindowManager's new volume handling
