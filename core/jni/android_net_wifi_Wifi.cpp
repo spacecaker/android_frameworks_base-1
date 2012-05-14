@@ -120,12 +120,14 @@ static jboolean android_net_wifi_unloadDriver(JNIEnv* env, jobject clazz)
 
 static jboolean android_net_hotspot_loadDriver(JNIEnv* env, jobject clazz)
 {
-    return (jboolean)(::hotspot_load_driver() == 0);
+    //return (jboolean)(::hotspot_load_driver() == 0);
+    return false;
 }
 
 static jboolean android_net_hotspot_unloadDriver(JNIEnv* env, jobject clazz)
 {
-    return (jboolean)(::hotspot_unload_driver() == 0);
+    //return (jboolean)(::hotspot_unload_driver() == 0);
+   return false;
 }
 
 static jboolean android_net_wifi_startSupplicant(JNIEnv* env, jobject clazz)

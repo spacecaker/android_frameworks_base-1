@@ -288,7 +288,7 @@ status_t Harness::testStateTransitions(
         return OK;
     }
 
-    sp<MemoryDealer> dealer = new MemoryDealer(16 * 1024 * 1024, "OMXHarness");
+    sp<MemoryDealer> dealer = new MemoryDealer(16 * 1024 * 1024);		// dx: use eclair mem dealer
     IOMX::node_id node;
 
     status_t err =

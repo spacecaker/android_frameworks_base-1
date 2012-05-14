@@ -87,6 +87,14 @@ public class SimUnlockScreen extends LinearLayout implements KeyguardScreen, Vie
         mUpdateMonitor = updateMonitor;
         mCallback = callback;
 
+        ThemeUtils.registerThemeChangeReceiver(context, new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mUiContext = null;
+                mSimUnlockProgressDialog = null;
+            }
+        });
+
         mCreationOrientation = configuration.orientation;
         mKeyboardHidden = configuration.hardKeyboardHidden;
         mLockPatternUtils = lockpatternutils;
