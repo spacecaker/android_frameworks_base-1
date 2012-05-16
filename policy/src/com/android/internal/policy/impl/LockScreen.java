@@ -545,7 +545,7 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
         mdxLeft.setText("GingerDX " + android.os.SystemProperties.get("ro.build.display.id"));
         mdxLeft.setTextColor(0xffffffff);
         mdxRight.setVisibility(View.VISIBLE);
-        mdxRight.setText("B.Jay & eagleeyetom");
+        mdxRight.setText("Team GingerDX");
         mdxRight.setTextColor(0xffffffff);
 
         //Rotary setup
