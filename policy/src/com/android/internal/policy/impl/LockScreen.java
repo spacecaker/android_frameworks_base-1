@@ -548,7 +548,7 @@ class LockScreen extends LinearLayout implements KeyguardScreen {
         mdxLeft.setText("IScreamDX " + android.os.SystemProperties.get("ro.build.display.id"));
         mdxLeft.setTextColor(0xffffffff);
         mdxRight.setVisibility(View.VISIBLE);
-        mdxRight.setText("doixanh@xda");
+        mdxRight.setText("TeamFun@xda");
         mdxRight.setTextColor(0xffffffff);
 
         if (DBG) Log.v(TAG, "*** LockScreen accel is "
