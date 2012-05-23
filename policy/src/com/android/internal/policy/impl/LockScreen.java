@@ -83,6 +83,10 @@ class LockScreen extends LinearLayout implements KeyguardScreen {
     private boolean mSilentMode;
     private AudioManager mAudioManager;
     private boolean mEnableMenuKeyInLockScreen;
+    
+    //dx
+    private TextView mdxLeft;
+    private TextView mdxRight;
 
     private KeyguardStatusViewManager mStatusViewManager;
     private UnlockWidgetCommonMethods mUnlockWidgetMethods;
@@ -538,6 +542,17 @@ class LockScreen extends LinearLayout implements KeyguardScreen {
 
         // Update widget with initial ring state
         mUnlockWidgetMethods.updateResources();
+
+        
+        //Label setup
+        mdxLeft = (TextView) findViewById(R.id.dxLeft);
+        mdxRight = (TextView) findViewById(R.id.dxRight);
+        mdxLeft.setVisibility(View.VISIBLE);
+        mdxLeft.setText("IScreamDX " + android.os.SystemProperties.get("ro.build.display.id"));
+        mdxLeft.setTextColor(0xffffffff);
+        mdxRight.setVisibility(View.VISIBLE);
+        mdxRight.setText("doixanh@xda");
+        mdxRight.setTextColor(0xffffffff);
 
         if (DBG) Log.v(TAG, "*** LockScreen accel is "
                 + (mUnlockWidget.isHardwareAccelerated() ? "on":"off"));
