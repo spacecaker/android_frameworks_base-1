@@ -86,6 +86,7 @@ public class AccountUnlockScreen extends RelativeLayout implements KeyguardScree
         public void onReceive(Context context, Intent intent) {
             mUiContext = null;
             context.unregisterReceiver(this);
+            mCheckingDialog = null;
         }
     };
 
@@ -153,10 +154,7 @@ public class AccountUnlockScreen extends RelativeLayout implements KeyguardScree
 
     /** {@inheritDoc} */
     public void onPause() {
-        if (mUiContext != null) {
-            mContext.unregisterReceiver(mThemeChangeReceiver);
-            mUiContext = null;
-        }
+        mContext.unregisterReceiver(mThemeChangeReceiver);
     }
 
     /** {@inheritDoc} */
@@ -166,6 +164,7 @@ public class AccountUnlockScreen extends RelativeLayout implements KeyguardScree
         mPassword.setText("");
         mLogin.requestFocus();
         mLockPatternUtils.updateEmergencyCallButtonState(mEmergencyCall);
+        ThemeUtils.registerThemeChangeReceiver(mContext, mThemeChangeReceiver);
     }
 
     /** {@inheritDoc} */

@@ -124,6 +124,19 @@
         <item>bootloader</item>
     </string-array>
 
+	<!-- Reboot options for GingerDX: reboot to xrec or cwm-->
+    <array name="shutdown_reboot_options_gdx">
+        <item>Reboot</item>
+        <!-- <item>xRecovery</item> -->
+        <item>ClockworkMod</item>
+    </array>
+
+    <string-array name="shutdown_reboot_actions_gdx">
+        <item></item>
+        <!-- <item>xrec</item> -->
+        <item>recovery</item>
+    </string-array>
+
     <!-- Defines the set of colors used for selecting a random
           notification color. -->
     <string-array name="notification_led_random_color_set" translatable="false">

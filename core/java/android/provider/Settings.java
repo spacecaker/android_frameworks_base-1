@@ -1116,6 +1116,127 @@ public final class Settings {
          */
         public static final Uri CONTENT_URI =
             Uri.parse("content://" + AUTHORITY + "/system");
+            
+        // dx: settings.system
+        /**
+         * Whether the notification LED is disabled during nights or not
+         * The value is boolean (1 or 0).
+         * @hide
+         */
+        public static final String NOTIFICATION_LIGHT_DISABLED = "notification_light_disabled";
+
+        /**
+         * Start time for LED disabled night
+         * @hide
+         */
+        public static final String NOTIFICATION_LIGHT_DISABLED_START = "notification_light_disabled_start";
+
+        /**
+         * End time for LED disabled night
+         * @hide
+         */
+        public static final String NOTIFICATION_LIGHT_DISABLED_END = "notification_light_disabled_end";
+
+        /**
+         * CallMeLouder: louder ringer when phone is inside bags
+         *
+         * @hide
+         */
+        public static final String CALL_ME_LOUDER = "call_me_louder";
+
+        /**
+         * Whether flipping down mutes ringer or not
+         */
+        public static final String FLIPPING_DOWN_MUTES_RINGER = "flipping_down_mutes_ringer";
+
+        /**
+         * Whether flipping down snoozes alarm or not
+         */
+        public static final String FLIPPING_DOWN_SNOOZES_ALARM = "flipping_down_snoozes_alarm";
+
+        /**
+         * Whether back button ends call or not
+         *
+         * @hide
+         */
+        public static final String BACK_BUTTON_ENDS_CALL = "back_button_ends_call";
+
+	/**
+         * Whether back button ends call or not
+         *
+         * @hide
+         */
+        public static final String MENU_BUTTON_ANSWERS_CALL = "menu_button_answers_call";
+
+        /**
+         * Transparent notification bar
+         *
+         * @hide
+         */
+        public static final String TRANSPARENT_STATUS_BAR = "transparent_status_bar";
+
+        /**
+         * Hide avatar in message
+         *
+         * @hide
+         */
+        public static final String HIDE_AVATAR_MESSAGE = "hide_avatar_message";
+
+        /**
+         * Quick copy / Quick paste feature
+         *
+         * @hide
+         */
+        public static final String QUICK_COPY_PASTE = "quick_copy_paste";
+
+        /**
+         * Ringer loop
+         *
+         * @hide
+         */
+        public static final String RINGER_LOOP = "ringer_loop";
+
+        /**
+         * Custom carrier string in lockscreen
+         *
+         * @hide
+         */
+        public static final String CUSTOM_CARRIER_TEXT = "custom_carrier_text";
+
+        /**
+         * Number of about clicks
+         *
+         * @hide
+         */
+        public static final String ABOUT_CLICKED = "about_clicked";
+
+        /**
+         * Whether or not use gingerdx sense 3 lockscreen
+         *
+         * @hide
+         */
+        public static final String USE_SENSE3_LOCKSCREEN = "use_sense3_lockscreen";
+
+        /**
+         * Whether or not use smart dialer 
+         *
+         * @hide
+         */
+        public static final String SMART_DIALER = "smart_dialer";
+
+        /**
+         * Whether or not use recent apps in status bar
+         *
+         * @hide
+         */
+        public static final String RECENT_APPS_STATUS_BAR = "recent_apps_status_bar";
+
+        /**
+         * Whether or not use center clock in status_bar
+         *
+         * @hide
+         */
+        public static final String CENTER_CLOCK_STATUS_BAR = "center_clock_status_bar";
 
         /**
          * Whether we keep the device on while the device is plugged in.
@@ -2294,12 +2415,18 @@ public final class Settings {
         /**
          * Display style of the status bar battery information
          * 0: Display the stock battery information
-         * 1: Display cm battery percentage implementation / dont show stock icon
+         * 1: Display cm battery percentage
          * 2: Hide the battery information
+         * 3: Display status bar battery
          * default: 0
          * @hide
          */
         public static final String STATUS_BAR_BATTERY = "status_bar_battery";
+
+		/**
+		 * Color for the status bar battery style
+		 */
+		public static final String STATUS_BAR_BATTERY_COLOR = "status_bar_battery_color";
 
         /**
          * Whether to show the clock in status bar
@@ -2546,7 +2673,7 @@ public final class Settings {
          * @hide
          */
         public static final String LOCKSCREEN_CUSTOM_APP_ACTIVITY = "lockscreen_custom_app_activity";
-
+        
         /**
          * Ring Apps to launch with ring style and custom app toggle enabled
          * @hide
