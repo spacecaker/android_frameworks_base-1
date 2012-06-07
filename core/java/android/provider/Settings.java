@@ -1174,6 +1174,13 @@ public final class Settings {
          * @hide
          */
         public static final String TRANSPARENT_STATUS_BAR = "transparent_status_bar";
+        
+         /**
+         * update-check hour
+         *
+         * @hide
+         */
+        public static final String UPDATE_CHECK_HOUR = "update_check_hour";
 
         /**
          * Hide avatar in message
