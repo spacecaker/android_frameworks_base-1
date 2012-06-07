@@ -496,8 +496,10 @@ class LockScreen extends LinearLayout implements KeyguardScreen {
         final LayoutInflater inflater = LayoutInflater.from(context);
         if (DBG) Log.v(TAG, "Creation orientation = " + mCreationOrientation);
         if (mCreationOrientation != Configuration.ORIENTATION_LANDSCAPE) {
+			Log.i("dx", "inflating from keyguard_screen_tab_unlock");
             inflater.inflate(R.layout.keyguard_screen_tab_unlock, this, true);
         } else {
+			Log.i("dx", "inflating from keyguard_screen_tab_unlock_land");
             inflater.inflate(R.layout.keyguard_screen_tab_unlock_land, this, true);
         }
 
@@ -547,12 +549,17 @@ class LockScreen extends LinearLayout implements KeyguardScreen {
         //Label setup
         mdxLeft = (TextView) findViewById(R.id.dxLeft);
         mdxRight = (TextView) findViewById(R.id.dxRight);
-        mdxLeft.setVisibility(View.VISIBLE);
-        mdxLeft.setText("IScreamDX " + android.os.SystemProperties.get("ro.build.display.id"));
-        mdxLeft.setTextColor(0xffffffff);
-        mdxRight.setVisibility(View.VISIBLE);
-        mdxRight.setText("TeamFun@xda");
-        mdxRight.setTextColor(0xffffffff);
+        if (mdxLeft == null || mdxRight == null) {
+            Log.i("dx", "how fuking come can't I look for my labels?");
+	    }
+	    else {
+            mdxLeft.setVisibility(View.VISIBLE);
+            mdxLeft.setText("IScreamDX " + android.os.SystemProperties.get("ro.build.display.id"));
+            mdxLeft.setTextColor(0xffffffff);
+            mdxRight.setVisibility(View.VISIBLE);
+            mdxRight.setText("TeamFun@xda");
+            mdxRight.setTextColor(0xffffffff);
+	    }
 
         if (DBG) Log.v(TAG, "*** LockScreen accel is "
                 + (mUnlockWidget.isHardwareAccelerated() ? "on":"off"));
