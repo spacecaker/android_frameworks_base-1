@@ -2510,6 +2510,12 @@ public final class Settings {
         public static final String LOCKSCREEN_BACKGROUND = "lockscreen_background";
 
         /**
+         * Whether to toggle the flashlight when HOME button is long pressed while at the lockscreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_LONG_HOME_ACTION = "lockscreen_flashlight";
+
+        /**
          * Show the weather on the lock screen
          * @hide
          */

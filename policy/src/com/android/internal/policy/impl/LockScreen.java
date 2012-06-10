@@ -69,6 +69,7 @@ class LockScreen extends LinearLayout implements KeyguardScreen {
     private static final boolean DBG = false;
     private static final String TAG = "LockScreen";
     private static final String ENABLE_MENU_KEY_FILE = "/data/local/enable_menu_key";
+    private static final String TOGGLE_FLASHLIGHT = "net.cactii.flash2.TOGGLE_FLASHLIGHT";
     private static final int WAIT_FOR_ANIMATION_TIMEOUT = 0;
     private static final int STAY_ON_WHILE_GRABBED_TIMEOUT = 30000;
 
@@ -583,6 +584,18 @@ class LockScreen extends LinearLayout implements KeyguardScreen {
         }
     }
 
+    static void handleHomeLongPress(Context context) {
+        int homeLongAction = (Settings.System.getInt(context.getContentResolver(),
+                Settings.System.LOCKSCREEN_LONG_HOME_ACTION, -1));
+        if (homeLongAction == 1) {
+            Intent intent = new Intent(LockScreen.TOGGLE_FLASHLIGHT);
+            intent.putExtra("strobe", false);
+            intent.putExtra("period", 0);
+            intent.putExtra("bright", false);
+            context.sendBroadcast(intent);
+        }
+    }
+
     private boolean isSilentMode() {
         return mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL;
     }
@@ -591,6 +604,19 @@ class LockScreen extends LinearLayout implements KeyguardScreen {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU && mEnableMenuKeyInLockScreen) {
             mCallback.goToUnlockScreen();
+            return false;
+
+        } else if (keyCode == KeyEvent.KEYCODE_HOME) {
+            event.startTracking();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_HOME) {
+          handleHomeLongPress(mContext);
         }
         return false;
     }
