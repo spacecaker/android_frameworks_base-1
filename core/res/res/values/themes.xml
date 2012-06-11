@@ -141,6 +141,8 @@
         <item name="textSelectHandleRight">@android:drawable/text_select_handle_right</item>
         <item name="textSelectHandle">@android:drawable/text_select_handle_middle</item>
         <item name="textSelectHandleWindowStyle">@android:style/Widget.TextSelectHandle</item>
+        <item name="quickCopy">@android:drawable/quickcopy</item>
+        <item name="quickPaste">@android:drawable/quickpaste</item>
 
         <!-- Widget styles -->
         <item name="absListViewStyle">@android:style/Widget.AbsListView</item>
@@ -535,5 +537,13 @@
         <item name="android:windowAnimationStyle">@android:style/Animation.Toast</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
+    
+    <style name="Theme.Holo" />
+    <style name="Theme.Holo.Wallpaper" />
+    <!-- Variant of the holographic (dark) theme with no title bar -->
+    <style name="Theme.Holo.Wallpaper.NoTitleBar">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
     
 </resources>

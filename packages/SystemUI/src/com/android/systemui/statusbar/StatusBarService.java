@@ -83,6 +83,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
+import com.android.internal.statusbar.IStatusBarService;
+import com.android.internal.statusbar.StatusBarIcon;
+import com.android.internal.statusbar.StatusBarIconList;
+import com.android.internal.statusbar.StatusBarNotification;
+import com.android.systemui.R;
+import com.android.systemui.statusbar.powerwidget.PowerWidget;
+import com.android.systemui.statusbar.recentapps.RecentApps;
+
 public class StatusBarService extends Service implements CommandQueue.Callbacks {
     static final String TAG = "StatusBarService";
     static final boolean SPEW_ICONS = false;
@@ -169,6 +177,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 
     // the power widget
     PowerWidget mPowerWidget;
+
+    // recent apps
+    ///RecentApps mRecentApps;
 
     //Carrier label stuff
     LinearLayout mCarrierLabelLayout;
@@ -382,8 +393,29 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         expanded.mService = this;
         expanded.mTouchDispatcher = mTouchDispatcher;
 
-        CmStatusBarView sb = (CmStatusBarView)View.inflate(context, R.layout.status_bar, null);
+        // center clock option
+        CmStatusBarView sb = null;
+        if (Settings.System.getInt(getContentResolver(), Settings.System.CENTER_CLOCK_STATUS_BAR, 0)==0)
+            sb = (CmStatusBarView)View.inflate(context, R.layout.status_bar, null);
+        else
+            sb = (CmStatusBarView)View.inflate(context, R.layout.status_bar_middle_clock, null);
         sb.mService = this;
+
+        // apply transparent status bar drawables
+        int transStatusBar = Settings.System.getInt(getContentResolver(), Settings.System.TRANSPARENT_STATUS_BAR, 0);
+        if (transStatusBar != 0) {
+        	switch (transStatusBar) {
+        	case 1 : // based on theme
+        		sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.statusbar_background));
+        		break;
+        	case 2 : // semi transparent
+        		sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.statusbar_background_semi));
+        		break;
+        	case 3 : // gradient
+        		sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.statusbar_background_gradient));
+        		break;
+        	}
+        }
 
         // figure out which pixel-format to use for the status bar.
         mPixelFormat = PixelFormat.TRANSLUCENT;
@@ -444,6 +476,20 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
                    }
                });
 
+        /*mRecentApps = (RecentApps)expanded.findViewById(R.id.recent_apps);
+        mRecentApps.setupSettingsObserver(mHandler);
+        mRecentApps.setGlobalButtonOnClickListener(new View.OnClickListener() {
+                   public void onClick(View v) {
+                       animateCollapse();
+                   }
+                });
+        mRecentApps.setGlobalButtonOnLongClickListener(new View.OnLongClickListener() {
+                   public boolean onLongClick(View v) {
+                       animateCollapse();
+                       return true;
+                   }
+               });*/
+
         mCarrierLabelLayout = (LinearLayout)expanded.findViewById(R.id.carrier_label_layout);
         mCompactCarrierLayout = (LinearLayout)expanded.findViewById(R.id.compact_carrier_layout);
 
@@ -496,14 +542,17 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         // handle expanded view reording for bottom bar
         LinearLayout powerAndCarrier=(LinearLayout)mExpandedView.findViewById(R.id.power_and_carrier);
         PowerWidget power=(PowerWidget)mExpandedView.findViewById(R.id.exp_power_stat);
+        //RecentApps recent=(RecentApps)mExpandedView.findViewById(R.id.recent_apps);
         //FrameLayout notifications=(FrameLayout)mExpandedView.findViewById(R.id.notifications);
 
         // remove involved views
         powerAndCarrier.removeView(power);
+        //powerAndCarrier.removeView(recent);
         mExpandedView.removeView(powerAndCarrier);
 
         // readd in right order
         mExpandedView.addView(powerAndCarrier, mBottomBar ? 1 : 0);
+        ///powerAndCarrier.addView(recent, mBottomBar && !mCompactCarrier ? 1 : 0);
         powerAndCarrier.addView(power, mBottomBar && !mCompactCarrier ? 1 : 0);
 
         // Remove all notification views
@@ -544,19 +593,27 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         final int height= res.getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
 
         final View view = mStatusBarContainer;
+
+        int mPixelFormat = PixelFormat.RGBX_8888;
+        if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.TRANSPARENT_STATUS_BAR, 0) != 0) {
+        	// transparent statusbar enabled?
+        	mPixelFormat = PixelFormat.TRANSLUCENT;
+        }
+
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 height,
                 WindowManager.LayoutParams.TYPE_STATUS_BAR,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     | WindowManager.LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING,
-                PixelFormat.RGBX_8888);
+                mPixelFormat);
         lp.gravity = Gravity.TOP | Gravity.FILL_HORIZONTAL;
         lp.setTitle("StatusBar");
         lp.windowAnimations = com.android.internal.R.style.Animation_StatusBar;
 
         WindowManagerImpl.getDefault().addView(view, lp);
 
+        //mRecentApps.setupRecentApps();
         mPowerWidget.setupWidget();
     }
 
@@ -926,6 +983,8 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         visibilityChanged(true);
 
         mPowerWidget.updateAllButtons();
+        //mRecentApps.setupRecentApps();
+        //mPowerWidget.updateWidget();
 
         updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
         mExpandedParams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
@@ -1546,7 +1605,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
                 | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
                 pixelFormat);
-//        lp.token = mStatusBarView.getWindowToken();
+        //lp.token = mStatusBarView.getWindowToken();
         lp.gravity = Gravity.TOP | Gravity.FILL_HORIZONTAL;
         lp.setTitle("TrackingView");
         lp.y = mTrackingPosition;
