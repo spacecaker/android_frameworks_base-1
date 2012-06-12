@@ -47,7 +47,7 @@ namespace android {
 // ----------------------------------------------------------------------------
 // Logging support -- this is for debugging only
 // Use "adb shell dumpsys media.camera -v 1" to change it.
-static volatile int32_t gLogLevel = 0;
+static volatile int32_t gLogLevel = 1;
 
 #define LOG1(...) LOGD_IF(gLogLevel >= 1, __VA_ARGS__);
 #define LOG2(...) LOGD_IF(gLogLevel >= 2, __VA_ARGS__);
@@ -107,6 +107,11 @@ void CameraService::onFirstRef()
     }
     else {
         mNumberOfCameras = mModule->get_number_of_cameras();
+        
+        // dx: fukin ugly...
+        LOGE("dx:x mNumberOfCameras=%d", mNumberOfCameras);
+        if (mNumberOfCameras == 0) mNumberOfCameras = 1;
+        
         if (mNumberOfCameras > MAX_CAMERAS) {
             LOGE("Number of cameras(%d) > MAX_CAMERAS(%d).",
                     mNumberOfCameras, MAX_CAMERAS);
@@ -154,6 +159,7 @@ sp<ICamera> CameraService::connect(
     int callingPid = getCallingPid();
     sp<CameraHardwareInterface> hardware = NULL;
 
+    LOG1("CameraService::connect mNumberOfCameras=%d", mNumberOfCameras);
     LOG1("CameraService::connect E (pid %d, id %d)", callingPid, cameraId);
 
     if (!mModule) {
