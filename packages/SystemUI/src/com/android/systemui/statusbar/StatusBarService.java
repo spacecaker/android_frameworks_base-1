@@ -167,7 +167,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
     boolean mExpandedVisible;
 
     // the date view
-    DateView mDateView;
+    /* DateView mDateView; */
 
     // the tracker view
     TrackingView mTrackingView;
@@ -429,7 +429,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         mNotificationIcons = (IconMerger)sb.findViewById(R.id.notificationIcons);
         mIcons = (LinearLayout)sb.findViewById(R.id.icons);
         mTickerView = sb.findViewById(R.id.ticker);
-        mDateView = (DateView)sb.findViewById(R.id.date);
+        /* mDateView = (DateView)sb.findViewById(R.id.date); */
         mCmBatteryMiniIcon = (CmBatteryMiniIcon)sb.findViewById(R.id.CmBatteryMiniIcon);
 
         /* Destroy any existing widgets before recreating the expanded dialog
@@ -511,7 +511,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 
         // set the inital view visibility
         setAreThereNotifications();
-        mDateView.setVisibility(View.INVISIBLE);
+        /* mDateView.setVisibility(View.INVISIBLE); */
     }
 
     private void updateCarrierLabel() {
@@ -994,9 +994,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         mTrackingView.setVisibility(View.VISIBLE);
         mExpandedView.setVisibility(View.VISIBLE);
 
-        if (!mTicking) {
+        /* if (!mTicking) {
             setDateViewVisibility(true, com.android.internal.R.anim.fade_in);
-        }
+        } */
     }
 
     public void animateExpand() {
@@ -1078,9 +1078,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         if ((mDisabled & StatusBarManager.DISABLE_NOTIFICATION_ICONS) == 0) {
             setNotificationIconVisibility(true, com.android.internal.R.anim.fade_in);
         }
-        if (mDateView.getVisibility() == View.VISIBLE) {
+        /* if (mDateView.getVisibility() == View.VISIBLE) {
             setDateViewVisibility(false, com.android.internal.R.anim.fade_out);
-        }
+        } */
 
         if (!mExpanded) {
             return;
@@ -1485,9 +1485,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
             mTickerView.setVisibility(View.VISIBLE);
             mTickerView.startAnimation(loadAnim(com.android.internal.R.anim.push_up_in, null));
             mIcons.startAnimation(loadAnim(com.android.internal.R.anim.push_up_out, null));
-            if (mExpandedVisible) {
+            /* if (mExpandedVisible) {
                 setDateViewVisibility(false, com.android.internal.R.anim.push_up_out);
-            }
+            } */
         }
 
         @Override
@@ -1498,9 +1498,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
             mTickerView.setVisibility(View.GONE);
             mIcons.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
             mTickerView.startAnimation(loadAnim(com.android.internal.R.anim.push_down_out, null));
-            if (mExpandedVisible) {
+            /* if (mExpandedVisible) {
                 setDateViewVisibility(true, com.android.internal.R.anim.push_down_in);
-            }
+            } */
         }
 
         void tickerHalting() {
@@ -1510,9 +1510,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
             mTickerView.setVisibility(View.GONE);
             mIcons.startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
             mTickerView.startAnimation(loadAnim(com.android.internal.R.anim.fade_out, null));
-            if (mExpandedVisible) {
+            /* if (mExpandedVisible) {
                 setDateViewVisibility(true, com.android.internal.R.anim.fade_in);
-            }
+            } */
         }
     }
 
@@ -1657,14 +1657,14 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
     void onTrackingViewDetached() {
     }
 
-    void setDateViewVisibility(boolean visible, int anim) {
+    /* void setDateViewVisibility(boolean visible, int anim) {
         if(mHasSoftButtons && mButtonsLeft)
             return;
 
         mDateView.setUpdates(visible);
         mDateView.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
         mDateView.startAnimation(loadAnim(anim, null));
-    }
+    } */
 
     void setNotificationIconVisibility(boolean visible, int anim) {
         int old = mNotificationIcons.getVisibility();
