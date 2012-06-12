@@ -217,6 +217,7 @@ sp<ICamera> CameraService::connect(
 
     char camera_device_name[10];
     snprintf(camera_device_name, sizeof(camera_device_name), "%d", cameraId);
+    LOGE("dx: camera name %s", camera_device_name);
 
     hardware = new CameraHardwareInterface(camera_device_name);
     if (hardware->initialize(&mModule->common) != OK) {
