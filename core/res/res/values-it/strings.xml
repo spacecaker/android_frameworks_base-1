@@ -854,8 +854,8 @@
     <string name="perms_show_all" msgid="2671791163933091180"><b>"Mostra tutto"</b></string>
     <string name="usb_storage_activity_title" msgid="2399289999608900443">"Archivio di massa USB"</string>
     <string name="usb_storage_title" msgid="5901459041398751495">"USB collegata"</string>
-    <string name="usb_storage_message" product="nosdcard" msgid="115779324551502062">"Il telefono è stato collegato al computer tramite USB. Seleziona il pulsante sottostante se desideri copiare file tra il computer e l\'archivio USB di Android."</string>
-    <string name="usb_storage_message" product="default" msgid="4796759646167247178">"Il telefono è stato collegato al computer tramite USB. Seleziona il pulsante sottostante se desideri copiare file tra il computer e la scheda SD di Android."</string>
+    <string name="usb_storage_message" product="nosdcard" msgid="115779324551502062">"Il telefono è stato collegato al computer tramite USB. Tocca l'immagine soprastante se desideri copiare file tra il computer e l\'archivio USB di Android."</string>
+    <string name="usb_storage_message" product="default" msgid="4796759646167247178">"Il telefono è stato collegato al computer tramite USB. Tocca l'immagine soprastante se desideri copiare file tra il computer e la scheda SD di Android."</string>
     <string name="usb_storage_button_mount" msgid="1052259930369508235">"Attiva archivio USB"</string>
     <string name="usb_storage_error_message" product="nosdcard" msgid="3276413764430468454">"Problema di utilizzo dell\'archivio USB come archivio di massa USB."</string>
     <string name="usb_storage_error_message" product="default" msgid="120810397713773275">"Problema di utilizzo della scheda SD come archivio di massa USB."</string>
