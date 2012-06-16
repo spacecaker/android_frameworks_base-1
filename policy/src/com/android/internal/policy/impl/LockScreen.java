@@ -545,7 +545,7 @@ class LockScreen extends RelativeLayout implements KeyguardScreen {
 
         
         //Label setup
-		mdxLeft = new TextView(this);
+		mdxLeft = new TextView(context);
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		lp.leftMargin = 4;
 		lp.bottomMargin = 4;
@@ -557,8 +557,8 @@ class LockScreen extends RelativeLayout implements KeyguardScreen {
 		mdxLeft.setTextColor(0xffffffff);
 		this.addView(mdxLeft);
 		
-		mdxRight = new TextView(this);
-		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		mdxRight = new TextView(context);
+		lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		lp.rightMargin = 4;
 		lp.bottomMargin = 4;
 		lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
