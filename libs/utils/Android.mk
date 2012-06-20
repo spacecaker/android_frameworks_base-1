@@ -64,7 +64,7 @@ LOCAL_SRC_FILES:= $(commonSources)
 
 LOCAL_MODULE:= libutils
 
-LOCAL_CFLAGS += -DLIBUTILS_NATIVE=1 $(TOOL_CFLAGS) -fpermissive
+LOCAL_CFLAGS += -DLIBUTILS_NATIVE=1 $(TOOL_CFLAGS)
 LOCAL_C_INCLUDES += external/zlib
 
 ifeq ($(HOST_OS),windows)

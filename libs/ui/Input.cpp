@@ -37,9 +37,6 @@
 #include "SkScalar.h"
 #endif
 
-#include <camera/CameraParameters.h>
-
-
 namespace android {
 
 static const char* CONFIGURATION_FILE_DIR[] = {
@@ -123,7 +120,6 @@ String8 getInputDeviceConfigurationFilePathByName(
     path.setTo(getenv("ANDROID_DATA"));
     path.append("/system/devices/");
     appendInputDeviceConfigurationFileRelativePath(path, name, type);
-//    LOGD("dx: dafuq is this %s", CameraParameters::SCENE_MODE_AR);
 #if DEBUG_PROBE
     LOGD("Probing for system user input device configuration file: path='%s'", path.string());
 #endif

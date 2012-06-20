@@ -22,6 +22,7 @@ sources := \
     IPCThreadState.cpp \
     IPermissionController.cpp \
     IServiceManager.cpp \
+    MemoryDealer.cpp \
     MemoryBase.cpp \
     MemoryHeapBase.cpp \
     MemoryHeapPmem.cpp \
@@ -34,9 +35,6 @@ ifeq ($(TARGET_USES_ION),true)
     sources += MemoryHeapIon.cpp
 endif
 
-
-LOCAL_CFLAGS += -DUSE_ECLAIR_MEMORYDEALER
-sources += MemoryDealerEclair.cpp
 
 LOCAL_PATH:= $(call my-dir)
 

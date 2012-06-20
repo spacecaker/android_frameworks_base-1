@@ -484,11 +484,7 @@ public:
     // CAMERA_MSG_ZOOM in system/core/include/system/camera.h.
     // Example value: "true". Read only.
     static const char KEY_SMOOTH_ZOOM_SUPPORTED[];
-	
-	// dx
-    static const char ORIENTATION_LANDSCAPE[];
-    static const char ORIENTATION_PORTRAIT[];
-    static const char ORIENTATION[];
+
     // The distances (in meters) from the camera to where an object appears to
     // be in focus. The object is sharpest at the optimal focus distance. The
     // depth of field is the far focus distance minus near focus distance.
