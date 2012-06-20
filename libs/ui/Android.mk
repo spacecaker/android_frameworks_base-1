@@ -51,9 +51,7 @@ LOCAL_SRC_FILES:= \
 	InputTransport.cpp \
 	PixelFormat.cpp \
 	Rect.cpp \
-	Region.cpp \
-	Overlay.cpp \
-	IOverlay.cpp
+	Region.cpp
 
 LOCAL_SRC_FILES+= \
 	../gui/IGraphicBufferAlloc.cpp \
@@ -96,6 +94,7 @@ LOCAL_SHARED_LIBRARIES := \
 	libhardware_legacy \
 	libskia \
 	libbinder \
+	libsurfaceflinger \
 	libGLESv2 \
 	libmemalloc
 	
