@@ -839,8 +839,8 @@
     <string name="perms_show_all" msgid="2671791163933091180"><b>"Pokaż wszystko"</b></string>
     <string name="usb_storage_activity_title" msgid="2399289999608900443">"Pamięć masowa USB"</string>
     <string name="usb_storage_title" msgid="5901459041398751495">"Połączenie przez USB"</string>
-    <string name="usb_storage_message" product="nosdcard" msgid="115779324551502062">"Telefon został połączony z komputerem za pośrednictwem USB. Wybierz poniższy przycisk, aby skopiować pliki między komputerem a nośnikiem USB systemu Android."</string>
-    <string name="usb_storage_message" product="default" msgid="4796759646167247178">"Telefon został połączony z komputerem za pośrednictwem USB. Wybierz poniższy przycisk, aby skopiować pliki między komputerem a kartą SD systemu Android."</string>
+    <string name="usb_storage_message" product="nosdcard" msgid="115779324551502062">"Telefon został połączony z komputerem za pośrednictwem USB. Naciśnij Androida, aby skopiować pliki między komputerem a nośnikiem USB systemu Android."</string>
+    <string name="usb_storage_message" product="default" msgid="4796759646167247178">"Telefon został połączony z komputerem za pośrednictwem USB. Naciśnij Androida, aby skopiować pliki między komputerem a kartą SD systemu Android."</string>
     <string name="usb_storage_button_mount" msgid="1052259930369508235">"Włącz nośnik USB"</string>
     <string name="usb_storage_error_message" product="nosdcard" msgid="3276413764430468454">"Wystąpił problem z użyciem nośnika USB jako pamięci masowej USB."</string>
     <string name="usb_storage_error_message" product="default" msgid="120810397713773275">"Wystąpił problem z użyciem karty SD jako nośnika pamięci masowej USB."</string>
