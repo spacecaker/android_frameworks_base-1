@@ -107,11 +107,11 @@ void CameraService::onFirstRef()
     }
     else {
         mNumberOfCameras = mModule->get_number_of_cameras();
-        
+
         // dx: fukin ugly...
         LOGE("dx:x mNumberOfCameras=%d", mNumberOfCameras);
         if (mNumberOfCameras == 0) mNumberOfCameras = 1;
-        
+
         if (mNumberOfCameras > MAX_CAMERAS) {
             LOGE("Number of cameras(%d) > MAX_CAMERAS(%d).",
                     mNumberOfCameras, MAX_CAMERAS);
@@ -217,7 +217,6 @@ sp<ICamera> CameraService::connect(
 
     char camera_device_name[10];
     snprintf(camera_device_name, sizeof(camera_device_name), "%d", cameraId);
-    LOGE("dx: camera name %s", camera_device_name);
 
     hardware = new CameraHardwareInterface(camera_device_name);
     if (hardware->initialize(&mModule->common) != OK) {
