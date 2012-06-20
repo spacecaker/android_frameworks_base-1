@@ -49,7 +49,6 @@ import android.view.ViewParent;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
 import android.widget.ImageView.ScaleType;
-import android.widget.LinearLayout.LayoutParams;
 import android.util.Log;
 import android.media.AudioManager;
 import android.provider.MediaStore;
