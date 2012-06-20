@@ -14,48 +14,40 @@
  * limitations under the License.
  */
 
-#include <binder/MemoryDealerEclair.h>
-
-#ifndef ANDROID_MEMORY_DEALER_H
-#define ANDROID_MEMORY_DEALER_H
+#ifndef ANDROID_IOVERLAY_H
+#define ANDROID_IOVERLAY_H
 
 #include <stdint.h>
 #include <sys/types.h>
 
-#include <binder/IMemory.h>
-#include <binder/MemoryHeapBase.h>
+#include <utils/Errors.h>
+#include <binder/IInterface.h>
+#include <utils/RefBase.h>
+#include <ui/PixelFormat.h>
 
 namespace android {
-// ----------------------------------------------------------------------------
 
-class SimpleBestFitAllocator;
-
-// ----------------------------------------------------------------------------
-
-class MemoryDealer : public RefBase
+class IOverlay : public IInterface
 {
-public:
-    MemoryDealer(size_t size, const char* name = 0);
+public: 
+    DECLARE_META_INTERFACE(Overlay);
 
-    virtual sp<IMemory> allocate(size_t size);
-    virtual void        deallocate(size_t offset);
-    virtual void        dump(const char* what) const;
-
-    sp<IMemoryHeap> getMemoryHeap() const { return heap(); }
-
-protected:
-    virtual ~MemoryDealer();
-
-private:
-    const sp<IMemoryHeap>&      heap() const;
-    SimpleBestFitAllocator*     allocator() const;
-
-    sp<IMemoryHeap>             mHeap;
-    SimpleBestFitAllocator*     mAllocator;
+    virtual void destroy() = 0; // one-way
 };
 
+// ----------------------------------------------------------------------------
+
+class BnOverlay : public BnInterface<IOverlay>
+{
+public:
+    virtual status_t    onTransact( uint32_t code,
+                                    const Parcel& data,
+                                    Parcel* reply,
+                                    uint32_t flags = 0);
+};
 
 // ----------------------------------------------------------------------------
+
 }; // namespace android
 
-#endif // ANDROID_MEMORY_DEALER_H
+#endif // ANDROID_IOVERLAY_H

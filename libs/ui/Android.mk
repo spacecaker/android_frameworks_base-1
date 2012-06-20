@@ -51,8 +51,42 @@ LOCAL_SRC_FILES:= \
 	InputTransport.cpp \
 	PixelFormat.cpp \
 	Rect.cpp \
-	Region.cpp
+	Region.cpp \
+	Overlay.cpp \
+	IOverlay.cpp
 
+LOCAL_SRC_FILES+= \
+	../gui/IGraphicBufferAlloc.cpp \
+	../gui/ISensorEventConnection.cpp \
+	../gui/ISensorServer.cpp \
+	../gui/ISurfaceComposerClient.cpp \
+	../gui/ISurfaceComposer.cpp \
+	../gui/ISurface.cpp \
+	../gui/ISurfaceTexture.cpp \
+	../gui/LayerState.cpp \
+	../gui/SensorChannel.cpp \
+	../gui/Sensor.cpp \
+	../gui/SensorEventQueue.cpp \
+	../gui/SensorManager.cpp \
+	../gui/SurfaceComposerClient.cpp \
+	../gui/Surface.cpp \
+	../gui/SurfaceTextureClient.cpp \
+	../gui/SurfaceTexture.cpp
+		
+LOCAL_SRC_FILES+= \
+	../camera/Camera.cpp \
+	../camera/CameraParameters.cpp \
+	../camera/ICamera.cpp \
+	../camera/ICameraClient.cpp \
+	../camera/ICameraService.cpp \
+	../camera/ICameraRecordingProxy.cpp \
+	../camera/ICameraRecordingProxyListener.cpp
+	
+LOCAL_SRC_FILES+= \
+	../../../../hardware/qcom/display/libqcomui/qcom_ui.cpp \
+	../../../../hardware/qcom/display/libqcomui/utils/profiler.cpp \
+    ../../../../hardware/qcom/display/libqcomui/utils/IdleTimer.cpp
+	
 LOCAL_SHARED_LIBRARIES := \
 	libcutils \
 	libutils \
@@ -61,10 +95,16 @@ LOCAL_SHARED_LIBRARIES := \
 	libhardware \
 	libhardware_legacy \
 	libskia \
-	libbinder
-
+	libbinder \
+	libGLESv2 \
+	libmemalloc
+	
 LOCAL_C_INCLUDES := \
-    external/skia/include/core
+    hardware/qcom/display/libqcomui \
+    external/skia/include/core \
+    external/skia/include/images \
+    frameworks/base/services/surfaceflinger \
+    hardware/qcom/display/libgralloc
 
 LOCAL_MODULE:= libui
 
