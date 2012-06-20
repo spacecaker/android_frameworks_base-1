@@ -118,7 +118,6 @@ status_t MemoryHeapBase::init(int fd, void *base, int size, int flags, const cha
 
 status_t MemoryHeapBase::mapfd(int fd, size_t size, uint32_t offset)
 {
-	LOGE("dx: mmap(fd=%d, size=%u)");
     if (size == 0) {
         // try to figure out the size automatically
 #ifdef HAVE_ANDROID_OS
