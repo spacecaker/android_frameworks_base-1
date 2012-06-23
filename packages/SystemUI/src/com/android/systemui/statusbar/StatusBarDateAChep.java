@@ -1,4 +1,4 @@
-package com.achep.stopwatch;
+package com.android.systemui.statusbar;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

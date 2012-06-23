@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
-            
+
         <com.android.systemui.statusbar.IconMerger android:id="@+id/notificationIcons"
             android:layout_width="0dip"
             android:layout_weight="1"
@@ -202,7 +202,7 @@
         </com.android.systemui.statusbar.TickerView>
     </LinearLayout>
 
-    <com.android.systemui.statusbar.DateView android:id="@+id/date"
+    <!--<com.android.systemui.statusbar.DateView android:id="@+id/date"
         android:textAppearance="@*android:style/TextAppearance.StatusBar.Icon"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -211,5 +211,5 @@
         android:paddingLeft="6px"
         android:paddingRight="6px"
         android:background="@drawable/statusbar_background"
-        />
+        />-->
 </com.android.systemui.statusbar.CmStatusBarView>
