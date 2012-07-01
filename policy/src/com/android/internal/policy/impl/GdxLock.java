@@ -23,6 +23,7 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.text.format.DateFormat;
 import android.graphics.Bitmap;
