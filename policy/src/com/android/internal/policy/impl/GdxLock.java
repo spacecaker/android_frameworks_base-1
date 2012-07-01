@@ -16,11 +16,16 @@
 
 package com.android.internal.policy.impl;
 
+import java.util.Calendar;
 import com.android.internal.R;
-import android.content.res.Configuration;
 import com.android.internal.widget.LockPatternUtils;
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.text.format.DateFormat;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -42,6 +47,7 @@ import android.widget.*;
 public class GdxLock extends LinearLayout implements KeyguardScreen {
 	private boolean DBG = false;
 	private String TAG = "GDXLock";
+	private String DATE_FORMAT = "dd MMMMMM yyyy";
 	
 	// constants
 	private int ringWidth = 160;
@@ -56,6 +62,9 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
 	private KeyguardScreenCallback mCallback;
     private TextView mdxLeft;
     private TextView mdxRight;
+    
+       // date & time
+       private TextView mClock, mDate;
 
 	// flinging calculation
 	public GestureDetector gestureDetector;
@@ -71,6 +80,17 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
 	private int endFlingY;
 	private boolean isFlinging;
 	private boolean isZooming;
+	
+	private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (action.equals(Intent.ACTION_TIME_TICK)
+					|| action.equals(Intent.ACTION_TIMEZONE_CHANGED)) {
+				updateClock();
+			}
+		}
+	};
 
     public GdxLock(Context context, Configuration configuration, LockPatternUtils lockPatternUtils,
             KeyguardUpdateMonitor updateMonitor,
@@ -107,6 +127,10 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
         setFocusable(true);
         setFocusableInTouchMode(true);
         setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        
+        //time & date setup
+        mClock = (TextView) findViewById(R.id.clock);
+        mDate = (TextView) findViewById(R.id.date);
         
         // label setup
         mdxLeft = (TextView) findViewById(R.id.dxLeft);
@@ -321,11 +345,34 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
         return false;
     }
     
-    public void onPause() {
-
+    private void updateClock(){
+    	mClock.setText(Hour()+":"+Minute());
+    	mDate.setText(new SimpleDateFormat(DATE_FORMAT).format(Calendar.getInstance()
+				.getTime()));
+    }
+    
+    private String Hour() {
+	int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+	if (DateFormat.is24HourFormat(mContext) != true && hour > 12)
+		hour = hour - 12;
+	return (hour < 10) ? "0" + hour : "" + hour;
+    }
+    
+    private Minute() {
+	int minute = Calendar.getInstance().get(Calendar.MINUTE);
+	return (minute < 10) ? "0" + minute : "" + minute;
+    }
+    
+    public void onPause() {				
+	mContext.unregisterReceiver(mIntentReceiver);
     }
 
     public void onResume() {
+    	IntentFilter filter = new IntentFilter();
+	filter.addAction(Intent.ACTION_TIME_TICK);
+	filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+	mContext.registerReceiver(mIntentReceiver, filter, null, null);
+	updateClock();
     }
 
     public void cleanUp() {
