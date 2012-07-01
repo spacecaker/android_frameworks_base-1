@@ -1389,6 +1389,11 @@ public final class Settings {
         public static final String SCREEN_BRIGHTNESS_MODE = "screen_brightness_mode";
 
         /**
+         * Control whether to enable ultra brightness mode.
+         */
+        public static final String SCREEN_BRIGHTNESS_ULTRA_MODE = "screen_brightness_ultra_mode";
+
+        /**
          * SCREEN_BRIGHTNESS_MODE value for manual mode.
          */
         public static final int SCREEN_BRIGHTNESS_MODE_MANUAL = 0;
@@ -1397,6 +1402,16 @@ public final class Settings {
          * SCREEN_BRIGHTNESS_MODE value for automatic mode.
          */
         public static final int SCREEN_BRIGHTNESS_MODE_AUTOMATIC = 1;
+
+        /**
+         * SCREEN_BRIGHTNESS_ULTRA_MODE value for ultra mode disabled.
+         */
+        public static final int SCREEN_BRIGHTNESS_MODE_ULTRA_DISABLED = 0;
+
+        /**
+         * SCREEN_BRIGHTNESS_ULTRA_MODE value for ultra mode enabled.
+         */
+        public static final int SCREEN_BRIGHTNESS_MODE_ULTRA_ENABLED = 1;
 
         /**
          * Indicates that custom light sensor settings has changed.
