@@ -358,7 +358,7 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
 	return (hour < 10) ? "0" + hour : "" + hour;
     }
     
-    private int Minute() {
+    private String Minute() {
 	int minute = Calendar.getInstance().get(Calendar.MINUTE);
 	return (minute < 10) ? "0" + minute : "" + minute;
     }
