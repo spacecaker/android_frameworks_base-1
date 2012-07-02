@@ -20,9 +20,8 @@ import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import com.android.internal.R;
 import com.android.internal.widget.LockPatternUtils;
-import android.content.BroadcastReceiver;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -66,6 +65,9 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
     
        // date & time
        private TextView mClock, mDate;
+       private Runnable mTicker;
+       private Handler mHandler;
+       private boolean mTickerStopped = false;
 
 	// flinging calculation
 	public GestureDetector gestureDetector;
@@ -82,17 +84,7 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
 	private boolean isFlinging;
 	private boolean isZooming;
 	
-	private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			String action = intent.getAction();
-			if (action.equals(Intent.ACTION_TIME_TICK)
-					|| action.equals(Intent.ACTION_TIMEZONE_CHANGED)) {
-				updateClock();
-			}
-		}
-	};
-
+	
     public GdxLock(Context context, Configuration configuration, LockPatternUtils lockPatternUtils,
             KeyguardUpdateMonitor updateMonitor,
             KeyguardScreenCallback callback) {
@@ -364,16 +356,33 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
 	return (minute < 10) ? "0" + minute : "" + minute;
     }
     
-    public void onPause() {				
-	mContext.unregisterReceiver(mIntentReceiver);
+    @Override
+    protected void onAttachedToWindow() {
+        mTickerStopped = false;
+        super.onAttachedToWindow();
+        mHandler = new Handler();
+        mTicker = new Runnable() {
+                public void run() {
+                    if (mTickerStopped) return;
+                    updateClock();
+                    long now = SystemClock.uptimeMillis();
+                    long next = now + (1000 - now % 1000);
+                    mHandler.postAtTime(mTicker, next);
+                }
+            };
+        mTicker.run();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mTickerStopped = true;
+    }
+    
+    public void onPause() {			
     }
 
     public void onResume() {
-    	IntentFilter filter = new IntentFilter();
-	filter.addAction(Intent.ACTION_TIME_TICK);
-	filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-	mContext.registerReceiver(mIntentReceiver, filter, null, null);
-	updateClock();
     }
 
     public void cleanUp() {
