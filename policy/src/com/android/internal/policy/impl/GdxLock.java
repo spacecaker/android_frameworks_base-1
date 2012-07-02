@@ -17,6 +17,7 @@
 package com.android.internal.policy.impl;
 
 import java.util.Calendar;
+import java.text.SimpleDateFormat;
 import com.android.internal.R;
 import com.android.internal.widget.LockPatternUtils;
 import android.content.BroadcastReceiver;
@@ -353,12 +354,12 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
     
     private String Hour() {
 	int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-	if (DateFormat.is24HourFormat(mContext) != true && hour > 12)
+	if (!DateFormat.is24HourFormat(mContext) && hour > 12)
 		hour = hour - 12;
 	return (hour < 10) ? "0" + hour : "" + hour;
     }
     
-    private Minute() {
+    private String Minute() {
 	int minute = Calendar.getInstance().get(Calendar.MINUTE);
 	return (minute < 10) ? "0" + minute : "" + minute;
     }
