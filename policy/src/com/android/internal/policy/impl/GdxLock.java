@@ -17,6 +17,7 @@
 package com.android.internal.policy.impl;
 
 import java.util.Calendar;
+import java.text.SimpleDateFormat;
 import com.android.internal.R;
 import com.android.internal.widget.LockPatternUtils;
 import android.content.BroadcastReceiver;
