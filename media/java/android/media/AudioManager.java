@@ -1560,4 +1560,41 @@ public class AudioManager {
       * {@hide}
       */
      private IBinder mICallBack = new Binder();
+
+
+	// dx     
+    /**
+     * Checks whether the speakerphone is on or off.
+     *
+     * @return true if speakerphone is on, false if it's off
+     */
+    public boolean isSpeakerMediaOn() {
+        IAudioService service = getService();
+        try {
+            return service.isSpeakerMediaOn();
+        } catch (RemoteException e) {
+            Log.e(TAG, "Dead object in isSpeakerMediaOn", e);
+            return false;
+        }
+     }
+
+    /**
+     * Sets the speakerphone on or off.
+     * <p>
+     * This method should only be used by applications that replace the platform-wide
+     * management of audio settings or the main telephony application.
+     *
+     * @param on set <var>true</var> to turn on speakerphone;
+     *           <var>false</var> to turn it off
+     */
+    public void setSpeakerMediaOn(boolean on){
+        IAudioService service = getService();
+        try {
+            service.setSpeakerMediaOn(on);
+		    playSoundEffect(FX_KEY_CLICK, -1);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Dead object in setSpeakerMediaOn", e);
+        }
+    }
+     
 }

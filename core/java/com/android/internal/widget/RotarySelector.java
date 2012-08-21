@@ -102,6 +102,8 @@ public class RotarySelector extends View {
     private boolean mHideArrows=false;
     // are we in lense mode?
     private boolean mLenseMode=false;
+    // are we in Sense mode?
+    private boolean mSenseMode=false;
     // are we in rotary revamped mode?
     private boolean mRevampedMode=false;
 
@@ -120,6 +122,7 @@ public class RotarySelector extends View {
 
     private Paint mPaint = new Paint();
     private Paint mLensePaint = new Paint ();
+    private Paint mSensePaint = new Paint ();
 
     // used to rotate the background and arrow assets depending on orientation
     final Matrix mBgMatrix = new Matrix();
@@ -174,6 +177,8 @@ public class RotarySelector extends View {
     static final int SPIN_ANIMATION_DURATION_MILLIS = 800;
     static final int LENSE_DATE_SIZE_DIP = 18;
     static final int LENSE_TIME_SIZE_DIP = 30;
+    static final int SENSE_DATE_SIZE_DIP = 14;
+    static final int SENSE_TIME_SIZE_DIP = 50;
 
     private int mEdgeTriggerThresh;
     private int mDimpleWidth;
@@ -280,6 +285,10 @@ public class RotarySelector extends View {
         mLensePaint.setTextAlign(Paint.Align.CENTER);
         mLensePaint.setFlags(Typeface.BOLD);
 
+        mSensePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        mSensePaint.setTextAlign(Paint.Align.LEFT);
+        mSensePaint.setFlags(Typeface.BOLD);
+
         // get status bar size in every possible orientation
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
@@ -329,7 +338,7 @@ public class RotarySelector extends View {
             // set up matrix for translating drawing of background and arrow assets
             final int left = w - mBackgroundHeight;
             mBgMatrix.preRotate(-90, 0, 0);
-            if(mLenseMode){
+            if(mLenseMode || mSenseMode){
                 mBgMatrix.postTranslate(left, h + mStatusBarSize);
                 mBgMatrix.postScale(1, mStatusBarScale);
             }else
@@ -491,6 +500,83 @@ public class RotarySelector extends View {
                                 mLensePaint);
             }
             return;
+        }
+        
+        // for sense mode, we are done after time and date
+        if(mSenseMode){
+        	if(isHoriz()){
+        	    Date now = new Date();
+        	    
+        	    int hour = now.getHours();
+        	    String ampm = "AM";
+   	            if (DateFormat.is24HourFormat(mContext)) {
+   	            	ampm = "";
+   	            }
+   	            else {
+   	            	if (hour == 0) hour = 12;
+   	            	else {
+						if (hour >= 12) {
+		    	    		ampm = "PM";
+			    	    	if (hour >= 13) hour -= 12;
+			    	    }
+			    	} 	            
+   	            }
+        	    String minuteString = String.valueOf(now.getMinutes()); 
+        	    if (minuteString.length() < 2)
+        	    	minuteString = "0" + minuteString;		// this should have more performance compared to String.format
+                String timeString = hour + ":" + minuteString;
+                String dateString = DateFormat.format(mDateFormatString, now).toString();
+
+                // Add offset specified in config file
+                int customTimeOffset = getContext().getResources().getInteger(R.integer.config_senseTimeLabelOffsetDIP);
+                
+                mSensePaint.setTextSize(SENSE_TIME_SIZE_DIP * mDensity * mDensityScaleFactor);
+                // Width of the main time
+                float timeWidth = mSensePaint.measureText(timeString);
+                //timeWidth += 10;
+                mSensePaint.setTextSize(SENSE_TIME_SIZE_DIP / 2 * mDensity * mDensityScaleFactor);
+                float ampmWidth = mSensePaint.measureText(ampm);
+                timeWidth += ampmWidth;
+                
+                //Log.i("RotarySelector", "mBackgroundWidth=" + mBackgroundWidth + ", timewidth=" + timeWidth + ", ampmW=" + ampmWidth + " x1=" + (mBackgroundWidth - timeWidth) / 2 * mDensityScaleFactor + " x2=" + (mBackgroundWidth / 2 + timeWidth / 2 - ampmWidth) * mDensityScaleFactor + 2);
+                
+                // Draw shadow
+                canvas.translate(0, 0);
+                mSensePaint.setTextAlign(Paint.Align.LEFT);
+                mSensePaint.setColor(Color.BLACK);
+                mSensePaint.setTextSize(SENSE_TIME_SIZE_DIP * mDensity * mDensityScaleFactor);
+                canvas.drawText(timeString,
+                                (mBackgroundWidth - timeWidth) / 2 * mDensityScaleFactor + 2,
+                                mRotaryOffsetY + mMarginBottom + SENSE_TIME_SIZE_DIP * mDensity + customTimeOffset + 2,
+                                mSensePaint);
+                mSensePaint.setTextSize(SENSE_TIME_SIZE_DIP / 2 * mDensity * mDensityScaleFactor);
+                canvas.drawText(ampm,
+                                (mBackgroundWidth / 2 + timeWidth / 2 - ampmWidth) * mDensityScaleFactor + 2,
+                                mRotaryOffsetY + mMarginBottom + SENSE_TIME_SIZE_DIP * mDensity + customTimeOffset + 2,
+                                mSensePaint);
+
+                // Draw text
+                mSensePaint.setColor(Color.WHITE);
+                mSensePaint.setTextSize(SENSE_TIME_SIZE_DIP * mDensity * mDensityScaleFactor);
+                canvas.drawText(timeString,
+                                (mBackgroundWidth - timeWidth) / 2 * mDensityScaleFactor,
+                                mRotaryOffsetY + mMarginBottom + SENSE_TIME_SIZE_DIP * mDensity + customTimeOffset,
+                                mSensePaint);
+                mSensePaint.setTextSize(SENSE_TIME_SIZE_DIP / 2 * mDensity * mDensityScaleFactor);
+                canvas.drawText(ampm,
+                                (mBackgroundWidth / 2 + timeWidth / 2 - ampmWidth) * mDensityScaleFactor,
+                                mRotaryOffsetY + mMarginBottom + SENSE_TIME_SIZE_DIP * mDensity + customTimeOffset,
+                                mSensePaint);
+
+
+                mSensePaint.setTextSize(SENSE_DATE_SIZE_DIP * mDensity * mDensityScaleFactor);
+                mSensePaint.setTextAlign(Paint.Align.CENTER);
+                canvas.drawText(dateString,
+                                mBackgroundWidth / 2 * mDensityScaleFactor,
+                                mRotaryOffsetY + mMarginBottom + SENSE_DATE_SIZE_DIP * mDensity * 5 + customTimeOffset + 8,
+                                mSensePaint);
+        	}
+        	return;
         }
 
         // Draw the correct arrow(s) depending on the current state:
@@ -742,7 +828,7 @@ public class RotarySelector extends View {
                     reset();
                     invalidate();
                 }
-                if (mLenseMode){
+                if (mLenseMode || mSenseMode){
                     setGrabbedState(MID_HANDLE_GRABBED);
                     invalidate();
                     vibrate();
@@ -789,7 +875,7 @@ public class RotarySelector extends View {
                                 mDimplesOfFling * mDimpleSpacing,
                                 velocity);
                     }
-                } else if (mGrabbedState == MID_HANDLE_GRABBED && (mCustomAppDimple || mLenseMode)) {
+                } else if (mGrabbedState == MID_HANDLE_GRABBED && (mCustomAppDimple || mLenseMode || mSenseMode)) {
                     mRotaryOffsetY = eventY - mEventStartY;
                     if (!isHoriz())
                         mRotaryOffsetY = mEventStartY - eventY;
@@ -799,7 +885,7 @@ public class RotarySelector extends View {
                     if (Math.abs(mRotaryOffsetY) >= downThresh && !mTriggered) {
                         mTriggered = true;
                         // lense mode is handled as "middle dimple" for up/down movement, yet we need to emit left handle for unlock
-                        if(mLenseMode)
+                        if(mLenseMode || mSenseMode)
                             dispatchTriggerEvent(OnDialTriggerListener.LEFT_HANDLE);
                         else
                             dispatchTriggerEvent(OnDialTriggerListener.MID_HANDLE);
@@ -1100,6 +1186,17 @@ public class RotarySelector extends View {
             mBackground = getBitmapFor(R.drawable.lense_square_bg);
         }
     }
+    
+    /**
+     * Sets up the sense square style - called from LockScreen.java and InCallTouchUi.java
+     */
+    public void setSenseSquare(boolean newState){
+        mSenseMode=false;
+        if(newState){
+            mSenseMode=true;
+            mBackground = getBitmapFor(R.drawable.slider_sense);
+        }
+    }    
 
     // Debugging / testing code
 
