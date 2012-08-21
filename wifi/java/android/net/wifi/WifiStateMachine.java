@@ -1139,12 +1139,10 @@ public class WifiStateMachine extends StateMachine {
 
         String[] wifiRegexs = mCm.getTetherableWifiRegexs();
 
-        log("startTethering...");
         for (String intf : available) {
             for (String regex : wifiRegexs) {
                 if (intf.matches(regex)) {
 
-                    log("Trying tethering on " + intf);
                     InterfaceConfiguration ifcg = null;
                     try {
                         ifcg = mNwService.getInterfaceConfig(intf);
