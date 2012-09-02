@@ -57,7 +57,7 @@ static int doCommand(const char *cmd, char *replybuf, int replybuflen)
 
     if ((err = ::wifi_command(cmd, replybuf, &reply_len)) != 0) {
 
-        LOGD(LOG_TAG " doCommand: ret=%d", err);
+        //LOGD(LOG_TAG " doCommand: ret=%d", err);
         return -1;
 
     } else {
@@ -120,14 +120,12 @@ static jboolean android_net_wifi_unloadDriver(JNIEnv* env, jobject clazz)
 
 static jboolean android_net_hotspot_loadDriver(JNIEnv* env, jobject clazz)
 {
-    //return (jboolean)(::hotspot_load_driver() == 0);
-    return false;
+    return (jboolean)(::hotspot_load_driver() == 0);
 }
 
 static jboolean android_net_hotspot_unloadDriver(JNIEnv* env, jobject clazz)
 {
-    //return (jboolean)(::hotspot_unload_driver() == 0);
-   return false;
+    return (jboolean)(::hotspot_unload_driver() == 0);
 }
 
 static jboolean android_net_wifi_startSupplicant(JNIEnv* env, jobject clazz)
