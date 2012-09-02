@@ -129,10 +129,10 @@ public class GdxLock extends LinearLayout implements KeyguardScreen {
         mdxLeft = (TextView) findViewById(R.id.dxLeft);
         mdxRight = (TextView) findViewById(R.id.dxRight);
         mdxLeft.setVisibility(View.VISIBLE);
-        mdxLeft.setText("GingerDX " + android.os.SystemProperties.get("ro.build.display.id"));
+        mdxLeft.setText("GingerDX " + android.os.SystemProperties.get("ro.gdx.version.id"));
         mdxLeft.setTextColor(0xffffffff);
         mdxRight.setVisibility(View.VISIBLE);
-        mdxRight.setText("Team GingerDX");
+        mdxRight.setText("TeamFun");
         mdxRight.setTextColor(0xffffffff);
 	}
 	
