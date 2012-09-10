@@ -1251,6 +1251,15 @@ public final class Settings {
          * @hide
          */
         public static final String CENTER_CLOCK_STATUS_BAR = "center_clock_status_bar";
+        
+        
+        //AChep's alarm additional options
+        public static final String ACHEP_ALARM_INCREASING_VOLUME_ENABLED = "achep_alarm_increasing_volume_enabled";
+        public static final String ACHEP_ALARM_MATH_QUESTIONS_ENABLED = "achep_alarm_math_questions_enabled";
+        public static final String ACHEP_ALARM_SHAKE_ACTION = "achep_alarm_shake_action";
+        public static final String ACHEP_ALARM_FLIP_ACTION = "achep_alarm_flip_action";
+        
+        
 
         /**
          * Whether we keep the device on while the device is plugged in.
