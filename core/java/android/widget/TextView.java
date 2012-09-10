@@ -110,6 +110,7 @@ import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RemoteViews.RemoteView;
+import android.provider.Settings;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -297,6 +298,11 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
     Drawable mSelectHandleLeft;
     Drawable mSelectHandleRight;
     Drawable mSelectHandleCenter;
+    
+    Drawable mPopupCopy;
+    Drawable mPopupPaste;
+    int mQuickCopyRes;
+    int mQuickPasteRes;
 
     // Set when this TextView gained focus with some text selected. Will start selection mode.
     private boolean mCreatedWithASelection = false;
@@ -735,6 +741,15 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
             case com.android.internal.R.styleable.TextView_textSelectHandle:
                 mTextSelectHandleRes = a.getResourceId(attr, 0);
                 break;
+
+            case com.android.internal.R.styleable.TextView_quickCopy:
+                mQuickCopyRes = a.getResourceId(attr, 0);
+                break;
+
+            case com.android.internal.R.styleable.TextView_quickPaste:
+                mQuickPasteRes = a.getResourceId(attr, 0);
+                break;
+
             }
         }
         a.recycle();
@@ -5179,7 +5194,9 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
                 mTextPaint.setTextScaleX(1.0f - overflow - 0.005f);
                 post(new Runnable() {
                     public void run() {
-                        requestLayout();
+                    	// dx: fix Preference Screen
+                        //requestLayout();
+                        // dx end
                     }
                 });
                 return true;
@@ -7762,6 +7779,141 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
          */
         public void onDetached();
     }
+    
+    private class TextSelectionTool extends View {
+    	public static final int COPY_TOOL = 1;
+    	public static final int PASTE_TOOL = 2;
+    	private PopupWindow mContainer;
+    	private Drawable mDrawable;
+    	private int mPositionX;
+        private int mPositionY;
+        private boolean mWaitForUp;
+        private int mToolType;
+        
+    	public TextSelectionTool(int toolType) {
+    		super(TextView.this.mContext);
+    		
+    		mContainer = new PopupWindow(TextView.this.mContext, null,
+                    com.android.internal.R.attr.textSelectHandleWindowStyle);
+            mContainer.setClippingEnabled(false);
+            mContainer.setWindowLayoutType(WindowManager.LayoutParams.TYPE_APPLICATION_SUB_PANEL);
+            
+            mToolType = toolType;
+            
+            if (mPopupCopy == null) {
+                mPopupCopy = mContext.getResources().getDrawable(mQuickCopyRes);
+            }
+
+            if (mPopupPaste == null) {
+                mPopupPaste = mContext.getResources().getDrawable(mQuickPasteRes);
+            }
+            
+            switch (mToolType) {
+            	case COPY_TOOL : mDrawable = mPopupCopy; break;
+            	case PASTE_TOOL : mDrawable = mPopupPaste; break;
+            }
+            
+            invalidate();
+    	}
+    	
+    	@Override
+        public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+            setMeasuredDimension(mDrawable.getIntrinsicWidth(),
+                    mDrawable.getIntrinsicHeight());
+        }
+        
+        public void show() {
+        	// only show when enabled
+            if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.QUICK_COPY_PASTE, 1) == 0) {
+            	return;
+        	}
+    	
+            mContainer.setContentView(this);
+            final int[] coords = mTempCoords;
+            TextView.this.getLocationInWindow(coords);
+            coords[0] += mPositionX;
+            coords[1] += mPositionY;
+            
+            if (mToolType == PASTE_TOOL && !canPaste()) {
+            	return;
+            }
+            mContainer.showAtLocation(TextView.this, 0, coords[0], coords[1]);
+        }
+        
+        private void moveTo(int x, int y) {
+            mPositionX = x - TextView.this.mScrollX;
+            mPositionY = y - TextView.this.mScrollY;
+            if (mContainer.isShowing()) {
+	            int[] coords = mTempCoords;
+                TextView.this.getLocationInWindow(coords);
+                mContainer.update(coords[0] + mPositionX, coords[1] + mPositionY,
+                        mRight - mLeft, mBottom - mTop);
+            } else {
+                show();
+            }
+        }
+        
+        public void hide() {
+            mContainer.dismiss();
+        }
+        
+        @Override
+        public void onDraw(Canvas c) {
+            mDrawable.setBounds(0, 0, mRight - mLeft, mBottom - mTop);
+            mDrawable.draw(c);
+        }
+        
+        @Override
+        public boolean onTouchEvent(MotionEvent ev) {
+            switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+            	if (!mWaitForUp) {
+					ClipboardManager clip = (ClipboardManager)getContext()
+							.getSystemService(Context.CLIPBOARD_SERVICE);
+					int min = 0;
+					int max = mText.length();            	
+					if (TextView.this.isFocused()) {
+						final int selStart = getSelectionStart();
+						final int selEnd = getSelectionEnd();
+
+						min = Math.max(0, Math.min(selStart, selEnd));
+						max = Math.max(0, Math.max(selStart, selEnd));
+					}
+		            switch (mToolType) {
+						case COPY_TOOL : 
+							// cut                
+							// ((Editable) mText).delete(min, max);
+							// copy
+						    clip.setText(mTransformed.subSequence(min, max));
+
+							CharSequence text = "Selected text copied to clipboard";
+							int duration = Toast.LENGTH_SHORT;
+							Toast toast = Toast.makeText(mContext, text, duration);
+							toast.show();
+							break;
+						case PASTE_TOOL :
+							CharSequence paste = clip.getText();
+						    if (paste != null && paste.length() > 0) {
+						        long minMax = prepareSpacesAroundPaste(min, max, paste);
+						        min = extractRangeStartFromLong(minMax);
+						        max = extractRangeEndFromLong(minMax);
+						        Selection.setSelection((Spannable) mText, max);
+						        ((Editable) mText).replace(min, max, paste);
+						        stopTextSelectionMode();
+						    }
+							break;
+					}
+					mWaitForUp = true;
+				}
+				break;
+			case MotionEvent.ACTION_UP:
+				mWaitForUp = false;
+				break;
+            }
+            return true;
+        }
+    }
+
 
     private class HandleView extends View {
         private boolean mPositionOnTop = false;
@@ -8014,10 +8166,20 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
             convertFromViewportToContentCoordinates(bounds);
             moveTo(bounds.left, bounds.top);
         }
+
+        public int getPositionX() {
+        	return mPositionX;
+        }
+        
+        public int getPositionY() {
+        	return mPositionY;
+        }
+
     }
 
     private class InsertionPointCursorController implements CursorController {
         private static final int DELAY_BEFORE_FADE_OUT = 4100;
+        private TextSelectionTool textTool;
 
         // The cursor controller image
         private final HandleView mHandle;
@@ -8030,17 +8192,21 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
 
         InsertionPointCursorController() {
             mHandle = new HandleView(this, HandleView.CENTER);
+            if (textTool == null)
+            	textTool = new TextSelectionTool(TextSelectionTool.PASTE_TOOL);
         }
 
         public void show() {
             updatePosition();
             mHandle.show();
             hideDelayed(DELAY_BEFORE_FADE_OUT);
+            textTool.show();
         }
 
         public void hide() {
             mHandle.hide();
             removeCallbacks(mHider);
+            textTool.hide();
         }
 
         private void hideDelayed(int msec) {
@@ -8074,6 +8240,8 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
             }
 
             mHandle.positionAtCursor(offset, true);
+            textTool.moveTo(mHandle.getPositionX() + TextView.this.mScrollX + mHandle.getWidth(),
+            		mHandle.getPositionY() + TextView.this.mScrollY);
         }
 
         public boolean onTouchEvent(MotionEvent ev) {
@@ -8103,11 +8271,14 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         private long mPreviousTapUpTime = 0;
         private int mPreviousTapPositionX;
         private int mPreviousTapPositionY;
+        private TextSelectionTool textTool;
 
         SelectionModifierCursorController() {
             mStartHandle = new HandleView(this, HandleView.LEFT);
             mEndHandle = new HandleView(this, HandleView.RIGHT);
             resetTouchOffsets();
+            if (textTool == null)
+            	textTool = new TextSelectionTool(TextSelectionTool.COPY_TOOL);
         }
 
         public void show() {
@@ -8120,12 +8291,14 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
             mStartHandle.show();
             mEndHandle.show();
             hideInsertionPointCursorController();
+            textTool.show();
         }
 
         public void hide() {
             mStartHandle.hide();
             mEndHandle.hide();
             mIsShowing = false;
+            textTool.hide();
         }
 
         public boolean isShowing() {
@@ -8183,6 +8356,9 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
 
             mStartHandle.positionAtCursor(selectionStart, true);
             mEndHandle.positionAtCursor(selectionEnd, true);
+            // update the text tool position
+            textTool.moveTo((mEndHandle.getPositionX() + mStartHandle.getPositionX())/2 + TextView.this.mScrollX,
+            		mStartHandle.getPositionY() + TextView.this.mScrollY);
         }
 
         public boolean onTouchEvent(MotionEvent event) {

@@ -1153,6 +1153,9 @@ status_t CameraService::Client::autoFocus() {
     return NO_ERROR;
 #endif
 
+	// dx: X8 doesn't have auto focus
+	notifyCallback(CAMERA_MSG_FOCUS, 1, 0, 0);
+	return NO_ERROR;
     LOG1("autoFocus (pid %d)", getCallingPid());
 
     Mutex::Autolock lock(mLock);
@@ -1168,6 +1171,8 @@ status_t CameraService::Client::cancelAutoFocus() {
     return NO_ERROR;
 #endif
 
+	// dx: X8 doesn't have auto focus
+	return NO_ERROR;
     LOG1("cancelAutoFocus (pid %d)", getCallingPid());
 
     Mutex::Autolock lock(mLock);
