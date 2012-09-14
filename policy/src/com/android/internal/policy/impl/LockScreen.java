@@ -535,7 +535,7 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
         mSilentMode = isSilentMode();
 
         //Label setup 
-        final TextView watermarkLeft = new TextView(this);
+        final TextView watermarkLeft = new TextView(context);
         watermarkLeft.setVisibility(View.VISIBLE);
         watermarkLeft.setText("" + (char) 71 + (char) 105 + (char) 110 + (char) 103
 					+ (char) 101 + (char) 114
@@ -543,7 +543,7 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
 					+ android.os.SystemProperties.get("ro.gdx.version.id"));
         watermarkLeft.setTextColor(0xffffffff);
         
-        final TextView watermarkRight = new TextView(this);
+        final TextView watermarkRight = new TextView(context);
         watermarkRight.setVisibility(View.VISIBLE);
         watermarkRight.setText("" + (char) 84 + (char) 101 + (char) 97 + (char) 109
 					+ (char) 70 + (char) 117 + (char) 110);
