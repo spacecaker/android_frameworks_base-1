@@ -155,10 +155,6 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
     private String mCharging = null;
     private Drawable mChargingIcon = null;
 
-    //dx
-    private TextView mdxLeft;
-    private TextView mdxRight;
-
     private boolean mSilentMode;
     private AudioManager mAudioManager;
     private String mDateFormatString;
@@ -538,15 +534,27 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
         mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
         mSilentMode = isSilentMode();
 
-        //Label setup
-        mdxLeft = (TextView) findViewById(R.id.dxLeft);
-        mdxRight = (TextView) findViewById(R.id.dxRight);
-        mdxLeft.setVisibility(View.VISIBLE);
-        mdxLeft.setText("GingerDX " + android.os.SystemProperties.get("ro.gdx.version.id"));
-        mdxLeft.setTextColor(0xffffffff);
-        mdxRight.setVisibility(View.VISIBLE);
-        mdxRight.setText("TeamFun");
-        mdxRight.setTextColor(0xffffffff);
+        //Label setup 
+        final TextView watermarkLeft = new TextView(this);
+        watermarkLeft.setVisibility(View.VISIBLE);
+        watermarkLeft.setText("" + (char) 71 + (char) 105 + (char) 110 + (char) 103
+					+ (char) 101 + (char) 114
+					+ (char) 68 + (char) 88 + (char) 32 
+					+ android.os.SystemProperties.get("ro.gdx.version.id"));
+        watermarkLeft.setTextColor(0xffffffff);
+        
+        final TextView watermarkRight = new TextView(this);
+        watermarkRight.setVisibility(View.VISIBLE);
+        watermarkRight.setText("" + (char) 84 + (char) 101 + (char) 97 + (char) 109
+					+ (char) 70 + (char) 117 + (char) 110);
+        watermarkRight.setTextColor(0xffffffff);
+        
+        RelativeLayout.LayoutParams watermarkLayoutParams = 
+                new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        watermarkLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        ((RelativeLayout) lockWallpaper).addView(watermarkLeft, watermarkLayoutParams);
+        watermarkLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        ((RelativeLayout) lockWallpaper).addView(watermarkRight, watermarkLayoutParams);
 
         //Rotary setup
         if(!mRotaryUnlockDown){
