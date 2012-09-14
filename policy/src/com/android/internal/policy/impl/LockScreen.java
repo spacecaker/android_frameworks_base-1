@@ -549,12 +549,16 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
 					+ (char) 70 + (char) 117 + (char) 110);
         watermarkRight.setTextColor(0xffffffff);
         
-        RelativeLayout.LayoutParams watermarkLayoutParams = 
+        RelativeLayout.LayoutParams watermarkLeftLayoutParams = 
                 new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        watermarkLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        ((RelativeLayout) lockWallpaper).addView(watermarkLeft, watermarkLayoutParams);
-        watermarkLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        ((RelativeLayout) lockWallpaper).addView(watermarkRight, watermarkLayoutParams);
+        watermarkLeftLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        
+        RelativeLayout.LayoutParams watermarkRightLayoutParams = 
+                new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        watermarkRightLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        watermarkRightLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        ((RelativeLayout) lockWallpaper).addView(watermarkLeft, watermarkLeftLayoutParams);
+        ((RelativeLayout) lockWallpaper).addView(watermarkRight, watermarkRightLayoutParams);
 
         //Rotary setup
         if(!mRotaryUnlockDown){
