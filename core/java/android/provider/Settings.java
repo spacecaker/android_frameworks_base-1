@@ -1258,6 +1258,9 @@ public final class Settings {
         public static final String ACHEP_ALARM_MATH_QUESTIONS_ENABLED = "achep_alarm_math_questions_enabled";
         public static final String ACHEP_ALARM_SHAKE_ACTION = "achep_alarm_shake_action";
         public static final String ACHEP_ALARM_FLIP_ACTION = "achep_alarm_flip_action";
+        //AChep's jelly beans
+        public static final String ACHEP_JB_STATUS_BAR = "achep_jb_status_bar";
+        public static final String ACHEP_JB_STATUS_BAR_NOTIFICATION = "achep_jb_status_bar_notification";
         
         
 
