@@ -76,6 +76,7 @@ import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.ImageButton;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -146,6 +147,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
     View mExpandedContents;
     // top bar
     TextView mNoNotificationsTitle;
+    ImageButton mJellyClearButton;
     TextView mClearButton;
     TextView mCompactClearButton;
     ViewGroup mClearButtonParent;
@@ -255,8 +257,10 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
             defValue=(CmSystem.getDefaultBool(mContext, CmSystem.CM_DEFAULT_USE_DEAD_ZONE) ? 1 : 0);
             mDeadZone = (Settings.System.getInt(resolver,
                     Settings.System.STATUS_BAR_DEAD_ZONE, defValue) == 1);
+					if (!mJellyStatusBar) {
             mCompactCarrier = (Settings.System.getInt(resolver,
                     Settings.System.STATUS_BAR_COMPACT_CARRIER, 0) == 1);
+					}
             updateLayout();
             updateCarrierLabel();
         }
@@ -373,7 +377,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         return null;
     }
 
-    private boolean mCompactCarrier = false;
+    private boolean mCompactCarrier = false, mJellyStatusBar = false;
 
     // ================================================================================
     // Constructing the view
@@ -384,12 +388,19 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         mTouchDispatcher = new ItemTouchDispatcher(this);
 
         mIconSize = res.getDimensionPixelSize(com.android.internal.R.dimen.status_bar_icon_size);
-
+		
+		// JellyAc
+		mJellyStatusBar = Settings.System.getInt(getContentResolver(),
+                                                Settings.System.ACHEP_JB_STATUS_BAR, 0) == 1;
+												
         //Check for compact carrier layout and apply if enabled
-        mCompactCarrier = Settings.System.getInt(getContentResolver(),
+        mCompactCarrier = mJellyStatusBar ? false : Settings.System.getInt(getContentResolver(),
                                                 Settings.System.STATUS_BAR_COMPACT_CARRIER, 0) == 1;
-        ExpandedView expanded = (ExpandedView)View.inflate(context,
-                                                R.layout.status_bar_expanded, null);
+					
+		
+        ExpandedView expanded = (ExpandedView)View.inflate(context, !mJellyStatusBar ?
+                                                R.layout.status_bar_expanded : R.layout.status_bar_expanded_jb, null);
+												
         expanded.mService = this;
         expanded.mTouchDispatcher = mTouchDispatcher;
 
@@ -441,15 +452,28 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         mExpandedDialog = new ExpandedDialog(context);
         mExpandedView = expanded;
         mExpandedContents = expanded.findViewById(R.id.notificationLinearLayout);
-        mOngoingTitle = (TextView)expanded.findViewById(R.id.ongoingTitle);
         mOngoingItems = (LinearLayout)expanded.findViewById(R.id.ongoingItems);
-        mLatestTitle = (TextView)expanded.findViewById(R.id.latestTitle);
         mLatestItems = (LinearLayout)expanded.findViewById(R.id.latestItems);
-        mNoNotificationsTitle = (TextView)expanded.findViewById(R.id.noNotificationsTitle);
-        mClearButton = (TextView)expanded.findViewById(R.id.clear_all_button);
-        mClearButton.setOnClickListener(mClearButtonListener);
-        mCompactClearButton = (TextView)expanded.findViewById(R.id.compact_clear_all_button);
-        mCompactClearButton.setOnClickListener(mClearButtonListener);
+		if (!mJellyStatusBar) {
+            mOngoingTitle = (TextView)expanded.findViewById(R.id.ongoingTitle);
+            mLatestTitle = (TextView)expanded.findViewById(R.id.latestTitle);
+            mNoNotificationsTitle = (TextView)expanded.findViewById(R.id.noNotificationsTitle);
+            mClearButton = (TextView)expanded.findViewById(R.id.clear_all_button);
+            mClearButton.setOnClickListener(mClearButtonListener);
+            mCompactClearButton = (TextView)expanded.findViewById(R.id.compact_clear_all_button);
+            mCompactClearButton.setOnClickListener(mClearButtonListener);
+		} else {
+		    final ImageButton jellySettingsButton = (ImageButton)expanded.findViewById(R.id.settings_button); 
+            jellySettingsButton.setOnClickListener(new View.OnClickListener(){
+		        public void onClick(View v) {
+                    v.getContext().startActivity(new Intent(Settings.ACTION_SETTINGS)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    animateCollapse();
+                }
+			});
+		    mJellyClearButton = (ImageButton)expanded.findViewById(R.id.clear_all_button); 
+            mJellyClearButton.setOnClickListener(mClearButtonListener);
+		}
         mPowerAndCarrier = (LinearLayout)expanded.findViewById(R.id.power_and_carrier);
         mScrollView = (ScrollView)expanded.findViewById(R.id.scroll);
         mBottomScrollView = (ScrollView)expanded.findViewById(R.id.bottomScroll);
@@ -457,8 +481,10 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         mBottomNotificationLinearLayout = (LinearLayout)expanded.findViewById(R.id.bottomNotificationLinearLayout);
 
         mExpandedView.setVisibility(View.GONE);
-        mOngoingTitle.setVisibility(View.GONE);
-        mLatestTitle.setVisibility(View.GONE);
+		if (!mJellyStatusBar) {
+            mOngoingTitle.setVisibility(View.GONE);
+            mLatestTitle.setVisibility(View.GONE);
+		}
 
         mPowerWidget = (PowerWidget)expanded.findViewById(R.id.exp_power_stat);
         mPowerWidget.setGlobalButtonOnClickListener(new View.OnClickListener() {
@@ -490,7 +516,8 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
                    }
                });*/
 
-        mCarrierLabelLayout = (LinearLayout)expanded.findViewById(R.id.carrier_label_layout);
+        mCarrierLabelLayout = (LinearLayout)expanded.findViewById(R.id.carrier_label_layout);    
+		if (!mJellyStatusBar)
         mCompactCarrierLayout = (LinearLayout)expanded.findViewById(R.id.compact_carrier_layout);
 
         mTicker = new MyTicker(context, sb);
@@ -498,7 +525,8 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         TickerView tickerView = (TickerView)sb.findViewById(R.id.tickerText);
         tickerView.mTicker = mTicker;
 
-        mTrackingView = (TrackingView)View.inflate(context, R.layout.status_bar_tracking, null);
+        mTrackingView = (TrackingView)View.inflate(context, !mJellyStatusBar 
+		                            ? R.layout.status_bar_tracking : R.layout.status_bar_tracking_jb, null);
         mTrackingView.mService = this;
         mCloseView = (CloseDragHandle)mTrackingView.findViewById(R.id.close);
         mCloseView.mService = this;
@@ -523,7 +551,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
                 mCompactCarrierLayout.setVisibility(View.GONE);
             if (mLatest.hasClearableItems())
                 mCompactClearButton.setVisibility(View.VISIBLE);
-        } else {
+        } else if (!mJellyStatusBar) {
             mCarrierLabelLayout.setVisibility(View.VISIBLE);
             mCompactCarrierLayout.setVisibility(View.GONE);
             mCompactClearButton.setVisibility(View.GONE);
@@ -553,7 +581,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         // readd in right order
         mExpandedView.addView(powerAndCarrier, mBottomBar ? 1 : 0);
         ///powerAndCarrier.addView(recent, mBottomBar && !mCompactCarrier ? 1 : 0);
-        powerAndCarrier.addView(power, mBottomBar && !mCompactCarrier ? 1 : 0);
+        powerAndCarrier.addView(power, mJellyStatusBar ? (mBottomBar ? 0 : 1) : (mBottomBar && !mCompactCarrier ? 1 : 0));
 
         // Remove all notification views
         mNotificationLinearLayout.removeAllViews();
@@ -561,24 +589,30 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 
         // Readd to correct scrollview depending on mBottomBar
         if (mBottomBar) {
-            mScrollView.setVisibility(View.GONE);
-            mBottomNotificationLinearLayout.addView(mCompactClearButton);
-            mBottomNotificationLinearLayout.addView(mNoNotificationsTitle);
-            mBottomNotificationLinearLayout.addView(mOngoingTitle);
+            mScrollView.setVisibility(View.GONE);			
+			if (!mJellyStatusBar) {
+                mBottomNotificationLinearLayout.addView(mCompactClearButton);
+                mBottomNotificationLinearLayout.addView(mNoNotificationsTitle);
+                mBottomNotificationLinearLayout.addView(mOngoingTitle);
+                mBottomNotificationLinearLayout.addView(mLatestTitle);
+			} else {
+			}
             mBottomNotificationLinearLayout.addView(mOngoingItems);
-            mBottomNotificationLinearLayout.addView(mLatestTitle);
             mBottomNotificationLinearLayout.addView(mLatestItems);
             mBottomScrollView.setVisibility(View.VISIBLE);
         } else {
-            mBottomScrollView.setVisibility(View.GONE);
-            mNotificationLinearLayout.addView(mNoNotificationsTitle);
-            mNotificationLinearLayout.addView(mOngoingTitle);
+            mBottomScrollView.setVisibility(View.GONE);	
+			if (!mJellyStatusBar) {
+                mNotificationLinearLayout.addView(mNoNotificationsTitle);
+                mNotificationLinearLayout.addView(mOngoingTitle);
+                mNotificationLinearLayout.addView(mLatestTitle);
+                mNotificationLinearLayout.addView(mCompactClearButton);
+                mCompactCarrierLayout.setVisibility(View.VISIBLE);
+			} else {
+			}
             mNotificationLinearLayout.addView(mOngoingItems);
-            mNotificationLinearLayout.addView(mLatestTitle);
             mNotificationLinearLayout.addView(mLatestItems);
-            mNotificationLinearLayout.addView(mCompactClearButton);
             mScrollView.setVisibility(View.VISIBLE);
-            mCompactCarrierLayout.setVisibility(View.VISIBLE);
         }
 
         //remove small ugly grey area if compactcarrier is enabled and power widget disabled
@@ -782,7 +816,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 
         // create the row view
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LatestItemContainer row = (LatestItemContainer) inflater.inflate(R.layout.status_bar_latest_event, parent, false);
+        LatestItemContainer row = (LatestItemContainer) inflater.inflate(mJellyStatusBar ? R.layout.status_bar_latest_event_jb : R.layout.status_bar_latest_event, parent, false);
         if ((n.flags & Notification.FLAG_ONGOING_EVENT) == 0 && (n.flags & Notification.FLAG_NO_CLEAR) == 0) {
             row.setOnSwipeCallback(mTouchDispatcher, new Runnable() {
                 public void run() {
@@ -896,13 +930,22 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 
         // (no ongoing notifications are clearable)
         if (mLatest.hasClearableItems()) {
-            if (mCompactCarrier) mCompactClearButton.setVisibility(View.VISIBLE);
-            mClearButton.setVisibility(View.VISIBLE);
-        } else {
-            mCompactClearButton.setVisibility(View.GONE);
-            mClearButton.setVisibility(View.INVISIBLE);
+			if (!mJellyStatusBar) {
+                if (mCompactCarrier) mCompactClearButton.setVisibility(View.VISIBLE);
+                mClearButton.setVisibility(View.VISIBLE);
+			} else {
+                mJellyClearButton.setVisibility(View.VISIBLE);
+			}
+        } else {			
+			if (!mJellyStatusBar) {
+                mCompactClearButton.setVisibility(View.GONE);
+                mClearButton.setVisibility(View.INVISIBLE);
+			} else {
+                mJellyClearButton.setVisibility(View.INVISIBLE);
+			}
         }
-
+	
+		if (!mJellyStatusBar) {
         mOngoingTitle.setVisibility(ongoing ? View.VISIBLE : View.GONE);
         mLatestTitle.setVisibility(latest ? View.VISIBLE : View.GONE);
 
@@ -911,6 +954,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         } else {
             mNoNotificationsTitle.setVisibility(View.VISIBLE);
         }
+		}
     }
 
 
@@ -989,6 +1033,8 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
         mExpandedParams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         mExpandedParams.flags |= WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
+		if (mJellyStatusBar)
+        mExpandedParams.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;		
         mExpandedDialog.getWindow().setAttributes(mExpandedParams);
         mExpandedView.requestFocus(View.FOCUS_FORWARD);
         mTrackingView.setVisibility(View.VISIBLE);
@@ -1932,11 +1978,13 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
             mCmBatteryMiniIcon.updateIconCache();
             mCmBatteryMiniIcon.updateMatrix();
             recreateStatusBar();
-        } else {
-            mClearButton.setText(getText(R.string.status_bar_clear_all_button));
-            mOngoingTitle.setText(getText(R.string.status_bar_ongoing_events_title));
-            mLatestTitle.setText(getText(R.string.status_bar_latest_events_title));
-            mNoNotificationsTitle.setText(getText(R.string.status_bar_no_notifications_title));
+        } else { 
+			if (!mJellyStatusBar) {
+      	    	mClearButton.setText(getText(R.string.status_bar_clear_all_button));
+      	    	mOngoingTitle.setText(getText(R.string.status_bar_ongoing_events_title));
+       	  		mLatestTitle.setText(getText(R.string.status_bar_latest_events_title));
+       	    	mNoNotificationsTitle.setText(getText(R.string.status_bar_no_notifications_title));
+			}
 
             mEdgeBorder = res.getDimensionPixelSize(R.dimen.status_bar_edge_ignore);
         }

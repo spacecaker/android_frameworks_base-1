@@ -41,4 +41,12 @@
     <style name="TextAppearance.StatusBar.IntruderAlert"
         parent="@android:style/TextAppearance.StatusBar">
     </style>
+	
+	<!-- JellyBean Statusbar below (AChep) -->
+	<style name="TextAppearance.JellyStatusBar.CarrierLabel" parent="@android:style/TextAppearance.Large">
+        <item name="android:textSize">12.0dip</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/jelly_statusbar_carierlabel_text</item>
+    </style>	
+	
 </resources>
