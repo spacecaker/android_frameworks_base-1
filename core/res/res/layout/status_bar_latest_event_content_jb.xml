@@ -6,7 +6,7 @@
     android:maxHeight="128dip" >
 
     <ImageView
-        android:id="@id/icon"
+        android:id="@+id/icon"
         android:layout_width="64dip"
         android:layout_height="64dip"
         android:background="#3333b5e5"
@@ -26,7 +26,7 @@
 			android:gravity="bottom" >
 
             <TextView
-                android:id="@id/title"
+                android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -38,7 +38,7 @@
                 android:textStyle="bold" />
 
             <DateTimeView
-                android:id="@id/time"
+                android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
@@ -50,7 +50,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@id/text"
+            android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="marquee"
