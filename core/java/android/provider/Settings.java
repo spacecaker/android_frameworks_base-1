@@ -1261,6 +1261,7 @@ public final class Settings {
         //AChep's jelly beans
         public static final String ACHEP_JB_STATUS_BAR = "achep_jb_status_bar";
         public static final String ACHEP_JB_STATUS_BAR_NOTIFICATION = "achep_jb_status_bar_notification";
+        public static final String ACHEP_JB_STATUS_BAR_NOTIFICATION_BIGGER = "achep_jb_status_bar_notification_bigger";
         
         
 
