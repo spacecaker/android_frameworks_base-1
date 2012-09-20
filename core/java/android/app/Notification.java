@@ -500,6 +500,12 @@ public class Notification implements Parcelable
         RemoteViews contentView = new RemoteViews(context.getPackageName(),
                mJellyStatusBarNotification ? com.android.internal.R.layout.status_bar_latest_event_content_jb
                : com.android.internal.R.layout.status_bar_latest_event_content);
+        if (mJellyStatusBarNotification)  {     
+            boolean mJellyStatusBarNotificationBigger = Settings.System.getInt(context.getContentResolver(),
+                        Settings.System.ACHEP_JB_STATUS_BAR_NOTIFICATION_BIGGER, 0) == 1;
+            contentView.setBoolean(com.android.internal.R.id.text,"setSingleLine", !mJellyStatusBarNotificationBigger);            
+        }
+                
         if (this.icon != 0) {
             contentView.setImageViewResource(com.android.internal.R.id.icon, this.icon);
         }
