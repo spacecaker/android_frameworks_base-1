@@ -21,6 +21,6 @@
 	
 	
     <!-- AChep. -->
-    <dimen name="jelly_statusbar_notification_divider_height">3dp</dimen>	
+    <dimen name="jelly_statusbar_notification_divider_height">6dp</dimen>	
 </resources>
 

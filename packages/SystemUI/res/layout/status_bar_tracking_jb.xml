@@ -40,15 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        >
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:scaleType="fitXY"
-            android:background="@drawable/jelly_statusbar_tracking_handler"
-            />
-
-    </com.android.systemui.statusbar.CloseDragHandle>
+        android:background="@drawable/jelly_statusbar_tracking_close_off"
+		/>
 
 </com.android.systemui.statusbar.TrackingView>

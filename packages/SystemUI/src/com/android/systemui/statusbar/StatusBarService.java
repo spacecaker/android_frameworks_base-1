@@ -377,7 +377,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         return null;
     }
 
-    private boolean mCompactCarrier = false, mJellyStatusBar = false;
+    private boolean mCompactCarrier = false, mJellyStatusBar = false, mJellyStatusBarNotification = false, mJellyStatusBarNotificationBigger = false;
 
     // ================================================================================
     // Constructing the view
@@ -392,6 +392,10 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 		// JellyAc
 		mJellyStatusBar = Settings.System.getInt(getContentResolver(),
                                                 Settings.System.ACHEP_JB_STATUS_BAR, 0) == 1;
+		mJellyStatusBarNotification = Settings.System.getInt(getContentResolver(),
+                                                Settings.System.ACHEP_JB_STATUS_BAR_NOTIFICATION, 0) == 1;
+		mJellyStatusBarNotificationBigger = Settings.System.getInt(getContentResolver(),
+                                                Settings.System.ACHEP_JB_STATUS_BAR_NOTIFICATION_BIGGER, 0) == 1;
 												
         //Check for compact carrier layout and apply if enabled
         mCompactCarrier = mJellyStatusBar ? false : Settings.System.getInt(getContentResolver(),
@@ -816,8 +820,13 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 
         // create the row view
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LatestItemContainer row = (LatestItemContainer) inflater.inflate(mJellyStatusBar ? R.layout.status_bar_latest_event_jb : R.layout.status_bar_latest_event, parent, false);
-        if ((n.flags & Notification.FLAG_ONGOING_EVENT) == 0 && (n.flags & Notification.FLAG_NO_CLEAR) == 0) {
+        LatestItemContainer row = (LatestItemContainer) inflater.inflate(mJellyStatusBarNotification ? R.layout.status_bar_latest_event_jb : R.layout.status_bar_latest_event, parent, false);
+        if (mJellyStatusBarNotification)
+		  if (mJellyStatusBarNotificationBigger)
+              row.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));	
+          else			  
+              row.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, 70));	
+	   if ((n.flags & Notification.FLAG_ONGOING_EVENT) == 0 && (n.flags & Notification.FLAG_NO_CLEAR) == 0) {
             row.setOnSwipeCallback(mTouchDispatcher, new Runnable() {
                 public void run() {
                     try {
@@ -1032,9 +1041,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 
         updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
         mExpandedParams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        mExpandedParams.flags |= WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
-		if (mJellyStatusBar)
-        mExpandedParams.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;		
+        mExpandedParams.flags |= WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;	
         mExpandedDialog.getWindow().setAttributes(mExpandedParams);
         mExpandedView.requestFocus(View.FOCUS_FORWARD);
         mTrackingView.setVisibility(View.VISIBLE);

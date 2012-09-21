@@ -110,9 +110,11 @@ public class StatusBarJellyHeaderView extends LinearLayout {
 		Calendar calendar = Calendar.getInstance();
 		Date date = calendar.getTime();
 		int min = calendar.get(Calendar.MINUTE);
+		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		if (hour > 12 && DateFormat.is24HourFormat(context) != true)
+			hour -= 12;
 		return new String[] {
-				calendar.get(Calendar.HOUR_OF_DAY) + ":"
-						+ (min > 9 ? min : "0" + min),
+				hour + ":" + (min > 9 ? min : "0" + min),
 				(DateFormat.format("EEEE", date) + "\n" + DateFormat
 						.getLongDateFormat(context).format(date)).toUpperCase() };
 	}
