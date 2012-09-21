@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.os.Handler;
+import android.provider.Settings;
 import android.os.SystemProperties;
 import android.provider.CmSystem;
 import android.provider.Settings;
@@ -184,8 +185,10 @@ public class CarrierLabel extends TextView {
                         str.append('\n');
                     }
                     str.append(spn);
-                }
-                setText(str.toString());
+                }		
+                boolean jellyBeanStatusBar = Settings.System.getInt(getContext().getContentResolver(),
+                                                Settings.System.ACHEP_JB_STATUS_BAR, 0) == 1;				
+                setText(jellyBeanStatusBar ? str.toString().toUpperCase() : str.toString());
                 break;
 
             case TYPE_SPN:

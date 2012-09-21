@@ -16,7 +16,10 @@
 
 package com.android.systemui.statusbar;
 
+import com.android.systemui.R;
+
 import android.content.Context;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
@@ -25,8 +28,13 @@ import android.widget.LinearLayout;
 public class CloseDragHandle extends LinearLayout {
     StatusBarService mService;
 
+	private boolean mJellyStatusBar;
+	
     public CloseDragHandle(Context context, AttributeSet attrs) {
         super(context, attrs);
+		
+		mJellyStatusBar = Settings.System.getInt(context.getContentResolver(),
+				Settings.System.ACHEP_JB_STATUS_BAR, 0) == 1;
     }
 
     /**
@@ -36,9 +44,15 @@ public class CloseDragHandle extends LinearLayout {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() != MotionEvent.ACTION_DOWN) {
-            mService.interceptTouchEvent(event);
-        }
+	final int action = event.getAction();
+        if (action == MotionEvent.ACTION_DOWN) {
+			if (mJellyStatusBar)
+					setBackgroundResource(R.drawable.jelly_statusbar_tracking_close_on);	
+        } else {
+			if (mJellyStatusBar && action == MotionEvent.ACTION_UP)
+					setBackgroundResource(R.drawable.jelly_statusbar_tracking_close_off);
+            mService.interceptTouchEvent(event);		
+		}
         return true;
     }
 
