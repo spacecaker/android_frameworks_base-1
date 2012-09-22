@@ -89,6 +89,7 @@ import com.android.internal.statusbar.StatusBarIcon;
 import com.android.internal.statusbar.StatusBarIconList;
 import com.android.internal.statusbar.StatusBarNotification;
 import com.android.systemui.R;
+import com.android.systemui.statusbar.CarrierLabel;
 import com.android.systemui.statusbar.powerwidget.PowerWidget;
 import com.android.systemui.statusbar.recentapps.RecentApps;
 
@@ -377,6 +378,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         return null;
     }
 
+	private CarrierLabel mJellyCarrierView;
     private boolean mCompactCarrier = false, mJellyStatusBar = false, mJellyStatusBarNotification = false, mJellyStatusBarNotificationBigger = false;
 
     // ================================================================================
@@ -534,6 +536,8 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         mTrackingView.mService = this;
         mCloseView = (CloseDragHandle)mTrackingView.findViewById(R.id.close);
         mCloseView.mService = this;
+		if (mJellyStatusBar)
+            mJellyCarrierView = (CarrierLabel)mTrackingView.findViewById(R.id.carrier);
 
         mContext=context;
         updateLayout();
@@ -582,7 +586,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         //powerAndCarrier.removeView(recent);
         mExpandedView.removeView(powerAndCarrier);
 
-        // readd in right order
+        // readd in right order		
         mExpandedView.addView(powerAndCarrier, mBottomBar ? 1 : 0);
         ///powerAndCarrier.addView(recent, mBottomBar && !mCompactCarrier ? 1 : 0);
         powerAndCarrier.addView(power, mJellyStatusBar ? (mBottomBar ? 0 : 1) : (mBottomBar && !mCompactCarrier ? 1 : 0));
@@ -591,6 +595,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         mNotificationLinearLayout.removeAllViews();
         mBottomNotificationLinearLayout.removeAllViews();
 
+		if (mJellyStatusBar)
+		mJellyCarrierView.setGravity(Gravity.CENTER_HORIZONTAL|(mBottomBar ? Gravity.TOP : Gravity.BOTTOM));
+		
         // Readd to correct scrollview depending on mBottomBar
         if (mBottomBar) {
             mScrollView.setVisibility(View.GONE);			
@@ -648,7 +655,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         lp.gravity = Gravity.TOP | Gravity.FILL_HORIZONTAL;
         lp.setTitle("StatusBar");
         lp.windowAnimations = com.android.internal.R.style.Animation_StatusBar;
-
+		
         WindowManagerImpl.getDefault().addView(view, lp);
 
         //mRecentApps.setupRecentApps();
@@ -1320,6 +1327,8 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         final int statusBarSize = mStatusBarView.getHeight();
         final int hitSize = statusBarSize*2;
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			if (mJellyStatusBar)
+					mCloseView.setBackgroundResource(R.drawable.jelly_statusbar_tracking_close_on);
             final int y = (int)event.getRawY();
             mLinger = 0;
             if (!mExpanded) {
@@ -1355,9 +1364,10 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
             }
         } else if (mTracking) {
             mVelocityTracker.addMovement(event);
-            int minY = statusBarSize + mCloseView.getHeight();
-            if (mBottomBar)
+            int minY = statusBarSize + mCloseView.getHeight(); 
+            if (mBottomBar) {
                 minY = mDisplay.getHeight() - statusBarSize - mCloseView.getHeight();
+			}
             if (event.getAction() == MotionEvent.ACTION_MOVE) {
                 int y = (int)event.getRawY();
                 if ((!mBottomBar && mAnimatingReveal && y < minY) ||
@@ -1423,6 +1433,8 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
                     updateExpandedViewPos(y + (mBottomBar ? -mViewDelta : mViewDelta));
                 }
             } else if (event.getAction() == MotionEvent.ACTION_UP) {
+				if (mJellyStatusBar)
+					mCloseView.setBackgroundResource(R.drawable.jelly_statusbar_tracking_close_off);
                 mVelocityTracker.computeCurrentVelocity(1000);
 
                 float yVel = mVelocityTracker.getYVelocity();
@@ -1802,7 +1814,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
                     if(mBottomBar)
                         mTrackingParams.y = 0;
                 }
-
+				
                 boolean visible = mBottomBar ? mTrackingPosition < mDisplay.getHeight()
                         : (mTrackingPosition + mTrackingView.getHeight()) > h;
                 if (!visible) {
@@ -1828,7 +1840,10 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
     }
 
     int getExpandedHeight() {
-        return mDisplay.getHeight() - mStatusBarView.getHeight() - mCloseView.getHeight();
+	    if (mJellyStatusBar)
+            return mDisplay.getHeight() - mCloseView.getHeight();		    
+		else
+            return mDisplay.getHeight() - mStatusBarView.getHeight() - mCloseView.getHeight();
     }
 
     void updateExpandedHeight() {

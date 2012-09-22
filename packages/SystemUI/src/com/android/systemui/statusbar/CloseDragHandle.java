@@ -27,14 +27,9 @@ import android.widget.LinearLayout;
 
 public class CloseDragHandle extends LinearLayout {
     StatusBarService mService;
-
-	private boolean mJellyStatusBar;
 	
     public CloseDragHandle(Context context, AttributeSet attrs) {
         super(context, attrs);
-		
-		mJellyStatusBar = Settings.System.getInt(context.getContentResolver(),
-				Settings.System.ACHEP_JB_STATUS_BAR, 0) == 1;
     }
 
     /**
@@ -45,12 +40,7 @@ public class CloseDragHandle extends LinearLayout {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 	final int action = event.getAction();
-        if (action == MotionEvent.ACTION_DOWN) {
-			if (mJellyStatusBar)
-					setBackgroundResource(R.drawable.jelly_statusbar_tracking_close_on);	
-        } else {
-			if (mJellyStatusBar && action == MotionEvent.ACTION_UP)
-					setBackgroundResource(R.drawable.jelly_statusbar_tracking_close_off);
+        if (action != MotionEvent.ACTION_DOWN) {
             mService.interceptTouchEvent(event);		
 		}
         return true;

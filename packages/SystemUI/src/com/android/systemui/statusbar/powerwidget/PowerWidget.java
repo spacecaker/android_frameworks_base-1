@@ -76,6 +76,7 @@ public class PowerWidget extends FrameLayout {
         sPossibleButtons.put(PowerButton.BUTTON_GPS, GPSButton.class);
         sPossibleButtons.put(PowerButton.BUTTON_BLUETOOTH, BluetoothButton.class);
         sPossibleButtons.put(PowerButton.BUTTON_BRIGHTNESS, BrightnessButton.class);
+        sPossibleButtons.put(PowerButton.BUTTON_ULTRA_BRIGHTNESS, UltraBrightnessButton.class);
         sPossibleButtons.put(PowerButton.BUTTON_SOUND, SoundButton.class);
         sPossibleButtons.put(PowerButton.BUTTON_SYNC, SyncButton.class);
         sPossibleButtons.put(PowerButton.BUTTON_WIFIAP, WifiApButton.class);

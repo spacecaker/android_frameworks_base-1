@@ -37,6 +37,7 @@ public abstract class PowerButton {
     public static final String BUTTON_GPS = "toggleGPS";
     public static final String BUTTON_BLUETOOTH = "toggleBluetooth";
     public static final String BUTTON_BRIGHTNESS = "toggleBrightness";
+    public static final String BUTTON_ULTRA_BRIGHTNESS = "toggleUltraBrightness";
     public static final String BUTTON_SOUND = "toggleSound";
     public static final String BUTTON_SYNC = "toggleSync";
     public static final String BUTTON_WIFIAP = "toggleWifiAp";
