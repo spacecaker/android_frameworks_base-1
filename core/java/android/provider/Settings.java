@@ -1264,6 +1264,8 @@ public final class Settings {
         public static final String ACHEP_JB_STATUS_BAR_NOTIFICATION_BIGGER = "achep_jb_status_bar_notification_bigger";
         //Additional data for ultra brightness
         public static final String ACHEP_ULTRA_BRIGHTNESS = "achep_ultra_brightness";
+        //Additional options
+        public static final String ACHEP_STATUS_BAR_HAS_SOFT_BUTTONS = "achep_has_soft_buttons";
         
         
 
