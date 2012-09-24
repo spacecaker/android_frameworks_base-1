@@ -708,11 +708,11 @@ public class CmStatusBarView extends StatusBarView {
      *
      * This is executed in a separate Thread to avoid blocking
      */
-    private void simulateKeypress(final int keyCode) {
+    public static void simulateKeypress(final int keyCode) {
         new Thread( new KeyEventInjector( keyCode ) ).start();
     }
 
-    private class KeyEventInjector implements Runnable {
+    public static class KeyEventInjector implements Runnable {
         private int keyCode;
 
         KeyEventInjector(final int keyCode) {

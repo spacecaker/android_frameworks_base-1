@@ -657,6 +657,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         lp.windowAnimations = com.android.internal.R.style.Animation_StatusBar;
 		
         WindowManagerImpl.getDefault().addView(view, lp);
+		if (Settings.System.getInt(getContentResolver(),
+                                                Settings.System.ACHEP_JB_STATUS_BAR_SOFT_BUTTONS, 0) == 1)
+			WindowManagerImpl.getDefault().addView(new StatusBarJellyHeaderView(getBaseContext()), lp);
 
         //mRecentApps.setupRecentApps();
         mPowerWidget.setupWidget();
