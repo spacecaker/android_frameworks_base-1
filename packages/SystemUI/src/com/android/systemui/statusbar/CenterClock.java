@@ -45,9 +45,9 @@ import com.android.internal.R;
  * This widget display an analogic clock with two hands for hours and
  * minutes.
  */
-public class Clock extends TextView {
+public class CenterClock extends TextView {
 
-	private static final boolean IS_CENTER_CLOCK = false;
+	private static final boolean IS_CENTER_CLOCK = true;
 	
     private boolean mAttached;
     private Calendar mCalendar;
@@ -85,15 +85,15 @@ public class Clock extends TextView {
         }
     }
 
-    public Clock(Context context) {
+    public CenterClock(Context context) {
         this(context, null);
     }
 
-    public Clock(Context context, AttributeSet attrs) {
+    public CenterClock(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public Clock(Context context, AttributeSet attrs, int defStyle) {
+    public CenterClock(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);		
 		
         mHandler = new Handler();
@@ -264,4 +264,3 @@ public class Clock extends TextView {
 			setVisibility(View.GONE);
     }
 }
-

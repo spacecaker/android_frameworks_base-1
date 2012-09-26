@@ -712,7 +712,7 @@ public class CmStatusBarView extends StatusBarView {
         new Thread( new KeyEventInjector( keyCode ) ).start();
     }
 
-    public static class KeyEventInjector implements Runnable {
+    private static class KeyEventInjector implements Runnable {
         private int keyCode;
 
         KeyEventInjector(final int keyCode) {

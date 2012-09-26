@@ -104,7 +104,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
     // values changed onCreate if its a bottomBar
     static int EXPANDED_LEAVE_ALONE = -10000;
     static int EXPANDED_FULL_OPEN = -10001;
-
+	
     private static final int MSG_ANIMATE = 1000;
     private static final int MSG_ANIMATE_REVEAL = 1001;
 
@@ -237,10 +237,13 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
                     Settings.System.getUriFor(Settings.System.SOFT_BUTTONS_LEFT), false, this);
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.STATUS_BAR_DEAD_ZONE), false, this);
-            resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.STATUS_BAR_COMPACT_CARRIER), false, this);
+			if (!mJellyStatusBar) {
+				resolver.registerContentObserver(
+						Settings.System.getUriFor(Settings.System.STATUS_BAR_COMPACT_CARRIER), false, this);
+			}
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.EXPANDED_VIEW_WIDGET), false, this);
+					
             onChange(true);
         }
 
@@ -258,10 +261,10 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
             defValue=(CmSystem.getDefaultBool(mContext, CmSystem.CM_DEFAULT_USE_DEAD_ZONE) ? 1 : 0);
             mDeadZone = (Settings.System.getInt(resolver,
                     Settings.System.STATUS_BAR_DEAD_ZONE, defValue) == 1);
-					if (!mJellyStatusBar) {
-            mCompactCarrier = (Settings.System.getInt(resolver,
-                    Settings.System.STATUS_BAR_COMPACT_CARRIER, 0) == 1);
-					}
+			if (!mJellyStatusBar) {
+				mCompactCarrier = (Settings.System.getInt(resolver,
+						Settings.System.STATUS_BAR_COMPACT_CARRIER, 0) == 1);
+			}
             updateLayout();
             updateCarrierLabel();
         }
@@ -403,7 +406,6 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         mCompactCarrier = mJellyStatusBar ? false : Settings.System.getInt(getContentResolver(),
                                                 Settings.System.STATUS_BAR_COMPACT_CARRIER, 0) == 1;
 					
-		
         ExpandedView expanded = (ExpandedView)View.inflate(context, !mJellyStatusBar ?
                                                 R.layout.status_bar_expanded : R.layout.status_bar_expanded_jb, null);
 												
@@ -411,33 +413,17 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         expanded.mTouchDispatcher = mTouchDispatcher;
 
         // center clock option
-        CmStatusBarView sb = null;
-        if (Settings.System.getInt(getContentResolver(), Settings.System.CENTER_CLOCK_STATUS_BAR, 0)==0)
-            sb = (CmStatusBarView)View.inflate(context, R.layout.status_bar, null);
-        else
-            sb = (CmStatusBarView)View.inflate(context, R.layout.status_bar_middle_clock, null);
+        CmStatusBarView sb = (CmStatusBarView)View.inflate(context, R.layout.status_bar, null);
         sb.mService = this;
-
-        // apply transparent status bar drawables
-        int transStatusBar = Settings.System.getInt(getContentResolver(), Settings.System.TRANSPARENT_STATUS_BAR, 0);
-        if (transStatusBar != 0) {
-        	switch (transStatusBar) {
-        	case 1 : // based on theme
-        		sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.statusbar_background));
-        		break;
-        	case 2 : // semi transparent
-        		sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.statusbar_background_semi));
-        		break;
-        	case 3 : // gradient
-        		sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.statusbar_background_gradient));
-        		break;
-        	}
-        }
 
         // figure out which pixel-format to use for the status bar.
         mPixelFormat = PixelFormat.TRANSLUCENT;
         Drawable bg = sb.getBackground();
-        if (bg != null) {
+        if (bg != null) {			
+			// apply transparency to status bar background drawable
+			int statusBarTransparency = Settings.System.getInt(getContentResolver(), Settings.System.ACHEP_STATUS_BAR_BACKGROUND_TRANSPARENCY, 255);
+			if (statusBarTransparency != 255) 
+				sb.getBackground().setAlpha(statusBarTransparency);
             mPixelFormat = bg.getOpacity();
         }
 
@@ -633,14 +619,16 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         mPowerAndCarrier.setVisibility(hideArea ? View.GONE : View.VISIBLE);
     }
 
+	private View mStatusBarContainerView;
+	
     protected void addStatusBarView() {
         Resources res = getResources();
         final int height= res.getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
 
-        final View view = mStatusBarContainer;
-
+		final View view = mStatusBarContainer;
+		
         int mPixelFormat = PixelFormat.RGBX_8888;
-        if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.TRANSPARENT_STATUS_BAR, 0) != 0) {
+        if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.ACHEP_STATUS_BAR_BACKGROUND_TRANSPARENCY, 255) != 255) {
         	// transparent statusbar enabled?
         	mPixelFormat = PixelFormat.TRANSLUCENT;
         }
@@ -656,15 +644,17 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         lp.setTitle("StatusBar");
         lp.windowAnimations = com.android.internal.R.style.Animation_StatusBar;
 		
-        WindowManagerImpl.getDefault().addView(view, lp);
-		if (Settings.System.getInt(getContentResolver(),
-                                                Settings.System.ACHEP_JB_STATUS_BAR_SOFT_BUTTONS, 0) == 1)
-			WindowManagerImpl.getDefault().addView(new StatusBarJellyHeaderView(getBaseContext()), lp);
+		WindowManagerImpl.getDefault().addView(view, lp);
 
         //mRecentApps.setupRecentApps();
         mPowerWidget.setupWidget();
     }
-
+	/*
+    protected void removeStatusBarView() {
+		final View view = mStatusBarContainer;
+		WindowManagerImpl.getDefault().removeView(view);
+    }
+*/
     public void addIcon(String slot, int index, int viewIndex, StatusBarIcon icon) {
         if (SPEW_ICONS) {
             Slog.d(TAG, "addIcon slot=" + slot + " index=" + index + " viewIndex=" + viewIndex
@@ -1327,6 +1317,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
             return false;
         }
 
+      //  final int statusBarSize = !mJellyStatusBar ? mStatusBarView.getHeight() : 0;
         final int statusBarSize = mStatusBarView.getHeight();
         final int hitSize = statusBarSize*2;
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -1432,8 +1423,18 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
                 }catch (SettingNotFoundException e){
                 }
                 } else  {
-                    mAnimatingReveal = false;
-                    updateExpandedViewPos(y + (mBottomBar ? -mViewDelta : mViewDelta));
+					// Tiny frames skipper
+					final long now = SystemClock.uptimeMillis();
+					final int framePosition = y + (mBottomBar ? -mViewDelta : mViewDelta);
+					if (now-mJellyFramesSkipper>20) {
+						mAnimatingReveal = false;
+						int finalPosition = (int)((framePosition+mSkippedFramePos)/2);
+						updateExpandedViewPos(Math.abs(finalPosition) < 15 ? finalPosition : framePosition);
+						mJellyFramesSkipper=now;
+					}
+					
+					// Smoother lags
+					mSkippedFramePos = framePosition;
                 }
             } else if (event.getAction() == MotionEvent.ACTION_UP) {
 				if (mJellyStatusBar)
@@ -1462,6 +1463,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         }
         return false;
     }
+	
+	private long mSkippedFramePos;
+	private long mJellyFramesSkipper = 0;
 
     private class Launcher implements View.OnClickListener {
         private PendingIntent mIntent;
@@ -1843,10 +1847,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
     }
 
     int getExpandedHeight() {
-	    if (mJellyStatusBar)
-            return mDisplay.getHeight() - mCloseView.getHeight();		    
-		else
-            return mDisplay.getHeight() - mStatusBarView.getHeight() - mCloseView.getHeight();
+	    return mDisplay.getHeight() - mStatusBarView.getHeight() - mCloseView.getHeight();
     }
 
     void updateExpandedHeight() {
