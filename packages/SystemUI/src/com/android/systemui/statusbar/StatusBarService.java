@@ -413,7 +413,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         expanded.mTouchDispatcher = mTouchDispatcher;
 
         // center clock option
-        CmStatusBarView sb = (CmStatusBarView)View.inflate(context, R.layout.status_bar, null);
+        CmStatusBarView sb = (CmStatusBarView)View.inflate(context, R.layout.status_bar_, null);
         sb.mService = this;
 
         // figure out which pixel-format to use for the status bar.

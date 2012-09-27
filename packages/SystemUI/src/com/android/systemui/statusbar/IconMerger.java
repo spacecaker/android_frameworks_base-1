@@ -58,7 +58,7 @@ public class IconMerger extends LinearLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
 		
-		if ((Settings.System.getInt(getContext().getContentResolver(), Settings.System.CENTER_CLOCK_STATUS_BAR, 1) == 1)) {
+		if ((Settings.System.getInt(getContext().getContentResolver(), Settings.System.CENTER_CLOCK_STATUS_BAR, 0) == 1)) {
             r = (((LinearLayout) this.getParent()).getRight() / 2) - 15;
         }
 
