@@ -46,9 +46,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
 import android.widget.ImageView.ScaleType;
-import android.widget.LinearLayout.LayoutParams;
 import android.util.Log;
 import android.media.AudioManager;
 import android.provider.MediaStore;
@@ -63,7 +63,7 @@ import java.util.ArrayList;
  * information about the device depending on its state, and how to get
  * past it, as applicable.
  */
-class LockScreen extends LinearLayout implements KeyguardScreen {
+class LockScreen extends RelativeLayout implements KeyguardScreen {
 
     private static final int ON_RESUME_PING_DELAY = 500; // delay first ping until the screen is on
     private static final boolean DBG = false;
@@ -84,6 +84,10 @@ class LockScreen extends LinearLayout implements KeyguardScreen {
     private boolean mSilentMode;
     private AudioManager mAudioManager;
     private boolean mEnableMenuKeyInLockScreen;
+    
+    //dx
+    private TextView mdxLeft;
+    private TextView mdxRight;
 
     private KeyguardStatusViewManager mStatusViewManager;
     private UnlockWidgetCommonMethods mUnlockWidgetMethods;
@@ -493,8 +497,10 @@ class LockScreen extends LinearLayout implements KeyguardScreen {
         final LayoutInflater inflater = LayoutInflater.from(context);
         if (DBG) Log.v(TAG, "Creation orientation = " + mCreationOrientation);
         if (mCreationOrientation != Configuration.ORIENTATION_LANDSCAPE) {
+			Log.i("dx", "inflating from keyguard_screen_tab_unlock");
             inflater.inflate(R.layout.keyguard_screen_tab_unlock, this, true);
         } else {
+			Log.i("dx", "inflating from keyguard_screen_tab_unlock_land");
             inflater.inflate(R.layout.keyguard_screen_tab_unlock_land, this, true);
         }
 
@@ -539,6 +545,32 @@ class LockScreen extends LinearLayout implements KeyguardScreen {
 
         // Update widget with initial ring state
         mUnlockWidgetMethods.updateResources();
+
+        
+        //Label setup
+		mdxLeft = new TextView(context);
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		lp.leftMargin = 4;
+		lp.bottomMargin = 4;
+		lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+		lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		mdxLeft.setLayoutParams(lp);
+		mdxLeft.setVisibility(View.VISIBLE);
+		mdxLeft.setText("IScreamDX " + android.os.SystemProperties.get("ro.build.display.id"));
+		mdxLeft.setTextColor(0xffffffff);
+		this.addView(mdxLeft);
+		
+		mdxRight = new TextView(context);
+		lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		lp.rightMargin = 4;
+		lp.bottomMargin = 4;
+		lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		mdxRight.setLayoutParams(lp);
+		mdxRight.setVisibility(View.VISIBLE);
+		mdxRight.setText("TeamFun@xda");
+		mdxRight.setTextColor(0xffffffff);
+		this.addView(mdxRight);
 
         if (DBG) Log.v(TAG, "*** LockScreen accel is "
                 + (mUnlockWidget.isHardwareAccelerated() ? "on":"off"));

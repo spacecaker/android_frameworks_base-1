@@ -157,6 +157,20 @@ public class Smdk4210RIL extends RIL implements CommandsInterface {
     public Smdk4210RIL(Context context, int networkMode, int cdmaSubscription) {
         super(context, networkMode, cdmaSubscription);
         audioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+    //SAMSUNG SMDK4210 STATES
+    static final int RIL_REQUEST_DIAL_EMERGENCY = 10016;
+    static final int RIL_UNSOL_STK_SEND_SMS_RESULT = 11002;
+    static final int RIL_UNSOL_O2_HOME_ZONE_INFO = 11007;
+    static final int RIL_UNSOL_DEVICE_READY_NOTI = 11008;
+    static final int RIL_UNSOL_SAMSUNG_UNKNOWN_MAGIC_REQUEST_1 = 11010;
+    static final int RIL_UNSOL_SAMSUNG_UNKNOWN_MAGIC_REQUEST_2 = 11011;
+    static final int RIL_UNSOL_SAMSUNG_UNKNOWN_MAGIC_REQUEST_3 = 11012;
+    static final int RIL_UNSOL_HSDPA_STATE_CHANGED = 11016;
+    protected HandlerThread mSmdk4210Thread;
+    protected ConnectivityHandler mSmdk4210Handler;
+
+    public Smdk4210RIL(Context context, int networkMode, int cdmaSubscription) {
+        super(context, networkMode, cdmaSubscription);
     }
 
     @Override
@@ -507,6 +521,9 @@ public class Smdk4210RIL extends RIL implements CommandsInterface {
             case RIL_UNSOL_STK_CALL_CONTROL_RESULT: ret = responseVoid(p); break;
             case RIL_UNSOL_TWO_MIC_STATE: ret = responseInts(p); break;
             case RIL_UNSOL_WB_AMR_STATE: ret = responseInts(p); break;
+            case RIL_UNSOL_SAMSUNG_UNKNOWN_MAGIC_REQUEST_1: ret = responseVoid(p); break;
+            case RIL_UNSOL_SAMSUNG_UNKNOWN_MAGIC_REQUEST_2: ret = responseVoid(p); break;
+            case RIL_UNSOL_SAMSUNG_UNKNOWN_MAGIC_REQUEST_3: ret = responseVoid(p); break;
 
             default:
                 // Rewind the Parcel
@@ -598,6 +615,13 @@ public class Smdk4210RIL extends RIL implements CommandsInterface {
         riljLogv("[UNSL]< " + samsungResponseToString(response) + " " + retToString(response, ret));
     }
 
+            case RIL_UNSOL_SAMSUNG_UNKNOWN_MAGIC_REQUEST_1:
+            case RIL_UNSOL_SAMSUNG_UNKNOWN_MAGIC_REQUEST_2:
+            case RIL_UNSOL_SAMSUNG_UNKNOWN_MAGIC_REQUEST_3:
+                break;
+        }
+    }
+
     /**
      * Notifiy all registrants that the ril has connected or disconnected.
      *
@@ -631,6 +655,7 @@ public class Smdk4210RIL extends RIL implements CommandsInterface {
     responseCallList(Parcel p) {
         int num;
         boolean isVideo;
+        int voiceSettings;
         ArrayList<DriverCall> response;
         DriverCall dc;
         int dataAvail = p.dataAvail();
@@ -678,6 +703,38 @@ public class Smdk4210RIL extends RIL implements CommandsInterface {
             Log.d(LOG_TAG, "np = " + np);
             Log.d(LOG_TAG, "name = " + dc.name);
             Log.d(LOG_TAG, "namePresentation = " + dc.namePresentation);
+            dc = new DriverCall();
+
+            dc.state = DriverCall.stateFromCLCC(p.readInt());
+            Log.d(LOG_TAG, "state = " + dc.state);
+            dc.index = p.readInt();
+            Log.d(LOG_TAG, "index = " + dc.index);
+            dc.TOA = p.readInt();
+            Log.d(LOG_TAG, "state = " + dc.TOA);
+            dc.isMpty = (0 != p.readInt());
+            Log.d(LOG_TAG, "isMpty = " + dc.isMpty);
+            dc.isMT = (0 != p.readInt());
+            Log.d(LOG_TAG, "isMT = " + dc.isMT);
+            dc.als = p.readInt();
+            Log.d(LOG_TAG, "als = " + dc.als);
+            voiceSettings = p.readInt();
+            dc.isVoice = (0 == voiceSettings) ? false : true;
+            Log.d(LOG_TAG, "isVoice = " + dc.isVoice);
+            dc.isVoicePrivacy =  (0 != p.readInt());
+            //Some Samsung magic data for Videocalls
+            voiceSettings = p.readInt();
+            //printing it to cosole for later investigation
+            Log.d(LOG_TAG, "Samsung magic = " + voiceSettings);
+            dc.number = p.readString();
+            Log.d(LOG_TAG, "number = " + dc.number);
+            int np = p.readInt();
+            Log.d(LOG_TAG, "np = " + np);
+            dc.numberPresentation = DriverCall.presentationFromCLIP(np);
+            dc.name = p.readString();
+            Log.d(LOG_TAG, "name = " + dc.name);
+            dc.namePresentation = p.readInt();
+            Log.d(LOG_TAG, "namePresentation = " + dc.namePresentation);
+            int uusInfoPresent = p.readInt();
             Log.d(LOG_TAG, "uusInfoPresent = " + uusInfoPresent);
 
             if (uusInfoPresent == 1) {
@@ -770,6 +827,7 @@ public class Smdk4210RIL extends RIL implements CommandsInterface {
         int response[];
 
         // Get raw data
+        /* TODO: Add SignalStrength class to match RIL_SignalStrength */
         response = new int[numInts];
         for (int i = 0 ; i < numInts ; i++) {
             response[i] = p.readInt();
@@ -792,6 +850,14 @@ public class Smdk4210RIL extends RIL implements CommandsInterface {
             default : response[0] &= 0xff; break; // no idea; just pass value through
         }
 
+        // SamsungRIL is a v3 RIL, fill the rest with -1
+        for (int i = 7; i < numInts; i++) {
+            response[i] = -1;
+        }
+
+        /* Matching Samsung signal strength to asu.
+           Method taken from Samsungs cdma/gsmSignalStateTracker */
+        response[0] = ((response[0] & 0xFF00) >> 8) * 3; //gsmDbm
         response[1] = -1; //gsmEcio
         response[2] = (response[2] < 0)?-120:-response[2]; //cdmaDbm
         response[3] = (response[3] < 0)?-160:-response[3]; //cdmaEcio
@@ -802,7 +868,6 @@ public class Smdk4210RIL extends RIL implements CommandsInterface {
         }
 
         Log.d(LOG_TAG, "responseSignalStength AFTER: gsmDbm=" + response[0]);
-
         return response;
     }
 }
