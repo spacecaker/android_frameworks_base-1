@@ -282,11 +282,6 @@ void CameraParameters::setOrientation(int orientation)
 }
 #endif
 
-//dx: f**kin SE .!.
-const char CameraParameters::ORIENTATION[] = "orientation";
-const char CameraParameters::ORIENTATION_PORTRAIT[] = "orientation-portrait";
-const char CameraParameters::ORIENTATION_LANDSCAPE[] = "orientation-landscape";
-
 CameraParameters::CameraParameters()
                 : mMap()
 {
