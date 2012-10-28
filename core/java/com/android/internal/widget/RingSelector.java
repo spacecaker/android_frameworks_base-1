@@ -267,13 +267,13 @@ public class RingSelector extends ViewGroup {
         }
 
         void hide() {
-			int i = 0;
+		/*	int i = 0;
 			Log.i("dx", "ring being hidden");
 			try {
 				i = 5/i;
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
+			}*/
             if (isHidden) return;
             if (ring.getVisibility() == View.INVISIBLE) return;
             if (alignment == ALIGN_CENTER || alignment == ALIGN_MIDDLE) {
