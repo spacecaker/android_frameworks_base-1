@@ -16,6 +16,8 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,6 +113,22 @@ public class BrightnessButton extends PowerButton {
         }
 
         int backlightIndex = mBacklightValues[mCurrentBacklightIndex];
+        Log.e(TAG, "backlightIndex: " + backlightIndex + "mCurrentBacklightIndex: " + mCurrentBacklightIndex );
+        if (backlightIndex > BACKLIGHTS.length - 1) {
+            // This is the Ultra Brightness mode
+            writeOneLine("/sys/devices/platform/i2c-adapter/i2c-0/0-0036/mode", "i2c_pwm");
+            Settings.System.putInt(resolver, Settings.System.SCREEN_BRIGHTNESS_ULTRA_MODE,
+                    Settings.System.SCREEN_BRIGHTNESS_MODE_ULTRA_ENABLED);
+            // Also set Brightness to max
+            backlightIndex = BACKLIGHTS.length - 1;
+            Log.e(TAG, "Setting backlightIndex to: " + backlightIndex + " BACKLIGHTS.length:: " + BACKLIGHTS.length);
+        }
+        else if (backlightIndex == 1) {
+            // When dimming, disable ultra brightness
+            writeOneLine("/sys/devices/platform/i2c-adapter/i2c-0/0-0036/mode", "i2c_pwm_als");
+            Settings.System.putInt(resolver, Settings.System.SCREEN_BRIGHTNESS_ULTRA_MODE,
+                    Settings.System.SCREEN_BRIGHTNESS_MODE_ULTRA_DISABLED);
+        }
         int brightness = BACKLIGHTS[backlightIndex];
 
         if (brightness == AUTO_BACKLIGHT) {
@@ -190,5 +208,21 @@ public class BrightnessButton extends PowerButton {
                 }
             }
         }
+    }
+
+    public static boolean writeOneLine(String fname, String value) {
+        try {
+            FileWriter fw = new FileWriter(fname);
+            try {
+                fw.write(value);
+            } finally {
+                fw.close();
+            }
+        } catch (IOException e) {
+            String Error = "Error writing to " + fname + ". Exception: ";
+            Log.e(TAG, Error, e);
+            return false;
+        }
+        return true;
     }
 }

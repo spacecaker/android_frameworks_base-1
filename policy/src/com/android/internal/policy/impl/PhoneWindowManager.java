@@ -470,6 +470,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // (See Settings.Secure.INCALL_POWER_BUTTON_BEHAVIOR.)
     int mIncallPowerBehavior;
 
+    // Behavior of BACK button while in-call and screen on.
+    // (See Settings.Secure.INCALL_BACK_BUTTON_BEHAVIOR.)
+    int mIncallBackBehavior;
+
     int mLandscapeRotation = 0;  // default landscape rotation
     int mSeascapeRotation = 0;   // "other" landscape rotation, 180 degrees from mLandscapeRotation
     int mPortraitRotation = 0;   // default portrait rotation
@@ -516,6 +520,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.System.END_BUTTON_BEHAVIOR), false, this);
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.INCALL_POWER_BUTTON_BEHAVIOR), false, this);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.INCALL_BACK_BUTTON_BEHAVIOR), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.VOLUME_WAKE_SCREEN), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -1135,6 +1141,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mIncallPowerBehavior = Settings.Secure.getInt(resolver,
                     Settings.Secure.INCALL_POWER_BUTTON_BEHAVIOR,
                     Settings.Secure.INCALL_POWER_BUTTON_BEHAVIOR_DEFAULT);
+            mIncallBackBehavior = Settings.Secure.getInt(resolver,
+                    Settings.Secure.INCALL_BACK_BUTTON_BEHAVIOR,
+                    Settings.Secure.INCALL_BACK_BUTTON_BEHAVIOR_DEFAULT);
             mVolumeWakeScreen = (Settings.System.getInt(resolver,
                     Settings.System.VOLUME_WAKE_SCREEN, 0) == 1);
             mVolBtnMusicControls = (Settings.System.getInt(resolver,
@@ -3066,6 +3075,32 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         // Handle special keys.
         switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK: {
+                if (down) {
+                    ITelephony telephonyService = getTelephonyService();
+                    boolean hungUp = false;
+                    if (telephonyService != null) {
+                        try {
+                            if (telephonyService.isRinging()) {
+                                // Pressing Back while there's a ringing incoming
+                                // call should silence the ringer.
+                                telephonyService.silenceRinger();
+                            } else if ((mIncallBackBehavior
+                                & Settings.Secure.INCALL_BACK_BUTTON_BEHAVIOR_HANGUP) != 0
+                                && telephonyService.isOffhook()) {
+                                    // Otherwise, if "Back button ends call" is enabled,
+                                    // the back button will hang up any current active call.
+                                    telephonyService.showCallScreen();
+                                    hungUp = telephonyService.endCall();
+                            }
+                        } catch (RemoteException ex) {
+                            Log.w(TAG, "ITelephony threw RemoteException", ex);
+                        }
+                    }
+                }
+                break;
+            }
+
             case KeyEvent.KEYCODE_ENDCALL: {
                 result &= ~ACTION_PASS_TO_USER;
                 if (down) {

@@ -6393,7 +6393,8 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
                 mTextPaint.setTextScaleX(1.0f - overflow - 0.005f);
                 post(new Runnable() {
                     public void run() {
-                        requestLayout();
+                        // dx: slow preference screens.
+			// requestLayout();
                     }
                 });
                 return true;

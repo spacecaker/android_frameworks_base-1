@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+#ifdef ECLAIR_LIBCAMERA
+#include <binder/MemoryDealerEclair.h>
+#endif
+
 #ifndef ANDROID_MEMORY_DEALER_H
 #define ANDROID_MEMORY_DEALER_H
-
 
 #include <stdint.h>
 #include <sys/types.h>

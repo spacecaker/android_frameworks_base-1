@@ -1775,6 +1775,9 @@ public class WifiStateMachine extends StateMachine {
                     loge("Exception in softap start " + e);
                     try {
                         mNwService.stopAccessPoint(mInterfaceName);
+                    } catch (Exception e0) {}
+                    try {
+                        log("startAccessPoint iface="+mInterfaceName+", ap="+mSoftApIface);
                         mNwService.startAccessPoint(config, mInterfaceName, mSoftApIface);
                     } catch (Exception e1) {
                         loge("Exception in softap re-start " + e1);
@@ -1870,6 +1873,8 @@ public class WifiStateMachine extends StateMachine {
                 case DhcpStateMachine.CMD_PRE_DHCP_ACTION:
                 case DhcpStateMachine.CMD_POST_DHCP_ACTION:
                 /* Handled by WifiApConfigStore */
+                case CMD_LOAD_DRIVER_SUCCESS:
+                case CMD_LOAD_DRIVER_FAILURE:
                 case CMD_SET_AP_CONFIG:
                 case CMD_SET_AP_CONFIG_COMPLETED:
                 case CMD_REQUEST_AP_CONFIG:
@@ -1890,7 +1895,7 @@ public class WifiStateMachine extends StateMachine {
                     deferMessage(message);
                     break;
                 default:
-                    loge("Error! unhandled message" + message);
+                    loge("Error! unhandled message" + (message.what - BASE));
                     break;
             }
             return HANDLED;
@@ -1954,7 +1959,16 @@ public class WifiStateMachine extends StateMachine {
                     switch(message.arg1) {
                         case WIFI_STATE_ENABLING:
                             setWifiState(WIFI_STATE_ENABLING);
-                            if(WifiNative.loadDriver()) {
+                            boolean loaded;
+                            if (SystemProperties.getBoolean("wifi.hotspot.ti", false)
+                                && message.arg1 == WIFI_AP_STATE_ENABLING) {
+                                if (DBG) log("Loading Hotspot Driver (via libhardware_legacy)\n");
+                                loaded = WifiNative.loadHotspotDriver();
+                            } else {
+                                if (DBG) log("Loading Wifi Driver\n");
+                                loaded = WifiNative.loadDriver();
+                            }
+                            if(loaded) {
                                 if (DBG) log("Driver load successful");
                                 sendMessage(CMD_LOAD_DRIVER_SUCCESS);
                             } else {

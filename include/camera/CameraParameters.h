@@ -932,6 +932,9 @@ public:
     void setPreviewFpsRange(int minFPS,int maxFPS);
     void setPostviewSize(int x,int y);
     void getSupportedHfrSizes(Vector<Size> &sizes) const;
+    static const char ORIENTATION_LANDSCAPE[];
+    static const char ORIENTATION_PORTRAIT[];
+    static const char ORIENTATION[];
 #endif
 
 private:

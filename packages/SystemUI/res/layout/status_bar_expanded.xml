@@ -79,6 +79,18 @@
                 android:contentDescription="@string/accessibility_settings_button"
                 />
 
+            <com.android.systemui.statusbar.policy.KeyButtonView
+                android:paddingLeft="4.0dip"
+                android:paddingRight="4.0dip"
+                android:id="@id/recent_apps"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:src="@drawable/ic_sysbar_recent"
+                android:layout_toRightOf="@id/settings_button"
+                android:contentDescription="@string/accessibility_recent"
+                systemui:keyCode="187"
+                systemui:glowBackground="@drawable/ic_sysbar_highlight" />
+
             <ImageView android:id="@+id/clear_all_button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.view.KeyEvent;
 import android.util.Log;
 import com.android.internal.R;
 import com.android.internal.widget.LinearLayoutWithDefaultTouchRecepient;
@@ -203,6 +204,23 @@ class PatternUnlockScreen extends LinearLayoutWithDefaultTouchRecepient
     public void setEnableFallback(boolean state) {
         if (DEBUG) Log.d(TAG, "setEnableFallback(" + state + ")");
         mEnableFallback = state;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_HOME) {
+            event.startTracking();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_HOME) {
+            LockScreen.handleHomeLongPress(getContext());
+        }
+        return false;
     }
 
     @Override

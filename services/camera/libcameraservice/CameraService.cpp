@@ -797,6 +797,10 @@ bool CameraService::Client::recordingEnabled() {
 }
 
 status_t CameraService::Client::autoFocus() {
+#ifdef BOARD_CAMERA_NO_AUTOFOCUS
+    notifyCallback(CAMERA_MSG_FOCUS, 1, 0, 0);
+    return NO_ERROR;
+#else
     LOG1("autoFocus (pid %d)", getCallingPid());
 
     Mutex::Autolock lock(mLock);
@@ -804,9 +808,13 @@ status_t CameraService::Client::autoFocus() {
     if (result != NO_ERROR) return result;
 
     return mHardware->autoFocus();
+#endif
 }
 
 status_t CameraService::Client::cancelAutoFocus() {
+#ifdef BOARD_CAMERA_NO_AUTOFOCUS
+    return NO_ERROR;
+#else
     LOG1("cancelAutoFocus (pid %d)", getCallingPid());
 
     Mutex::Autolock lock(mLock);
@@ -814,6 +822,7 @@ status_t CameraService::Client::cancelAutoFocus() {
     if (result != NO_ERROR) return result;
 
     return mHardware->cancelAutoFocus();
+#endif
 }
 
 // take a picture - image is returned in callback
@@ -980,7 +989,7 @@ bool CameraService::Client::lockIfMessageWanted(int32_t msgType) {
         }
         usleep(CHECK_MESSAGE_INTERVAL * 1000);
     }
-    LOGW("lockIfMessageWanted(%d): dropped unwanted message", msgType);
+    //LOGW("lockIfMessageWanted(%d): dropped unwanted message", msgType);
     return false;
 }
 
