@@ -25,6 +25,9 @@ import android.widget.LinearLayout;
 
 
 public class TrackingView extends LinearLayout {
+
+	private final Context context;
+
     final Display mDisplay;
     StatusBarService mService;
     boolean mTracking;
@@ -33,6 +36,7 @@ public class TrackingView extends LinearLayout {
 
     public TrackingView(Context context, AttributeSet attrs) {
         super(context, attrs);
+		this.context = context;
         mDisplay = ((WindowManager)context.getSystemService(
                 Context.WINDOW_SERVICE)).getDefaultDisplay();
     }
@@ -65,7 +69,7 @@ public class TrackingView extends LinearLayout {
 
     @Override
     protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
+        super.onDetachedFromWindow(); 
         mService.onTrackingViewDetached();
         mIsAttachedToWindow = false;
     }

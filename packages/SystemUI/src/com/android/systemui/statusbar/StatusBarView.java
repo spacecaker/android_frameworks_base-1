@@ -42,14 +42,14 @@ public class StatusBarView extends FrameLayout {
     private static final String TAG = "StatusBarView";
 
     static final int DIM_ANIM_TIME = 400;
-    
+
     StatusBarService mService;
     boolean mTracking;
     int mStartX, mStartY;
     ViewGroup mNotificationIcons;
     ViewGroup mStatusIcons;
-    View mDate;
-    FixedSizeDrawable mBackground;
+    /* View mDate; */
+    /* FixedSizeDrawable mBackground; */
 
     public StatusBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -60,11 +60,10 @@ public class StatusBarView extends FrameLayout {
         super.onFinishInflate();
         mNotificationIcons = (ViewGroup)findViewById(R.id.notificationIcons);
         mStatusIcons = (ViewGroup)findViewById(R.id.statusIcons);
-        mDate = findViewById(R.id.date);
 
-        mBackground = new FixedSizeDrawable(mDate.getBackground());
+        /* mBackground = new FixedSizeDrawable(mDate.getBackground());
         mBackground.setFixedBounds(0, 0, 0, 0);
-        mDate.setBackgroundDrawable(mBackground);
+        mDate.setBackgroundDrawable(mBackground); */
     }
 
     @Override
@@ -85,7 +84,7 @@ public class StatusBarView extends FrameLayout {
         mService.updateExpandedViewPos(StatusBarService.EXPANDED_LEAVE_ALONE);
     }
 
-    @Override
+    /*@Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
 
@@ -113,7 +112,7 @@ public class StatusBarView extends FrameLayout {
 
         mDate.layout(mDate.getLeft(), mDate.getTop(), newDateRight, mDate.getBottom());
         mBackground.setFixedBounds(-mDate.getLeft(), -mDate.getTop(), (r-l), (b-t));
-    }
+    }*/
 
     /**
      * Gets the left position of v in this view.  Throws if v is not

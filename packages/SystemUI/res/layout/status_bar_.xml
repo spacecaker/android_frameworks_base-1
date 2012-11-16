@@ -28,12 +28,22 @@
     android:focusable="true"
     android:descendantFocusability="afterDescendants"
     >
+        <LinearLayout android:gravity="center" android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="match_parent">
+        <com.android.systemui.statusbar.CenterClock
+            android:textAppearance="@*android:style/TextAppearance.StatusBar.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:paddingRight="6dip"
+            android:gravity="center"
+            />
+        </LinearLayout>
 
     <LinearLayout android:id="@+id/icons"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
-            
+
         <com.android.systemui.statusbar.IconMerger android:id="@+id/notificationIcons"
             android:layout_width="0dip"
             android:layout_weight="1"
@@ -42,7 +52,7 @@
             android:paddingLeft="6dip"
             android:gravity="center_vertical"
             android:orientation="horizontal"/>  
-            
+
         <LinearLayout android:id="@+id/statusIcons"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -74,15 +84,14 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="horizontal"/>
-
+			
         <com.android.systemui.statusbar.Clock
             android:textAppearance="@*android:style/TextAppearance.StatusBar.Icon"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:singleLine="true"
             android:paddingRight="6dip"
-            android:gravity="center_vertical|left"
-            />
+            android:gravity="center_vertical|left" /> 
 
         <!-- The following are button layouts for tablet style statusbar buttons
              Visibility is handled in config.xml by setting config_statusbar_buttons = "true" -->
@@ -201,7 +210,7 @@
         </com.android.systemui.statusbar.TickerView>
     </LinearLayout>
 
-    <com.android.systemui.statusbar.DateView android:id="@+id/date"
+    <!--<com.android.systemui.statusbar.DateView android:id="@+id/date"
         android:textAppearance="@*android:style/TextAppearance.StatusBar.Icon"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -210,5 +219,5 @@
         android:paddingLeft="6px"
         android:paddingRight="6px"
         android:background="@drawable/statusbar_background"
-        />
+        />-->
 </com.android.systemui.statusbar.CmStatusBarView>

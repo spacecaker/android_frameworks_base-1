@@ -128,6 +128,9 @@ public class PhoneFactory {
                 } else if ("lgeqcom".equals(sRILClassname)) {
                     Log.i(LOG_TAG, "Using LGE Qualcomm RIL");
                     sCommandsInterface = new LGEQualcommRIL(context, networkMode, cdmaSubscription);
+                } else if ("semc-msm7x27".equals(sRILClassname)) {
+                    Log.i(LOG_TAG, "Using SEMC7X27RIL RIL");
+                    sCommandsInterface = new SEMC7X27RIL(context, networkMode, cdmaSubscription);
                 } else if ("mototegra".equals(sRILClassname)) {
                     Log.i(LOG_TAG, "Using Motorola Tegra2 RIL");
                     sCommandsInterface = new MotoTegraRIL(context, networkMode, cdmaSubscription);
