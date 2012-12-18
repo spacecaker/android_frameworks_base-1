@@ -128,7 +128,7 @@
     <array name="shutdown_reboot_options_gdx">
         <item>Reboot</item>
         <!-- <item>xRecovery</item> -->
-        <item>ClockworkMod</item>
+        <item>Recovery</item>
     </array>
 
     <string-array name="shutdown_reboot_actions_gdx">
