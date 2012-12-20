@@ -527,10 +527,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
             Drawable cbg = mJellyCarrierView.getBackground();
        	    if (cbg != null) {			
 		// apply transparency to status bar background drawable
-		int carrierLabelTransparency = Settings.System.getInt(getContentResolver(), Settings.System.ACHEP_STATUS_BAR_BACKGROUND_TRANSPARENCY, 255);
+		int carrierLabelTransparency = Settings.System.getInt(getContentResolver(), Settings.System.ACHEP_STATUS_BAR_PANEL_BACKGROUND_TRANSPARENCY, 255);
 		if (carrierLabelTransparency != 255) 
 			cbg.setAlpha(carrierLabelTransparency);
-			// TODO: add settings
        	    }
         }
 
