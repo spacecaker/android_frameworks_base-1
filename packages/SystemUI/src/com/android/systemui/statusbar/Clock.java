@@ -60,7 +60,7 @@ public class Clock extends TextView {
 
     private int mAmPmStyle;
     private boolean mShowClock;
-    private boolean mIsCenterClock = false;
+    private boolean mIsCenterClock;
 
     Handler mHandler;
 
@@ -93,13 +93,18 @@ public class Clock extends TextView {
     }
 
     public Clock(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);		
+        this(context, attrs, defStyle, false);
+    }
+    
+    public Clock(Context context, AttributeSet attrs, int defStyle, boolean isCenterClock) {
+        super(context, attrs, defStyle);
 		
         mHandler = new Handler();
         SettingsObserver settingsObserver = new SettingsObserver(mHandler);
-        settingsObserver.observe();
-
-        updateSettings();
+        settingsObserver.observe();		
+		
+	mIsCenterClock = isCenterClock;
+    	updateSettings();
     }
 
     @Override
@@ -261,10 +266,6 @@ public class Clock extends TextView {
 		setVisibility(View.VISIBLE);
 	else
 		setVisibility(View.GONE);
-    }
-    
-    public void setIsCenterClock(boolean isCenterClock){
-    	mIsCenterClock = isCenterClock; 
     }
 }
 
