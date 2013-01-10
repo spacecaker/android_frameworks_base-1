@@ -423,7 +423,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 			// apply transparency to status bar background drawable
 			int statusBarTransparency = Settings.System.getInt(getContentResolver(), Settings.System.ACHEP_STATUS_BAR_BACKGROUND_TRANSPARENCY, 255);
 			if (statusBarTransparency != 255) 
-				sb.getBackground().setAlpha(statusBarTransparency);
+				bg.setAlpha(statusBarTransparency);
             mPixelFormat = bg.getOpacity();
         }
 
@@ -522,8 +522,16 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         mTrackingView.mService = this;
         mCloseView = (CloseDragHandle)mTrackingView.findViewById(R.id.close);
         mCloseView.mService = this;
-		if (mJellyStatusBar)
+	if (mJellyStatusBar) {
             mJellyCarrierView = (CarrierLabel)mTrackingView.findViewById(R.id.carrier);
+            Drawable cbg = mJellyCarrierView.getBackground();
+       	    if (cbg != null) {			
+		// apply transparency to status bar background drawable
+		int carrierLabelTransparency = Settings.System.getInt(getContentResolver(), Settings.System.ACHEP_JB_STATUS_BAR_PANEL_BACKGROUND_TRANSPARENCY, 255);
+		if (carrierLabelTransparency != 255) 
+			cbg.setAlpha(carrierLabelTransparency);
+       	    }
+        }
 
         mContext=context;
         updateLayout();

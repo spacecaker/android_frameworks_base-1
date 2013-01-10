@@ -46,8 +46,6 @@ import com.android.internal.R;
  * minutes.
  */
 public class Clock extends TextView {
-
-	private static final boolean IS_CENTER_CLOCK = false;
 	
     private boolean mAttached;
     private Calendar mCalendar;
@@ -62,6 +60,7 @@ public class Clock extends TextView {
 
     private int mAmPmStyle;
     private boolean mShowClock;
+    private boolean mIsCenterClock;
 
     Handler mHandler;
 
@@ -94,13 +93,18 @@ public class Clock extends TextView {
     }
 
     public Clock(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);		
+        this(context, attrs, defStyle, false);
+    }
+    
+    public Clock(Context context, AttributeSet attrs, int defStyle, boolean isCenterClock) {
+        super(context, attrs, defStyle);
 		
         mHandler = new Handler();
         SettingsObserver settingsObserver = new SettingsObserver(mHandler);
-        settingsObserver.observe();
-
-        updateSettings();
+        settingsObserver.observe();		
+		
+	mIsCenterClock = isCenterClock;
+    	updateSettings();
     }
 
     @Override
@@ -254,14 +258,14 @@ public class Clock extends TextView {
 
         mShowClock = (Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_CLOCK, 1) == 1);
-		final boolean centerClock = (Settings.System.getInt(resolver,
+	final boolean centerClock = (Settings.System.getInt(resolver,
                 Settings.System.CENTER_CLOCK_STATUS_BAR, 0) == 1);
 				
 				
-		if(mShowClock && (IS_CENTER_CLOCK ? centerClock : !centerClock)) 
-			setVisibility(View.VISIBLE);
-		else
-			setVisibility(View.GONE);
+	if(mShowClock && (mIsCenterClock ? centerClock : !centerClock)) 
+		setVisibility(View.VISIBLE);
+	else
+		setVisibility(View.GONE);
     }
 }
 
