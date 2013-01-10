@@ -38,8 +38,6 @@ public class CenterClock extends Clock {
     }
 
     public CenterClock(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);		
-		
-        setIsCenterClock(true);
+        super(context, attrs, defStyle, true);	
     }
 }
