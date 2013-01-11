@@ -66,7 +66,11 @@ interface IAudioService {
 
     void setSpeakerphoneOn(boolean on);
 
+    void setSpeakerMediaOn(boolean on);
+
     boolean isSpeakerphoneOn();
+
+    boolean isSpeakerMediaOn();
 
     void setBluetoothScoOn(boolean on);
 
@@ -86,9 +90,4 @@ interface IAudioService {
     void startBluetoothSco(IBinder cb);
 
     void stopBluetoothSco(IBinder cb);
-    
-    // dx
-    boolean isSpeakerMediaOn();
-    void setSpeakerMediaOn(boolean on);
-    
 }

@@ -84,7 +84,7 @@ AudioPolicyService::AudioPolicyService()
     }
     else {
         LOGV("Using hardware specific audio policy");
-        mpPolicyManager = createAudioPolicyManager(this);
+        mpPolicyManager = new AudioPolicyManagerBase(this);
     }
 #endif
 

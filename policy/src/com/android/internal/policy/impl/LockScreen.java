@@ -101,6 +101,8 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
     static final int CARRIER_TYPE_PLMN = 2;
     static final int CARRIER_TYPE_CUSTOM = 3;
 
+    private static final String TOGGLE_FLASHLIGHT = "net.cactii.flash2.TOGGLE_FLASHLIGHT";
+
     private Status mStatus = Status.Normal;
 
     private LockPatternUtils mLockPatternUtils;
@@ -171,6 +173,9 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
 
     private boolean mLockAlwaysBattery = (Settings.System.getInt(mContext.getContentResolver(),
             Settings.System.LOCKSCREEN_ALWAYS_BATTERY, 0) == 1);
+
+    private boolean mLockFlashlight = (Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.LOCKSCREEN_FLASHLIGHT, 0) == 1);
 
     private boolean mLockCalendarAlarm = (Settings.System.getInt(mContext.getContentResolver(),
             Settings.System.LOCKSCREEN_CALENDAR_ALARM, 0) == 1);
@@ -935,6 +940,14 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
         updateStatusLines();
     }
 
+    private void toggleFlashLight() {
+        Intent intent = new Intent(LockScreen.TOGGLE_FLASHLIGHT);
+        intent.putExtra("strobe", false);
+        intent.putExtra("period", 0);
+        intent.putExtra("bright", false);
+        getContext().sendBroadcast(intent);
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_DPAD_CENTER && mTrackballUnlockScreen)
@@ -942,6 +955,19 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
                 || (keyCode == KeyEvent.KEYCODE_MENU && mEnableMenuKeyInLockScreen)) {
 
             mCallback.goToUnlockScreen();
+            return false;
+
+        } else if ((keyCode == KeyEvent.KEYCODE_HOME) && mLockFlashlight) {
+            event.startTracking();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_HOME) {
+          toggleFlashLight();
         }
         return false;
     }
