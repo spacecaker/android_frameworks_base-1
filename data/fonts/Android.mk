@@ -36,14 +36,11 @@ copy_from :=                \
     DroidSansHebrew-Bold.ttf \
     DroidSansThai.ttf \
     DroidSerif-Regular.ttf \
-    DroidSerif-Bold.ttf \
     DroidSerif-Italic.ttf \
     DroidSerif-BoldItalic.ttf \
     DroidSansMono.ttf \
     DroidSansArmenian.ttf \
     DroidSansGeorgian.ttf \
-    AndroidEmoji.ttf \
-    Clockopia.ttf \
     AndroidClock.ttf \
     AndroidClock_Highlight.ttf \
     AndroidClock_Solid.ttf \
