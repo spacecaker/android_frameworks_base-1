@@ -1,4 +1,4 @@
-# Copyright (C) 2008 The Android Open Source Project
+# Copyright (C) 2011 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,18 +16,37 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
 copy_from :=                \
-    DroidSans.ttf           \
-    DroidSans-Bold.ttf      \
-    DroidSansArabic.ttf     \
-    DroidSansHebrew.ttf     \
-    DroidSansJapanese.ttf   \
-    DroidSansThai.ttf       \
-    DroidSerif-Regular.ttf  \
-    DroidSerif-Bold.ttf     \
-    DroidSerif-Italic.ttf   \
-    DroidSerif-BoldItalic.ttf   \
-    DroidSansMono.ttf        \
-    Clockopia.ttf
+    DroidSansFallback.ttf \
+    Roboto-Regular.ttf \
+    Roboto-Bold.ttf \
+    Roboto-Italic.ttf \
+    Roboto-BoldItalic.ttf \
+    Roboto-Light.ttf \
+    Roboto-LightItalic.ttf \
+    Roboto-Thin.ttf \
+    Roboto-ThinItalic.ttf \
+    RobotoCondensed-Regular.ttf \
+    RobotoCondensed-Bold.ttf \
+    RobotoCondensed-Italic.ttf \
+    RobotoCondensed-BoldItalic.ttf \
+    DroidNaskh-Regular.ttf \
+    DroidNaskh-Regular-SystemUI.ttf \
+    DroidSansDevanagari-Regular.ttf \
+    DroidSansHebrew-Regular.ttf \
+    DroidSansHebrew-Bold.ttf \
+    DroidSansThai.ttf \
+    DroidSerif-Regular.ttf \
+    DroidSerif-Bold.ttf \
+    DroidSerif-Italic.ttf \
+    DroidSerif-BoldItalic.ttf \
+    DroidSansMono.ttf \
+    DroidSansArmenian.ttf \
+    DroidSansGeorgian.ttf \
+    AndroidEmoji.ttf \
+    Clockopia.ttf \
+    AndroidClock.ttf \
+    AndroidClock_Highlight.ttf \
+    AndroidClock_Solid.ttf \
 
 ifneq ($(NO_FALLBACK_FONT),true)
 ifeq ($(filter %system/fonts/DroidSansFallback.ttf,$(PRODUCT_COPY_FILES)),)
