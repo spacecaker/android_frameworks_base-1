@@ -68,44 +68,56 @@ public final class CmSystem {
     public static final int KEYCODE_NONE = -1;
 
 
-    public enum LockscreenStyle {
+    public enum LockscreenStyle{
+        Random,
         Slider,
         Rotary,
+        RotaryRevamped,
         Lense,
+        Sense,
         Ring;
 
-        static public LockscreenStyle getStyleById(int id) {
-            switch (id) {
+        static public LockscreenStyle getStyleById(int id){
+            switch (id){
+                case 0:
+                    return Random;
                 case 1:
                     return Slider;
                 case 2:
                     return Rotary;
                 case 3:
-                    /* backwards compat */
-                    return Rotary;
+                    return RotaryRevamped;
                 case 4:
                     return Lense;
                 case 5:
+                    return Sense;
+                case 6:
                     return Ring;
                 default:
                     return Ring;
             }
         }
 
-        static public LockscreenStyle getStyleById(String id) {
+        static public LockscreenStyle getStyleById(String id){
             return getStyleById(Integer.valueOf(id));
         }
 
-        static public int getIdByStyle(LockscreenStyle lockscreenstyle) {
+        static public int getIdByStyle(LockscreenStyle lockscreenstyle){
             switch (lockscreenstyle){
+                case Random:
+                    return 0;
                 case Slider:
                     return 1;
                 case Rotary:
                     return 2;
+                case RotaryRevamped:
+                    return 3;
                 case Lense:
                     return 4;
-                case Ring:
+                case Sense:
                     return 5;
+                case Ring:
+                    return 6;
                 default:
                     return 5;
             }

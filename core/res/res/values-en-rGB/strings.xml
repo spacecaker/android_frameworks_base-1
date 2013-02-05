@@ -801,8 +801,8 @@
     <string name="perms_show_all" msgid="2671791163933091180"><b>"Show all"</b></string>
     <string name="usb_storage_activity_title" msgid="2399289999608900443">"USB Mass Storage"</string>
     <string name="usb_storage_title" msgid="5901459041398751495">"USB connected"</string>
-    <string name="usb_storage_message" product="nosdcard" msgid="115779324551502062">"You have connected your phone to your computer via USB. Select the button below if you want to copy files between your computer and your Android‘s USB storage."</string>
-    <string name="usb_storage_message" product="default" msgid="4796759646167247178">"You have connected your phone to your computer via USB. Select the button below if you want to copy files between your computer and your Android\'s SD card."</string>
+    <string name="usb_storage_message" product="nosdcard" msgid="115779324551502062">"You have connected your phone to your computer via USB. Touch the Android above if you want to copy files between your computer and your Android‘s USB storage."</string>
+    <string name="usb_storage_message" product="default" msgid="4796759646167247178">"You have connected your phone to your computer via USB. Touch the Android above if you want to copy files between your computer and your Android\'s SD card."</string>
     <string name="usb_storage_button_mount" msgid="1052259930369508235">"Turn on USB storage"</string>
     <string name="usb_storage_error_message" product="nosdcard" msgid="3276413764430468454">"There is a problem with using your USB storage for USB mass storage."</string>
     <string name="usb_storage_error_message" product="default" msgid="120810397713773275">"There is a problem with using your SD card for USB mass storage."</string>

@@ -37,6 +37,7 @@ public abstract class PowerButton {
     public static final String BUTTON_GPS = "toggleGPS";
     public static final String BUTTON_BLUETOOTH = "toggleBluetooth";
     public static final String BUTTON_BRIGHTNESS = "toggleBrightness";
+    public static final String BUTTON_ULTRA_BRIGHTNESS = "toggleUltraBrightness";
     public static final String BUTTON_SOUND = "toggleSound";
     public static final String BUTTON_SYNC = "toggleSync";
     public static final String BUTTON_WIFIAP = "toggleWifiAp";
@@ -86,7 +87,7 @@ public abstract class PowerButton {
                 boolean visible = Settings.System.getInt(cr,
                         Settings.System.EXPANDED_HIDE_INDICATOR, 0) != 1;
                 int colorMaskBase = Settings.System.getInt(cr,
-                        Settings.System.EXPANDED_VIEW_WIDGET_COLOR, 0xFF8DE20D);
+                        Settings.System.EXPANDED_VIEW_WIDGET_COLOR, 0xFF33B5E5);
                 int colorMask;
 
                 mIndicatorView.setVisibility(visible ? View.VISIBLE : View.GONE);

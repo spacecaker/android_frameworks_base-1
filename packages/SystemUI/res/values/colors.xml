@@ -22,4 +22,10 @@
     <drawable name="notification_number_text_color">#ffffffff</drawable>
     <color name="carrier_label_text_color">#ffdfdfdf</color>
     <color name="clear_button_text_color">#ff000000</color>
+	
+	<!-- JellyBean Statusbar below (AChep) -->
+    <color name="jelly_statusbar_tracking_background">#000</color>	
+    <color name="jelly_statusbar_powerwidget_background">#111</color>	
+    <color name="jelly_statusbar_titlebar_background">@color/jelly_statusbar_tracking_background</color>	
+    <color name="jelly_statusbar_carierlabel_text">#cccccc</color>	
 </resources>

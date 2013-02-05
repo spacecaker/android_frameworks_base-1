@@ -698,6 +698,18 @@ public class AudioManager {
         }
     }
 
+    public void setSpeakerMediaOn(boolean on){
+        IAudioService service = getService();
+	//Log.e(TAG, "Setting speakerMediaon");
+        try {
+            service.setSpeakerMediaOn(on);
+	    //adjustVolume (ADJUST_SAME, MODE_CURRENT & FLAG_PLAY_SOUND);
+	    playSoundEffect(FX_KEY_CLICK, -1);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Dead object in setSpeakerMediaOn", e);
+        }
+    }
+
     /**
      * Checks whether the speakerphone is on or off.
      *
@@ -709,6 +721,26 @@ public class AudioManager {
             return service.isSpeakerphoneOn();
         } catch (RemoteException e) {
             Log.e(TAG, "Dead object in isSpeakerphoneOn", e);
+            return false;
+        }
+     }
+
+    /**
+     * Checks whether the speakerphone is on or off.
+     *
+     * @return true if speakerphone is on, false if it's off
+     */
+    public boolean isSpeakerMediaOn() {
+	//OnAudioFocusChangeListener mAudioFocusListener = new OnAudioFocusChangeListener();
+	//requestAudioFocus(null, STREAM_MUSIC, AUDIOFOCUS_GAIN);
+	//setMode(MODE_RINGTONE);
+	//this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        IAudioService service = getService();
+	//Log.e(TAG, "Is speakerMediaon ?");
+        try {
+            return service.isSpeakerMediaOn();
+        } catch (RemoteException e) {
+            Log.e(TAG, "Dead object in isSpeakerMediaOn", e);
             return false;
         }
      }

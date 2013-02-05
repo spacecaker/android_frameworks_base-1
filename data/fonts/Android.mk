@@ -1,4 +1,4 @@
-# Copyright (C) 2008 The Android Open Source Project
+# Copyright (C) 2011 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,18 +16,48 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
 copy_from :=                \
-    DroidSans.ttf           \
-    DroidSans-Bold.ttf      \
-    DroidSansArabic.ttf     \
-    DroidSansHebrew.ttf     \
-    DroidSansJapanese.ttf   \
-    DroidSansThai.ttf       \
-    DroidSerif-Regular.ttf  \
-    DroidSerif-Bold.ttf     \
-    DroidSerif-Italic.ttf   \
-    DroidSerif-BoldItalic.ttf   \
-    DroidSansMono.ttf        \
-    Clockopia.ttf
+    AndroidClock.ttf \
+    AndroidClock_Highlight.ttf \
+    AndroidClock_Solid.ttf \
+    DroidKufi-Bold.ttf \
+    DroidKufi-Regular.ttf \
+    DroidNaskh-Bold.ttf \
+    DroidNaskh-Regular-SystemUI.ttf \
+    DroidNaskh-Regular.ttf \
+    DroidSansArabic.ttf \
+    DroidSansArmenian.ttf \
+    DroidSansDevanagari-Regular.ttf \
+    DroidSansEthiopic-Bold.ttf \
+    DroidSansEthiopic-Regular.ttf \
+    DroidSansFallback.ttf \
+    DroidSansFallbackFull.ttf \
+    DroidSansFallbackLegacy.ttf \
+    DroidSansGeorgian.ttf \
+    DroidSansHebrew-Bold.ttf \
+    DroidSansHebrew-Regular.ttf \
+    DroidSansJapanese.ttf \
+    DroidSansMono.ttf \
+    DroidSansTamil-Bold.ttf \
+    DroidSansTamil-Regular.ttf \
+    DroidSansThai.ttf \
+    DroidSerif-Bold.ttf \
+    DroidSerif-BoldItalic.ttf \
+    DroidSerif-Italic.ttf \
+    DroidSerif-Regular.ttf \
+    MTLc3m.ttf \
+    MTLmr3m.ttf \
+    Roboto-Bold.ttf \
+    Roboto-BoldItalic.ttf \
+    Roboto-Italic.ttf \
+    Roboto-Light.ttf \
+    Roboto-LightItalic.ttf \
+    Roboto-Regular.ttf \
+    Roboto-Thin.ttf \
+    Roboto-ThinItalic.ttf \
+    RobotoCondensed-Bold.ttf \
+    RobotoCondensed-BoldItalic.ttf \
+    RobotoCondensed-Italic.ttf \
+    RobotoCondensed-Regular.ttf \
 
 ifneq ($(NO_FALLBACK_FONT),true)
 ifeq ($(filter %system/fonts/DroidSansFallback.ttf,$(PRODUCT_COPY_FILES)),)

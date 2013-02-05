@@ -28,6 +28,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
+// dx
+import android.provider.Settings;
+import android.util.Log;
+import android.text.format.Time;
+
 public class LightsService {
     private static final String TAG = "LightsService";
 
@@ -63,15 +68,27 @@ public class LightsService {
 
     private static final String FLASHLIGHT_FILE;
     private static final String FLASHLIGHT_FILE_SPOTLIGHT = "/sys/class/leds/spotlight/brightness";
+    private static final String FLASHLIGHT_FILE_FLED = "/sys/class/leds/lv5219lg:fled/brightness";
+    private static final String FLASHLIGHT_FILE_XMINI = "/sys/devices/platform/msm_pmic_flash_led/spotlight::enable";
+ 
     static {
         File ff = new File(FLASHLIGHT_FILE_SPOTLIGHT);
-        if (ff.exists()) {
-            FLASHLIGHT_FILE = FLASHLIGHT_FILE_SPOTLIGHT;
+        File fd = new File(FLASHLIGHT_FILE_FLED);        
+        File fx = new File(FLASHLIGHT_FILE_XMINI);     
+        if (fd.exists()) {
+             FLASHLIGHT_FILE = FLASHLIGHT_FILE_FLED;
         } else {
-            FLASHLIGHT_FILE = "/sys/class/leds/flashlight/brightness";
-        }
-    }
-
+         	if (ff.exists()) {
+            		FLASHLIGHT_FILE = FLASHLIGHT_FILE_SPOTLIGHT;
+        	} else {
+            		if (fx.exists()) {
+            		FLASHLIGHT_FILE = FLASHLIGHT_FILE_XMINI;
+        		} else {
+            			FLASHLIGHT_FILE = "/sys/class/leds/flashlight/brightness";
+        		}
+        		}
+    	}
+	}
     public final class Light {
 
         private Light(int id) {
@@ -137,6 +154,34 @@ public class LightsService {
 
         private void setLightLocked(int color, int mode, int onMS, int offMS, int brightnessMode) {
 		if (color != mColor || mode != mMode || onMS != mOnMS || offMS != mOffMS) {
+					// dx
+					// check light type
+					if (mId == LIGHT_ID_NOTIFICATIONS) {
+						// did we turn off the notification light?
+						if (mContext != null) {
+							Time mTime = new Time();
+			                mTime.setToNow();
+							if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.NOTIFICATION_LIGHT_DISABLED, 0) == 1) {
+								//Log.i(TAG, "LED night disabled option was activated. Check time... h=" + mTime.hour);
+								int startHour = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NOTIFICATION_LIGHT_DISABLED_START, 23);
+								int endHour = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NOTIFICATION_LIGHT_DISABLED_END, 6);
+								
+								if (startHour < 2) {
+									if (mTime.hour >= startHour && mTime.hour < endHour) {
+										return;
+									}
+								}
+								else {
+									if (mTime.hour >= startHour || mTime.hour < endHour) {
+										//Log.i(TAG, "Night time (" + startHour + "h to " + endHour + "h). Skipping LED notification...");
+										return;
+									}
+								}
+							}
+						}
+					}
+					// dx end
+
                 	mColor = color;
                 	mMode = mode;
                 	mOnMS = onMS;
