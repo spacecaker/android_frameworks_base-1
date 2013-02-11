@@ -187,7 +187,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     final Object mLock = new Object();
 
-    Context mContext;
+    static Context mContext;
     Context mUiContext;
     IWindowManager mWindowManager;
     LocalPowerManager mPowerManager;
@@ -221,7 +221,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     KeyguardViewMediator mKeyguardMediator = null;
     GlobalActions mGlobalActions;
     volatile boolean mPowerKeyHandled;
-    RecentApplicationsDialog mRecentAppsDialog;
+    static RecentApplicationsDialog mRecentAppsDialog;
     Handler mHandler;
 
     boolean mSystemReady;
@@ -693,7 +693,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     /**
      * Create (if necessary) and launch the recent apps dialog
      */
-    void showRecentAppsDialog() {
+    public static void showRecentAppsDialog() {
         if (mRecentAppsDialog == null) {
             mRecentAppsDialog = new RecentApplicationsDialog(mContext);
         }
@@ -2462,7 +2462,7 @@ case KeyEvent.KEYCODE_MENU:
         sendCloseSystemWindows(mContext, null);
     }
 
-    void sendCloseSystemWindows(String reason) {
+    public static void sendCloseSystemWindows(String reason) {
         sendCloseSystemWindows(mContext, reason);
     }
 

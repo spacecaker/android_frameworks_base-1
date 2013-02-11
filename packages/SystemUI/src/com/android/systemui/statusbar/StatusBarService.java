@@ -89,6 +89,7 @@ import com.android.internal.statusbar.StatusBarIcon;
 import com.android.internal.statusbar.StatusBarIconList;
 import com.android.internal.statusbar.StatusBarNotification;
 import com.android.systemui.R;
+import com.android.systemui.statusbar.policy.PiePolicy;
 import com.android.systemui.statusbar.CarrierLabel;
 import com.android.systemui.statusbar.powerwidget.PowerWidget;
 import com.android.systemui.statusbar.recentapps.RecentApps;
@@ -109,6 +110,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
     private static final int MSG_ANIMATE_REVEAL = 1001;
 
     StatusBarPolicy mIconPolicy;
+    PiePolicy mPiePolicy;
 
     CommandQueue mCommandQueue;
     IStatusBarService mBarService;
@@ -164,10 +166,18 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
     TextView mLatestTitle;
     LinearLayout mLatestItems;
     ItemTouchDispatcher mTouchDispatcher;
+    //pie
+    NotificationData mNotifData = new NotificationData();
     // position
     int[] mPositionTmp = new int[2];
     boolean mExpanded;
     boolean mExpandedVisible;
+    
+    // Pie controls
+    public PieControlPanel mPieControlPanel;
+    public View mPieControlsTrigger;
+    public View mContainer;
+    int mIndex;
 
     // the date view
     /* DateView mDateView; */
@@ -182,7 +192,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
     PowerWidget mPowerWidget;
 
     // recent apps
-    ///RecentApps mRecentApps;
+    //RecentApps mRecentApps;
 
     //Carrier label stuff
     LinearLayout mCarrierLabelLayout;
@@ -243,7 +253,8 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 			}
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.EXPANDED_VIEW_WIDGET), false, this);
-					
+			resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.PIE_GRAVITY), false, this);		
             onChange(true);
         }
 
@@ -267,6 +278,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 			}
             updateLayout();
             updateCarrierLabel();
+            updatePieControls();
         }
     }
 
@@ -356,9 +368,13 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         container.addView(mStatusBarView);
         mStatusBarContainer = container;
         addStatusBarView();
+        attachPies();
 
         // Lastly, call to the icon policy to install/update all the icons.
         mIconPolicy = new StatusBarPolicy(this);
+        
+        // PIE
+        mPiePolicy = new PiePolicy(this);
 
         // set up settings observer
         SettingsObserver settingsObserver = new SettingsObserver(mHandler);
@@ -626,6 +642,88 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
                                    Settings.System.EXPANDED_VIEW_WIDGET, 1) == 0;
         mPowerAndCarrier.setVisibility(hideArea ? View.GONE : View.VISIBLE);
     }
+    
+    private boolean showPie() {
+        return true;
+        /*return !mNaviShow;*/
+    }
+
+    private void attachPies() {
+        if(showPie()) {
+            // Add pie (s), want some slice?
+            int gravity = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.PIE_GRAVITY, 3);
+
+            switch(gravity) {
+                case 0:
+                    addPieInLocation(Gravity.LEFT);
+                    break;
+                case 1:
+                    addPieInLocation(Gravity.TOP);
+                    break;
+                case 2:
+                    addPieInLocation(Gravity.RIGHT);
+                    break;
+                default:
+                    addPieInLocation(Gravity.BOTTOM);
+                    break;
+            }
+        } else {
+            mPieControlsTrigger = null;
+            mPieControlPanel = null;
+        }
+    }
+
+    private void addPieInLocation(int gravity) {
+        // Quick navigation bar panel
+        PieControlPanel panel = (PieControlPanel) View.inflate(mContext,
+                R.layout.pie_control_panel, null);
+
+        // Quick navigation bar trigger area
+        View pieControlsTrigger = new View(mContext);
+
+        // Store our views for removing / adding
+        mPieControlPanel = panel;
+        mPieControlsTrigger = pieControlsTrigger;
+
+        pieControlsTrigger.setOnTouchListener(new PieControlsTouchListener());
+        WindowManagerImpl.getDefault().addView(pieControlsTrigger, getPieTriggerLayoutParams(mContext, gravity));
+
+        panel.init(mHandler, pieControlsTrigger, gravity);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL,
+                    0
+                    | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                    | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                    | WindowManager.LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING
+                    | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT);
+        lp.setTitle("PieControlPanel");
+        lp.windowAnimations = android.R.style.Animation;
+
+        WindowManagerImpl.getDefault().addView(panel, lp);
+    }
+
+    public static WindowManager.LayoutParams getPieTriggerLayoutParams(Context context, int gravity) {
+        final Resources res = context.getResources();
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
+              (gravity == Gravity.TOP || gravity == Gravity.BOTTOM ?
+                    ViewGroup.LayoutParams.MATCH_PARENT : res.getDimensionPixelSize(R.dimen.pie_trigger_height)),
+              (gravity == Gravity.LEFT || gravity == Gravity.RIGHT ?
+                    ViewGroup.LayoutParams.MATCH_PARENT : res.getDimensionPixelSize(R.dimen.pie_trigger_height)),
+              WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL,
+                    0
+                    | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                    | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                    | WindowManager.LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING
+                    | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                    | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
+              PixelFormat.TRANSLUCENT);
+        lp.gravity = gravity;
+        return lp;
+    }
 
 	private View mStatusBarContainerView;
 	
@@ -726,6 +824,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
             }
             oldList = mLatest;
         }
+        mNotifData = getNotifications(oldList);
         final NotificationData.Entry oldEntry = oldList.getEntryAt(oldIndex);
         final StatusBarNotification oldNotification = oldEntry.notification;
         final RemoteViews oldContentView = oldNotification.notification.contentView;
@@ -917,6 +1016,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         // Add the icon.
         final int iconIndex = chooseIconIndex(isOngoing, viewIndex);
         mNotificationIcons.addView(iconView, iconIndex);
+        mNotifData = getNotifications(list);
         return iconView;
     }
 
@@ -939,6 +1039,13 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         }
 
         return entry.notification;
+    }
+    
+    public NotificationData getNotifications(NotificationData list) {
+        if (mPieControlPanel != null) {
+            mPieControlPanel.setNotifications(list);
+        }
+        return list;
     }
 
     private void setAreThereNotifications() {
@@ -1942,6 +2049,50 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
             }
         }
     };
+    
+    private class PieControlsTouchListener implements View.OnTouchListener {
+        private int orient;
+        private float initialX = 0;
+        private float initialY = 0;
+        int index;
+
+        public PieControlsTouchListener() {
+            orient = mPieControlPanel.getOrientation();
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            final int action = event.getAction();
+            if (!mPieControlPanel.isShowing()) {
+                switch(action) {
+                    case MotionEvent.ACTION_DOWN:
+                        initialX = event.getX();
+                        initialY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        float deltaX = Math.abs(event.getX() - initialX);
+                        float deltaY = Math.abs(event.getY() - initialY);
+                        float distance = orient == Gravity.BOTTOM ||
+                                orient == Gravity.TOP ? deltaY : deltaX;
+                        // Swipe up
+                        if (distance > 10) {
+                            mPieControlPanel.show(true);
+                            event.setAction(MotionEvent.ACTION_DOWN);
+                            mPieControlPanel.onTouchEvent(event);
+                        }
+                }
+            } else {
+                return mPieControlPanel.onTouchEvent(event);
+            }
+            return false;
+        }
+    }
+
+    public void updatePieControls() {
+        if (mPieControlsTrigger != null) WindowManagerImpl.getDefault().removeView(mPieControlsTrigger);
+        if (mPieControlPanel != null) WindowManagerImpl.getDefault().removeView(mPieControlPanel);
+        attachPies();
+    }
 
     private static void copyNotifications(ArrayList<Pair<IBinder, StatusBarNotification>> dest,
             NotificationData source) {
@@ -2035,8 +2186,11 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
     }
 
     void vibrate() {
-        android.os.Vibrator vib = (android.os.Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
-        vib.vibrate(250);
+        if (Settings.System.getInt(mContext.getContentResolver(),
+                     Settings.System.HAPTIC_FEEDBACK_ENABLED, 1) == 1) {
+            android.os.Vibrator vib = (android.os.Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            vib.vibrate(250);
+        }
     }
 
     Runnable mStartTracing = new Runnable() {

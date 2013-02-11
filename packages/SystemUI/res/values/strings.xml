@@ -73,4 +73,14 @@
     <string name="always_use_accessory">Use by default for this USB accessory</string>
 
     <string name="powerwidget_screen_timeout_toast">Screen timeout set to: %1$d %2$s</string>
+    
+    <!-- djnilse PIE -->
+    <string name="pie_date_format">ccc, dd MMM yyyy</string>
+    <string name="pie_hour_format_12">hh:mm</string>
+    <string name="pie_hour_format_24">HH:mm</string>
+    <string name="pie_am_pm">a</string>
+    <!-- QuickSettings: Wifi (Not connected) [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_wifi_not_connected">Not Connected</string>
+    <!-- QuickSettings: Wifi (No network) [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_wifi_no_network">No Network</string>
 </resources>

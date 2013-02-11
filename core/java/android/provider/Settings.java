@@ -1174,6 +1174,373 @@ public final class Settings {
          * @hide
          */
         public static final String PICK_UP_TO_CALL = "pick_up_to_call";
+        
+        /**
+         * Location of the pie in the screen
+         * 0 = Gravity.LEFT
+         * 1 = Gravity.TOP
+         * 2 = Gravity.RIGHT
+         * 3 = Gravity.BOTTOM (default)
+         * @hide
+         */
+        public static final String PIE_GRAVITY = "pie_gravity";
+
+        /**
+         * Pie status report
+         * 0 = Bare
+         * 1 = Quick
+         * 2 = Default
+         * 3 = Slow
+         * @hide
+         */
+        public static final String PIE_MODE = "pie_mode";
+
+        /**
+         * Pie size fraction
+         * @hide
+         */
+        public static final String PIE_SIZE = "pie_size";
+
+        /**
+         * Pie color
+         * @hide
+         */
+        public static final String PIE_BUTTON_COLOR = "pie_button_color";
+
+        /**
+         * Pie color
+         * @hide
+         */
+        public static final String PIE_BACKGROUND_BUTTON_COLOR = "pie_background_button_color";
+
+        /**
+         * Pie color
+         * @hide
+         */
+        public static final String PIE_CHOICE_BUTTON_COLOR = "pie_choice_button_color";
+
+        /**
+         * Pie color
+         * @hide
+         */
+        public static final String PIE_BATTERY_COLOR = "pie_battery_color";
+
+        /**
+         * Pie color
+         * @hide
+         */
+        public static final String PIE_CHEVRON_COLOR = "pie_chevron_color";
+
+        /**
+         * Pie color
+         * @hide
+         */
+        public static final String PIE_CLOCK_COLOR = "pie_clock_color";
+
+        /**
+         * Pie color
+         * @hide
+         */
+        public static final String PIE_ENABLE_COLOR = "pie_enable_color";
+
+        /**
+         * Pie color
+         * @hide
+         */
+        public static final String PIE_OUTLINE_COLOR = "pie_outline_color";
+
+        /**
+         * Pie trigger
+         * @hide
+         */
+        public static final String PIE_TRIGGER = "pie_trigger";
+
+        /**
+         * Pie enable/disable
+         * @hide
+         */
+        public static final String PIE_CONTROL_ENABLE = "pie_control_enable";
+
+        /**
+         * Pie gap angle, should default to 1
+         * @hide
+         */
+        public static final String PIE_GAP = "pie_gap";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_MENU = "pie_button_menu";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_MENU1 = "pie_button_menu1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_MENU2 = "pie_button_menu2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_MENU3 = "pie_button_menu3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_MENU4 = "pie_button_menu4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_MENU_LEVEL = "pie_enable_button_menu_level";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_MENU_APP = "pie_enable_button_menu_app";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_MENU_APP1 = "pie_custom_button_menu_app1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_MENU_APP2 = "pie_custom_button_menu_app2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_MENU_APP3 = "pie_custom_button_menu_app3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_MENU_APP4 = "pie_custom_button_menu_app4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_SEARCH = "pie_button_search";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_SEARCH1 = "pie_button_search1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_SEARCH2 = "pie_button_search2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_SEARCH3 = "pie_button_search3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_SEARCH4 = "pie_button_search4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_SEARCH_LEVEL = "pie_enable_button_search_level";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_SEARCH_APP = "pie_enable_button_search_app";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_SEARCH_APP1 = "pie_custom_button_search_app1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_SEARCH_APP2 = "pie_custom_button_search_app2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_SEARCH_APP3 = "pie_custom_button_search_app3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_SEARCH_APP4 = "pie_custom_button_search_app4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_RECENT = "pie_button_recent";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_RECENT1 = "pie_button_recent1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_RECENT2 = "pie_button_recent2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_RECENT3 = "pie_button_recent3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_RECENT4 = "pie_button_recent4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_RECENT_LEVEL = "pie_enable_button_recent_level";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_RECENT_APP = "pie_enable_button_recent_app";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_RECENT_APP1 = "pie_custom_button_recent_app1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_RECENT_APP2 = "pie_custom_button_recent_app2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_RECENT_APP3 = "pie_custom_button_recent_app3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_RECENT_APP4 = "pie_custom_button_recent_app4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_HOME = "pie_button_home";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_HOME1 = "pie_button_home1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_HOME2 = "pie_button_home2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_HOME3 = "pie_button_home3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_HOME4 = "pie_button_home4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_HOME_LEVEL = "pie_enable_button_home_level";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_HOME_APP = "pie_enable_button_home_app";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_HOME_APP1 = "pie_custom_button_home_app1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_HOME_APP2 = "pie_custom_button_home_app2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_HOME_APP3 = "pie_custom_button_home_app3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_HOME_APP4 = "pie_custom_button_home_app4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_BACK = "pie_button_back";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_BACK1 = "pie_button_back1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_BACK2 = "pie_button_back2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_BACK3 = "pie_button_back3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_BACK4 = "pie_button_back4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_BACK_LEVEL = "pie_enable_button_back_level";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_BACK_APP = "pie_enable_button_back_app";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_BACK_APP1 = "pie_custom_button_back_app1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_BACK_APP2 = "pie_custom_button_back_app2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_BACK_APP3 = "pie_custom_button_back_app3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_BACK_APP4 = "pie_custom_button_back_app4";
 		
         /**
          * Transparent notification bar
