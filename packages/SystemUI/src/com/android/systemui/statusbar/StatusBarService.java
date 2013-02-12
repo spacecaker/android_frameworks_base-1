@@ -691,7 +691,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         pieControlsTrigger.setOnTouchListener(new PieControlsTouchListener());
         WindowManagerImpl.getDefault().addView(pieControlsTrigger, getPieTriggerLayoutParams(mContext, gravity));
 
-        panel.init(mHandler, pieControlsTrigger, gravity);
+        panel.init(mHandler, this, pieControlsTrigger, gravity);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT,

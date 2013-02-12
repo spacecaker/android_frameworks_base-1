@@ -17,9 +17,11 @@
 package com.android.systemui.statusbar;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -51,25 +53,46 @@ import com.android.systemui.R;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.PieControl.OnNavButtonPressedListener;
 
-public class PieControlPanel extends FrameLayout implements OnNavButtonPressedListener{
+import java.util.List;
+
+public class PieControlPanel extends FrameLayout implements OnNavButtonPressedListener {
 
     private static final boolean DEBUG = false;
+
     private static final String TAG = "PieView";
 
+    public static final int POWER_KEY_CODE = 129;
+
+    public static boolean LONG_PRESS = false;
+
     private Handler mHandler;
+
     boolean mShowing;
+
     private PieControl mPieControl;
+
     private int mInjectKeycode;
+
     private long mDownTime;
+
     private Context mContext;
+
     private int mOrientation;
+
     private int mWidth;
+
     private int mHeight;
+
     private View mTrigger;
+
     Display mDisplay;
+
     DisplayMetrics mDisplayMetrics = new DisplayMetrics();
 
+    private StatusBarService mService;
+
     ViewGroup mContentFrame;
+
     Rect mContentArea = new Rect();
 
     public PieControlPanel(Context context) {
@@ -89,11 +112,15 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
     }
 
     public int getDegree() {
-        switch(mOrientation) {
-            case Gravity.LEFT: return 180;
-            case Gravity.TOP: return -90;
-            case Gravity.RIGHT: return 0;
-            case Gravity.BOTTOM: return 90;
+        switch (mOrientation) {
+            case Gravity.LEFT:
+                return 180;
+            case Gravity.TOP:
+                return -90;
+            case Gravity.RIGHT:
+                return 0;
+            case Gravity.BOTTOM:
+                return 90;
         }
         return 0;
     }
@@ -109,7 +136,7 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
     }
 
     @Override
-    protected void onAttachedToWindow () {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
     }
 
@@ -118,12 +145,17 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
         show(false);
     }
 
-    public void init(Handler h, View trigger, int orientation) {
+    public void init(Handler h, StatusBarService mServices, View trigger, int orientation) {
         mHandler = h;
+        mService = (StatusBarService) mServices;
         mTrigger = trigger;
         mOrientation = orientation;
         setCenter();
         mPieControl.init();
+    }
+
+    public StatusBarService getBar() {
+        return mService;
     }
 
     public NotificationData setNotifications(NotificationData list) {
@@ -132,7 +164,7 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
         }
         return list;
     }
-
+    
     public void reorient(int orientation) {
         mOrientation = orientation;
         WindowManagerImpl.getDefault().removeView(mTrigger);
@@ -141,7 +173,7 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
         show(mShowing);
 
         int pieGravity = 3;
-        switch(mOrientation) {
+        switch (mOrientation) {
             case Gravity.LEFT:
                 pieGravity = 0;
                 break;
@@ -153,17 +185,16 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
                 break;
         }
 
-        Settings.System.putInt(mContext.getContentResolver(),
-            Settings.System.PIE_GRAVITY, pieGravity);
+        Settings.System.putInt(mContext.getContentResolver(), Settings.System.PIE_GRAVITY, pieGravity);
     }
 
     public void setCenter() {
-        Point outSize = new Point(0,0);
+        Point outSize = new Point(0, 0);
         mDisplay = ((WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         mDisplay.getMetrics(mDisplayMetrics);
         mWidth = mDisplayMetrics.widthPixels;
         mHeight = mDisplayMetrics.heightPixels;
-        switch(mOrientation) {
+        switch (mOrientation) {
             case Gravity.LEFT:
                 mPieControl.setCenter(0, mHeight / 2);
                 break;
@@ -173,7 +204,7 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
             case Gravity.RIGHT:
                 mPieControl.setCenter(mWidth, mHeight / 2);
                 break;
-            case Gravity.BOTTOM: 
+            case Gravity.BOTTOM:
                 mPieControl.setCenter(mWidth / 2, mHeight);
                 break;
         }
@@ -182,7 +213,7 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
     @Override
     public void onFinishInflate() {
         super.onFinishInflate();
-        mContentFrame = (ViewGroup)findViewById(R.id.content_frame);
+        mContentFrame = (ViewGroup) findViewById(R.id.content_frame);
         setWillNotDraw(false);
         mPieControl.attachToContainer(this);
         mPieControl.forceToTop(this);
@@ -224,20 +255,70 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
             toggleRecentApps();
         } else if (buttonName.equals(PieControl.SEARCH_BUTTON)) {
             simulateKeypress(KeyEvent.KEYCODE_SEARCH);
+        } else if (buttonName.equals(PieControl.SCREEN_BUTTON)) {
+            toggleScreenshot();
+        } else if (buttonName.equals(PieControl.POWER_BUTTON)) {
+            togglePowerMenu();
+        } else if (buttonName.equals(PieControl.LASTAPP_BUTTON)) {
+            toggleLastApp();
         }
     }
 
     private void toggleRecentApps() {
-		// needs some code for recent apps
+        // simulate long press home button
+        setLongPress(true);
+        simulateKeypress(KeyEvent.KEYCODE_HOME);
+    }
+
+    private void togglePowerMenu() {
+        // simulate long press power button
+        setLongPress(true);
+        simulateKeypress(KeyEvent.KEYCODE_POWER);
+    }
+
+    private void toggleScreenshot() {
+        Intent intentShot = new Intent("android.intent.action.SCREENSHOT");
+        mContext.sendBroadcast(intentShot);
+    }
+
+    private void toggleLastApp() {
+        int lastAppId = 0;
+        int looper = 1;
+        String packageName;
+        final Intent intent = new Intent(Intent.ACTION_MAIN);
+        final ActivityManager am = (ActivityManager) mContext.getSystemService(Activity.ACTIVITY_SERVICE);
+        String defaultHomePackage = "com.android.launcher";
+        intent.addCategory(Intent.CATEGORY_HOME);
+        final ResolveInfo res = mContext.getPackageManager().resolveActivity(intent, 0);
+        if (res.activityInfo != null && !res.activityInfo.packageName.equals("android")) {
+            defaultHomePackage = res.activityInfo.packageName;
+        }
+        List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(5);
+        // lets get enough tasks to find something to switch to
+        // Note, we'll only get as many as the system currently has - up to 5
+        while ((lastAppId == 0) && (looper < tasks.size())) {
+            packageName = tasks.get(looper).topActivity.getPackageName();
+            if (!packageName.equals(defaultHomePackage) && !packageName.equals("com.android.systemui")) {
+                lastAppId = tasks.get(looper).id;
+            }
+            looper++;
+        }
+        if (lastAppId != 0) {
+            // this would be jb multitasking
+            // am.moveTaskToFront(lastAppId, am.MOVE_TASK_NO_USER_ACTION);
+        }
+    }
+    
+    public void setLongPress(boolean longPress){
+        LONG_PRESS = longPress;
     }
 
     /**
-     * Runnable to hold simulate a keypress.
-     *
-     * This is executed in a separate Thread to avoid blocking
+     * Runnable to hold simulate a keypress. This is executed in a separate
+     * Thread to avoid blocking
      */
     private void simulateKeypress(final int keyCode) {
-        new Thread(new KeyEventInjector( keyCode ) ).start();
+        new Thread(new KeyEventInjector(keyCode)).start();
     }
 
     private class KeyEventInjector implements Runnable {
@@ -249,18 +330,27 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
 
         public void run() {
             try {
-                if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window")))
-                         .injectKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, keyCode), true) ) {
-                                   Slog.w(TAG, "Key down event not injected");
-                                   return;
-                              }
-                if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window")))
-                         .injectKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, keyCode), true) ) {
-                                  Slog.w(TAG, "Key up event not injected");
-                             }
-           } catch (RemoteException ex) {
-               Slog.w(TAG, "Error injecting key event", ex);
-           }
+                if (!LONG_PRESS) {
+                    if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window"))).injectKeyEvent(new KeyEvent(
+                            KeyEvent.ACTION_DOWN, keyCode), true)) {
+                        Slog.w(TAG, "Key down event not injected");
+                        return;
+                    }
+                } else {
+                    if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window"))).injectKeyEvent(
+                            new KeyEvent(KeyEvent.ACTION_DOWN, keyCode).changeTimeRepeat(new KeyEvent(KeyEvent.ACTION_DOWN, keyCode),
+                                    (long) 400, 0), true)) {
+                        Slog.w(TAG, "Key down event not injected");
+                    }
+                }
+                if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window"))).injectKeyEvent(
+                        new KeyEvent(KeyEvent.ACTION_UP, keyCode).changeTimeRepeat(new KeyEvent(KeyEvent.ACTION_DOWN, keyCode),
+                                (long) 400, 0), true)) {
+                    Slog.w(TAG, "Key up event not injected");
+                }
+            } catch (RemoteException ex) {
+                Slog.w(TAG, "Error injecting key event", ex);
+            }
         }
     }
 }
