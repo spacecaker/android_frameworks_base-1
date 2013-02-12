@@ -254,7 +254,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.EXPANDED_VIEW_WIDGET), false, this);
 			resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.PIE_GRAVITY), false, this);		
+                    Settings.System.getUriFor(Settings.System.PIE_GRAVITY), false, this);
+            resolver.registerContentObserver(
+            		Settings.System.getUriFor(Settings.System.PIE_TRIGGER), false, this);
             onChange(true);
         }
 
@@ -708,11 +710,13 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 
     public static WindowManager.LayoutParams getPieTriggerLayoutParams(Context context, int gravity) {
         final Resources res = context.getResources();
+        final float mPieSize = Settings.System.getFloat(context.getContentResolver(),
+				Settings.System.PIE_TRIGGER, 1f);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
               (gravity == Gravity.TOP || gravity == Gravity.BOTTOM ?
-                    ViewGroup.LayoutParams.MATCH_PARENT : res.getDimensionPixelSize(R.dimen.pie_trigger_height)),
+                    ViewGroup.LayoutParams.MATCH_PARENT : (int)(res.getDimensionPixelSize(R.dimen.pie_trigger_height)*mPieSize)),
               (gravity == Gravity.LEFT || gravity == Gravity.RIGHT ?
-                    ViewGroup.LayoutParams.MATCH_PARENT : res.getDimensionPixelSize(R.dimen.pie_trigger_height)),
+                    ViewGroup.LayoutParams.MATCH_PARENT : (int)(res.getDimensionPixelSize(R.dimen.pie_trigger_height)*mPieSize)),
               WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL,
                     0
                     | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
