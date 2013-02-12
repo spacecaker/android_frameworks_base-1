@@ -61,10 +61,6 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
 
     private static final String TAG = "PieView";
 
-    public static final int POWER_KEY_CODE = 129;
-
-    public static boolean LONG_PRESS = false;
-
     private Handler mHandler;
 
     boolean mShowing;
@@ -164,7 +160,7 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
         }
         return list;
     }
-    
+
     public void reorient(int orientation) {
         mOrientation = orientation;
         WindowManagerImpl.getDefault().removeView(mTrigger);
@@ -246,15 +242,15 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
     @Override
     public void onNavButtonPressed(String buttonName) {
         if (buttonName.equals(PieControl.BACK_BUTTON)) {
-            simulateKeypress(KeyEvent.KEYCODE_BACK);
+            simulateKeypress(KeyEvent.KEYCODE_BACK, false);
         } else if (buttonName.equals(PieControl.HOME_BUTTON)) {
-            simulateKeypress(KeyEvent.KEYCODE_HOME);
+            simulateKeypress(KeyEvent.KEYCODE_HOME, false);
         } else if (buttonName.equals(PieControl.MENU_BUTTON)) {
-            simulateKeypress(KeyEvent.KEYCODE_MENU);
+            simulateKeypress(KeyEvent.KEYCODE_MENU, false);
         } else if (buttonName.equals(PieControl.RECENT_BUTTON)) {
             toggleRecentApps();
         } else if (buttonName.equals(PieControl.SEARCH_BUTTON)) {
-            simulateKeypress(KeyEvent.KEYCODE_SEARCH);
+            simulateKeypress(KeyEvent.KEYCODE_SEARCH, false);
         } else if (buttonName.equals(PieControl.SCREEN_BUTTON)) {
             toggleScreenshot();
         } else if (buttonName.equals(PieControl.POWER_BUTTON)) {
@@ -266,14 +262,12 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
 
     private void toggleRecentApps() {
         // simulate long press home button
-        setLongPress(true);
-        simulateKeypress(KeyEvent.KEYCODE_HOME);
+        simulateKeypress(CmStatusBarView.KEYCODE_VIRTUAL_HOME_LONG, true);
     }
 
     private void togglePowerMenu() {
         // simulate long press power button
-        setLongPress(true);
-        simulateKeypress(KeyEvent.KEYCODE_POWER);
+        simulateKeypress(KeyEvent.KEYCODE_POWER, true);
     }
 
     private void toggleScreenshot() {
@@ -308,46 +302,52 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
             // am.moveTaskToFront(lastAppId, am.MOVE_TASK_NO_USER_ACTION);
         }
     }
-    
-    public void setLongPress(boolean longPress){
-        LONG_PRESS = longPress;
-    }
 
     /**
      * Runnable to hold simulate a keypress. This is executed in a separate
      * Thread to avoid blocking
      */
-    private void simulateKeypress(final int keyCode) {
-        new Thread(new KeyEventInjector(keyCode)).start();
+    private void simulateKeypress(final int keyCode, final boolean longPress) {
+        new Thread(new KeyEventInjector(keyCode, longPress)).start();
     }
 
     private class KeyEventInjector implements Runnable {
         private int keyCode;
 
-        KeyEventInjector(final int keyCode) {
-            this.keyCode = keyCode;
-        }
+        private boolean longPress;
 
+        KeyEventInjector(final int keyCode, final boolean longPress) {
+            this.keyCode = keyCode;
+            this.longPress = longPress;
+        }
+        
         public void run() {
             try {
-                if (!LONG_PRESS) {
+               // if (!longPress) {
                     if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window"))).injectKeyEvent(new KeyEvent(
                             KeyEvent.ACTION_DOWN, keyCode), true)) {
                         Slog.w(TAG, "Key down event not injected");
                         return;
                     }
-                } else {
-                    if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window"))).injectKeyEvent(
-                            new KeyEvent(KeyEvent.ACTION_DOWN, keyCode).changeTimeRepeat(new KeyEvent(KeyEvent.ACTION_DOWN, keyCode),
-                                    (long) 400, 0), true)) {
+
+                    if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window"))).injectKeyEvent(new KeyEvent(
+                            KeyEvent.ACTION_UP, keyCode), true)) {
+                        Slog.w(TAG, "Key up event not injected");
+                    }
+              //  } else {
+                  /*  if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window"))).injectKeyEvent(
+                            KeyEvent.changeTimeRepeat(new KeyEvent(KeyEvent.ACTION_UP, keyCode),
+                                    android.os.SystemClock.uptimeMillis(), 0, KeyEvent.FLAG_LONG_PRESS), true)) {
                         Slog.w(TAG, "Key down event not injected");
                     }
-                }
-                if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window"))).injectKeyEvent(
-                        new KeyEvent(KeyEvent.ACTION_UP, keyCode).changeTimeRepeat(new KeyEvent(KeyEvent.ACTION_DOWN, keyCode),
-                                (long) 400, 0), true)) {
-                    Slog.w(TAG, "Key up event not injected");
-                }
+
+                    if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window"))).injectKeyEvent(
+                            KeyEvent.changeTimeRepeat(new KeyEvent(KeyEvent.ACTION_UP, keyCode),
+                                    android.os.SystemClock.uptimeMillis(), 0, KeyEvent.FLAG_LONG_PRESS), true)) {
+                        Slog.w(TAG, "Key down event not injected");
+                    }*/
+               // }
+
             } catch (RemoteException ex) {
                 Slog.w(TAG, "Error injecting key event", ex);
             }
