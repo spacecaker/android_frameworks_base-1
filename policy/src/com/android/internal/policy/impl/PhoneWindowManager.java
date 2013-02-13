@@ -269,14 +269,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 showGlobalActionsDialog();
             } else if (action.equals(Intent.ACTION_POWERMENU_REBOOT)) {
                 doRebooting();
-            } else if (action.equals(Intent.ACTION_POWERMENU_PROFILE)) {
-                showGlobalActionsProfileDialog();
             }
         }
 
         private void doRebooting() {
             PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-            pm.reboot("TileView");
+            pm.reboot("Rebooting ...");
         }
 
         private void registerSelf() {
@@ -286,7 +284,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 IntentFilter filter = new IntentFilter();
                 filter.addAction(Intent.ACTION_POWERMENU);
                 filter.addAction(Intent.ACTION_POWERMENU_REBOOT);
-                filter.addAction(Intent.ACTION_POWERMENU_PROFILE);
                 mContext.registerReceiver(mPowerMenuReceiver, filter);
             }
         }

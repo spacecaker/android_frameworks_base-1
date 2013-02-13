@@ -676,6 +676,14 @@ public class Intent implements Parcelable, Cloneable {
      *  @hide
      */
     public static final String ACTION_POWERMENU = "android.intent.action.POWERMENU";
+    
+    /**
+     *  Global Action: Shows power menu reboot dialog
+     *  <p>Input: nothing
+     *  <p>Output: nothing
+     *  @hide
+     */
+    public static final String ACTION_POWERMENU_REBOOT = "android.intent.action.POWERMENU_REBOOT";
 
     /**
      * The name of the extra used to define the Intent of a shortcut.
