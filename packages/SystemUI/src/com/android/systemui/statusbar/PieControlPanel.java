@@ -53,6 +53,9 @@ import com.android.systemui.R;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.PieControl.OnNavButtonPressedListener;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 public class PieControlPanel extends FrameLayout implements OnNavButtonPressedListener {
@@ -242,32 +245,42 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
     @Override
     public void onNavButtonPressed(String buttonName) {
         if (buttonName.equals(PieControl.BACK_BUTTON)) {
-            simulateKeypress(KeyEvent.KEYCODE_BACK, false);
+            simulateKeypress(KeyEvent.KEYCODE_BACK);
         } else if (buttonName.equals(PieControl.HOME_BUTTON)) {
-            simulateKeypress(KeyEvent.KEYCODE_HOME, false);
+            simulateKeypress(KeyEvent.KEYCODE_HOME);
         } else if (buttonName.equals(PieControl.MENU_BUTTON)) {
-            simulateKeypress(KeyEvent.KEYCODE_MENU, false);
+            simulateKeypress(KeyEvent.KEYCODE_MENU);
         } else if (buttonName.equals(PieControl.RECENT_BUTTON)) {
             toggleRecentApps();
         } else if (buttonName.equals(PieControl.SEARCH_BUTTON)) {
-            simulateKeypress(KeyEvent.KEYCODE_SEARCH, false);
+            simulateKeypress(KeyEvent.KEYCODE_SEARCH);
         } else if (buttonName.equals(PieControl.SCREEN_BUTTON)) {
             toggleScreenshot();
         } else if (buttonName.equals(PieControl.POWER_BUTTON)) {
             togglePowerMenu();
         } else if (buttonName.equals(PieControl.LASTAPP_BUTTON)) {
             toggleLastApp();
+        } else if (buttonName.equals(PieControl.SETTING_BUTTON)) {
+            toggleSettingsApps();
+        } else if (buttonName.equals(PieControl.CLEARALL_BUTTON)) {
+            mService.toggleClearNotif();
         }
     }
 
     private void toggleRecentApps() {
         // simulate long press home button
-        simulateKeypress(CmStatusBarView.KEYCODE_VIRTUAL_HOME_LONG, true);
+        simulateKeypress(CmStatusBarView.KEYCODE_VIRTUAL_HOME_LONG);
     }
 
     private void togglePowerMenu() {
-        // simulate long press power button
-        simulateKeypress(KeyEvent.KEYCODE_POWER, true);
+        Intent intentPowerMenu = new Intent(Intent.ACTION_POWERMENU);
+        mContext.startActivity(intentPowerMenu);
+    }
+
+    private void toggleSettingsApps() {
+        Intent intentSettings = new Intent(android.provider.Settings.ACTION_SETTINGS);
+        intentSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        mContext.startActivity(intentSettings);
     }
 
     private void toggleScreenshot() {
@@ -276,7 +289,9 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
     }
 
     private void toggleLastApp() {
-        int lastAppId = 0;
+       
+      // this would be jb multitasking
+      /*int lastAppId = 0;
         int looper = 1;
         String packageName;
         final Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -299,54 +314,37 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
         }
         if (lastAppId != 0) {
             // this would be jb multitasking
-            // am.moveTaskToFront(lastAppId, am.MOVE_TASK_NO_USER_ACTION);
-        }
+            am.moveTaskToFront(lastAppId, am.MOVE_TASK_NO_USER_ACTION);
+        }*/
     }
 
     /**
      * Runnable to hold simulate a keypress. This is executed in a separate
      * Thread to avoid blocking
      */
-    private void simulateKeypress(final int keyCode, final boolean longPress) {
-        new Thread(new KeyEventInjector(keyCode, longPress)).start();
+    private void simulateKeypress(final int keyCode) {
+        new Thread(new KeyEventInjector(keyCode)).start();
     }
 
     private class KeyEventInjector implements Runnable {
         private int keyCode;
 
-        private boolean longPress;
-
-        KeyEventInjector(final int keyCode, final boolean longPress) {
+        KeyEventInjector(final int keyCode) {
             this.keyCode = keyCode;
-            this.longPress = longPress;
         }
-        
+
         public void run() {
             try {
-               // if (!longPress) {
-                    if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window"))).injectKeyEvent(new KeyEvent(
-                            KeyEvent.ACTION_DOWN, keyCode), true)) {
-                        Slog.w(TAG, "Key down event not injected");
-                        return;
-                    }
+                if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window"))).injectKeyEvent(new KeyEvent(
+                        KeyEvent.ACTION_DOWN, keyCode), true)) {
+                    Slog.w(TAG, "Key down event not injected");
+                    return;
+                }
 
-                    if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window"))).injectKeyEvent(new KeyEvent(
-                            KeyEvent.ACTION_UP, keyCode), true)) {
-                        Slog.w(TAG, "Key up event not injected");
-                    }
-              //  } else {
-                  /*  if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window"))).injectKeyEvent(
-                            KeyEvent.changeTimeRepeat(new KeyEvent(KeyEvent.ACTION_UP, keyCode),
-                                    android.os.SystemClock.uptimeMillis(), 0, KeyEvent.FLAG_LONG_PRESS), true)) {
-                        Slog.w(TAG, "Key down event not injected");
-                    }
-
-                    if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window"))).injectKeyEvent(
-                            KeyEvent.changeTimeRepeat(new KeyEvent(KeyEvent.ACTION_UP, keyCode),
-                                    android.os.SystemClock.uptimeMillis(), 0, KeyEvent.FLAG_LONG_PRESS), true)) {
-                        Slog.w(TAG, "Key down event not injected");
-                    }*/
-               // }
+                if (!(IWindowManager.Stub.asInterface(ServiceManager.getService("window"))).injectKeyEvent(new KeyEvent(
+                        KeyEvent.ACTION_UP, keyCode), true)) {
+                    Slog.w(TAG, "Key up event not injected");
+                }
 
             } catch (RemoteException ex) {
                 Slog.w(TAG, "Error injecting key event", ex);

@@ -2030,6 +2030,14 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
             }
         }
     }
+    
+    public void toggleClearNotif() {
+        try {
+            mBarService.onClearAllNotifications();
+        } catch (RemoteException ex) {
+           // system process is dead if we're here.
+        }
+    }
 
     private View.OnClickListener mClearButtonListener = new View.OnClickListener() {
         public void onClick(View v) {
