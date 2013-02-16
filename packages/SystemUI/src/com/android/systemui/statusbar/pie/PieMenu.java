@@ -648,11 +648,16 @@ public class PieMenu extends FrameLayout {
     }
 
     public void removeItem(PieItem item) {
-        mItems.remove(item);
+        if (!mItems.isEmpty()) {
+            mItems.remove(item);
+        }
     }
 
-    public void clearItems() {
-        mItems.clear();
+    public void resetItems() {
+        if (mItems != null) {
+            mItems = null;
+        }
+        mItems = new ArrayList<PieItem>();
     }
 
     public void show(boolean show) {
@@ -706,6 +711,7 @@ public class PieMenu extends FrameLayout {
         float emptyangle = mEmptyAngle * (float) Math.PI / 180;
         int inner = mInnerPieRadius;
         int outer = mOuterPieRadius;
+        int itemCount = mItems.size();
 
         int lesserSweepCount = 0;
         for (PieItem item : mItems) {
@@ -714,13 +720,13 @@ public class PieMenu extends FrameLayout {
             }
         }
 
-        float adjustedSweep = lesserSweepCount > 0 ? (((1 - 0.65f) * lesserSweepCount) / (mItems.size() - lesserSweepCount)) : 0;
+        float adjustedSweep = lesserSweepCount > 0 ? (((1 - 0.65f) * lesserSweepCount) / (itemCount - lesserSweepCount)) : 0;
         float sweep = 0;
         float angle = 0;
         float total = 0;
 
         for (PieItem item : mCurrentItems) {
-            sweep = ((float) (Math.PI - 2 * emptyangle) / mItems.size()) * (item.isLesser() ? 0.65f : 1 + adjustedSweep);
+            sweep = ((float) (Math.PI - 2 * emptyangle) / itemCount) * (item.isLesser() ? 0.65f : 1 + adjustedSweep);
             angle = (emptyangle + sweep / 2 - (float) Math.PI / 2);
             item.setPath(makeSlice(getDegrees(0) - mPieGap, getDegrees(sweep) + mPieGap, outer, inner, mCenter));
             View view = item.getView();

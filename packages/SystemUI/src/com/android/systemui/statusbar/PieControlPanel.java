@@ -57,6 +57,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.net.URISyntaxException;
 
 public class PieControlPanel extends FrameLayout implements OnNavButtonPressedListener {
 
@@ -264,6 +265,22 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
             toggleSettingsApps();
         } else if (buttonName.equals(PieControl.CLEARALL_BUTTON)) {
             mService.toggleClearNotif();
+        } else if (buttonName.equals(PieControl.FAKE_BUTTON)) {
+            // do nothing
+        } else {
+            runCustomApp(buttonName);
+        }
+    }
+    
+    private void runCustomApp(String uri) {
+        if (uri != null) {
+            try {
+                Intent i = Intent.parseUri(uri, 0);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                mContext.startActivity(i);
+            } catch (URISyntaxException e) {
+            } catch (ActivityNotFoundException e) {
+            }
         }
     }
 
