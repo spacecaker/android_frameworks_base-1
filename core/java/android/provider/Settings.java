@@ -16,14 +16,9 @@
 
 package android.provider;
 
-import com.google.android.collect.Maps;
-
-import org.apache.commons.codec.binary.Base64;
-
 import android.annotation.SdkConstant;
 import android.annotation.SdkConstant.SdkConstantType;
 import android.content.ComponentName;
-import android.content.ContentQueryMap;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -38,19 +33,14 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
 import android.os.*;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.AndroidException;
 import android.util.Config;
 import android.util.Log;
 
 import java.net.URISyntaxException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 
 /**
@@ -1260,7 +1250,13 @@ public final class Settings {
          * @hide
          */
         public static final String PIE_CONTROL_ENABLE = "pie_control_enable";
-
+        
+        /**
+         * Center Pie? Should default to 1 (yes, center)
+         * @hide
+         */
+        public static final String PIE_CENTER = "pie_center";
+        
         /**
          * Pie gap angle, should default to 1
          * @hide

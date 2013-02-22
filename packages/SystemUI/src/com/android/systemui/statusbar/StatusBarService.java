@@ -84,14 +84,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
-import com.android.internal.statusbar.IStatusBarService;
-import com.android.internal.statusbar.StatusBarIcon;
-import com.android.internal.statusbar.StatusBarIconList;
-import com.android.internal.statusbar.StatusBarNotification;
-import com.android.systemui.R;
 import com.android.systemui.statusbar.policy.PiePolicy;
 import com.android.systemui.statusbar.CarrierLabel;
-import com.android.systemui.statusbar.powerwidget.PowerWidget;
 import com.android.systemui.statusbar.recentapps.RecentApps;
 
 public class StatusBarService extends Service implements CommandQueue.Callbacks {
@@ -2106,9 +2100,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 
     private class PieControlsTouchListener implements View.OnTouchListener {
         private int orient;
-
+        private boolean actionDown = false;
+        private boolean centerPie = true;
         private float initialX = 0;
-
         private float initialY = 0;
 
         int index;
@@ -2123,18 +2117,25 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
             if (!mPieControlPanel.isShowing()) {
                 switch (action) {
                     case MotionEvent.ACTION_DOWN:
+                        centerPie = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_CENTER, 1) == 1;
+                        actionDown = true;
                         initialX = event.getX();
                         initialY = event.getY();
                         break;
                     case MotionEvent.ACTION_MOVE:
+                        if (!actionDown) break;
+                        
                         float deltaX = Math.abs(event.getX() - initialX);
                         float deltaY = Math.abs(event.getY() - initialY);
                         float distance = orient == Gravity.BOTTOM || orient == Gravity.TOP ? deltaY : deltaX;
                         // Swipe up
                         if (distance > 10) {
-                            mPieControlPanel.show(true);
+                            orient = mPieControlPanel.getOrientation();
+                            mPieControlPanel.show(centerPie ? -1 : (int)(orient == Gravity.BOTTOM ||
+                                orient == Gravity.TOP ? initialX : initialY));
                             event.setAction(MotionEvent.ACTION_DOWN);
                             mPieControlPanel.onTouchEvent(event);
+                            actionDown = false;
                         }
                 }
             } else {
