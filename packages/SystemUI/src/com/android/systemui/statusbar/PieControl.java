@@ -24,27 +24,19 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.Matrix;
 import android.provider.Settings;
 import android.os.Handler;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.MotionEvent;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
-import android.widget.TextView;
 
 import com.android.systemui.statusbar.PieControlPanel;
 import com.android.systemui.statusbar.pie.PieItem;
@@ -53,8 +45,6 @@ import com.android.systemui.statusbar.pie.PieMenu;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.NotificationData;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.net.URISyntaxException;
 
 /**
@@ -69,7 +59,6 @@ public class PieControl implements OnClickListener {
     public static final String RECENT_BUTTON = "##recent##";
     public static final String SCREEN_BUTTON = "##screens##";
     public static final String POWER_BUTTON = "##power##";
-    public static final String LASTAPP_BUTTON = "##lastapp##";
     public static final String SETTING_BUTTON = "##settings##";
     public static final String CLEARALL_BUTTON = "##clearall##";
     public static final String FAKE_BUTTON = "##fake##";
@@ -759,28 +748,28 @@ public class PieControl implements OnClickListener {
     }
 
     private String mWhois(int whats) {
-       if (whats == 0) {
-           return BACK_BUTTON;
-       } else if (whats == 1) {
-           return HOME_BUTTON;
-       } else if (whats == 2) {
-           return RECENT_BUTTON;
-       } else if (whats == 3) {
-           return MENU_BUTTON;
-       } else if (whats == 4) {
-           return SEARCH_BUTTON;
-       } else if (whats == 5) {
-           return SCREEN_BUTTON;
-       } else if (whats == 6) {
-           return POWER_BUTTON;
-       } else if (whats == 7) {
-           return LASTAPP_BUTTON;
-       } else if (whats == 8) {
-           return SETTING_BUTTON;
-       } else if (whats == 9) {
-           return CLEARALL_BUTTON;
-       } else {
-           return FAKE_BUTTON;
+       
+       switch(whats) {
+           case 0:
+               return BACK_BUTTON;
+           case 1:
+               return HOME_BUTTON;
+           case 2:
+               return RECENT_BUTTON;
+           case 3:
+               return MENU_BUTTON;
+           case 4:
+               return SEARCH_BUTTON;
+           case 5:
+               return SCREEN_BUTTON;
+           case 6:
+               return POWER_BUTTON;
+           case 7:
+               return SETTING_BUTTON;
+           case 8:
+               return CLEARALL_BUTTON;
+           default:
+               return FAKE_BUTTON;
        }
     }
 
