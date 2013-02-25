@@ -142,7 +142,8 @@ LOCAL_SRC_FILES:= \
 	android_backup_FileBackupHelperBase.cpp \
 	android_backup_BackupHelperDispatcher.cpp \
 	android_content_res_ObbScanner.cpp \
-    android_content_res_Configuration.cpp
+    android_content_res_Configuration.cpp \
+    android_animationing_PropertyValuesHolder.cpp
 
 ifeq ($(BOARD_HAVE_FM_RADIO),true)
     ## There's a difference. BOARD_HAVE_FM_RADIO enabled the runtime
