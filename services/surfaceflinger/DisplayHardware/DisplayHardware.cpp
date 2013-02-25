@@ -238,7 +238,8 @@ void DisplayHardware::init(uint32_t dpy)
     glGetIntegerv(GL_MAX_VIEWPORT_DIMS, &mMaxViewportDims);
 
 
-#ifdef EGL_ANDROID_swap_rectangle
+//#ifdef EGL_ANDROID_swap_rectangle
+#ifndef EGL_ANDROID_swap_rectangle
     if (extensions.hasExtension("EGL_ANDROID_swap_rectangle")) {
         if (eglSetSwapRectangleANDROID(display, surface,
                 0, 0, mWidth, mHeight) == EGL_TRUE) {
@@ -317,7 +318,8 @@ void DisplayHardware::flip(const Region& dirty) const
     EGLDisplay dpy = mDisplay;
     EGLSurface surface = mSurface;
 
-#ifdef EGL_ANDROID_swap_rectangle    
+//#ifdef EGL_ANDROID_swap_rectangle
+#ifndef EGL_ANDROID_swap_rectangle
     if (mFlags & SWAP_RECTANGLE) {
         const Region newDirty(dirty.intersect(bounds()));
         const Rect b(newDirty.getBounds());

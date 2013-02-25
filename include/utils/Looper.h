@@ -25,7 +25,7 @@
 #include <android/looper.h>
 
 // When defined, uses epoll_wait() for polling, otherwise uses poll().
-#define LOOPER_USES_EPOLL
+//#define LOOPER_USES_EPOLL
 
 // When defined, logs performance statistics for tuning and debugging purposes.
 //#define LOOPER_STATISTICS
