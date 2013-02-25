@@ -187,7 +187,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     final Object mLock = new Object();
 
-    Context mContext;
+    static Context mContext;
     Context mUiContext;
     IWindowManager mWindowManager;
     LocalPowerManager mPowerManager;
@@ -221,7 +221,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     KeyguardViewMediator mKeyguardMediator = null;
     GlobalActions mGlobalActions;
     volatile boolean mPowerKeyHandled;
-    RecentApplicationsDialog mRecentAppsDialog;
+    static RecentApplicationsDialog mRecentAppsDialog;
     Handler mHandler;
 
     boolean mSystemReady;
@@ -253,6 +253,48 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int mPointerLocationMode = 0;
     PointerLocationView mPointerLocationView = null;
     InputChannel mPointerLocationInputChannel;
+    
+    private PowerMenuReceiver mPowerMenuReceiver;
+
+    class PowerMenuReceiver extends BroadcastReceiver {
+        private boolean mIsRegistered = false;
+
+        public PowerMenuReceiver(Context context) {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (action.equals(Intent.ACTION_POWERMENU)) {
+                showGlobalActionsDialog();
+            } else if (action.equals(Intent.ACTION_POWERMENU_REBOOT)) {
+                doRebooting();
+            }
+        }
+
+        private void doRebooting() {
+            PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+            pm.reboot("Rebooting ...");
+        }
+
+        private void registerSelf() {
+            if (!mIsRegistered) {
+                mIsRegistered = true;
+
+                IntentFilter filter = new IntentFilter();
+                filter.addAction(Intent.ACTION_POWERMENU);
+                filter.addAction(Intent.ACTION_POWERMENU_REBOOT);
+                mContext.registerReceiver(mPowerMenuReceiver, filter);
+            }
+        }
+
+        private void unregisterSelf() {
+            if (mIsRegistered) {
+                mIsRegistered = false;
+                mContext.unregisterReceiver(this);
+            }
+        }
+    }
 
     private final InputHandler mPointerLocationInputHandler = new BaseInputHandler() {
         @Override
@@ -693,7 +735,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     /**
      * Create (if necessary) and launch the recent apps dialog
      */
-    void showRecentAppsDialog() {
+    public static void showRecentAppsDialog() {
         if (mRecentAppsDialog == null) {
             mRecentAppsDialog = new RecentApplicationsDialog(mContext);
         }
@@ -788,6 +830,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mSafeModeEnabledVibePattern = getLongIntArray(mContext.getResources(),
                 com.android.internal.R.array.config_safeModeEnabledVibePattern);
         mVirtualKeyUpVibePattern = loadHaptic(HapticFeedbackConstants.VIRTUAL_RELEASED);
+        
+        // register broadcast receiver for power menu intents
+        mPowerMenuReceiver = new PowerMenuReceiver(context);
+        mPowerMenuReceiver.registerSelf();
     }
 
     public void updateSettings() {
@@ -2462,7 +2508,7 @@ case KeyEvent.KEYCODE_MENU:
         sendCloseSystemWindows(mContext, null);
     }
 
-    void sendCloseSystemWindows(String reason) {
+    public static void sendCloseSystemWindows(String reason) {
         sendCloseSystemWindows(mContext, reason);
     }
 

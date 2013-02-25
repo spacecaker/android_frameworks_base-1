@@ -344,6 +344,18 @@ public interface WindowManager extends ViewManager {
         public static final int TYPE_STATUS_BAR_PANEL   = FIRST_SYSTEM_WINDOW+14;
 
         /**
+         * Window type: Navigation bar (when distinct from status bar)
+         * @hide
+         */
+        public static final int TYPE_NAVIGATION_BAR = FIRST_SYSTEM_WINDOW+16;
+
+        /**
+         * Window type: Navigation bar panel (when navigation bar is distinct from status bar)
+         * @hide
+         */
+        public static final int TYPE_NAVIGATION_BAR_PANEL = FIRST_SYSTEM_WINDOW+17;
+
+        /**
          * Window type: secure system overlay windows, which need to be displayed
          * on top of everything else.  These windows must not take input
          * focus, or they will interfere with the keyguard.
