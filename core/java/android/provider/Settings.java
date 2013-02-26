@@ -1630,7 +1630,7 @@ public final class Settings {
         public static final String ACHEP_ULTRA_BRIGHTNESS = "achep_ultra_brightness";
         //Some of funny things here
         public static final String ACHEP_STATUS_BAR_BACKGROUND_TRANSPARENCY = "achep_status_bar_background_transparency";
-        
+        public static final String ACHEP_RING_LOCKSCREEN = "achep_ring_lockscreen";
         
 
         /**
