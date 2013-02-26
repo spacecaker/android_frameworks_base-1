@@ -873,5 +873,35 @@
     <style name="Animation.TextSelectHandle">
         <item name="windowEnterAnimation">@android:anim/fade_in</item>
         <item name="windowExitAnimation">@android:anim/fade_out</item>
+    </style>    
+    
+    <!-- AChep's Ring Lock Screen. -->
+    <style name="TextAppearance.RingLockScreen" parent="TextAppearance.Medium">
+        <item name="android:textColor">#FFFFFFFF</item>
+        <item name="android:shadowColor">#60000000</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">1</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="TextAppearance.RingLockScreen.Clock" parent="TextAppearance.RingLockScreen">
+        <item name="android:textSize">100sp</item>
+        <item name="android:ellipsize">none</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+
+    <style name="TextAppearance.RingLockScreen.Clock.AmPm" parent="TextAppearance.RingLockScreen.Clock">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextAppearance.RingLockScreen.Clock.Hours" parent="TextAppearance.RingLockScreen.Clock">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.RingLockScreen.Clock.Minutes" parent="TextAppearance.RingLockScreen.Clock"></style>
+
+    <style name="TextAppearance.RingLockScreen.Date" parent="TextAppearance.RingLockScreen">
+        <item name="android:textSize">14sp</item>
     </style>
 </resources>
