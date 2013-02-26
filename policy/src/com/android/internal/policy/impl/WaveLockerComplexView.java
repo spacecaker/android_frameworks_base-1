@@ -163,7 +163,6 @@ public class WaveLockerComplexView extends RelativeLayout implements KeyguardScr
 
 			this.setBaselineAligned(false);
 			this.setGravity(Gravity.TOP);
-			this.setPadding((int) (mAmPm.mAmPm.getTextSize() * 1.8f), 0, 0, 0);
 
 			this.addView(mTimeDisplayHours);
 			this.addView(mTimeDisplayMinutes);
@@ -256,6 +255,8 @@ public class WaveLockerComplexView extends RelativeLayout implements KeyguardScr
 
 			void setShowAmPm(boolean show) {
 				mAmPm.setVisibility(show ? View.VISIBLE : View.GONE);
+				setPadding(show ? (int) (mAmPm.getTextSize() * 1.8f) : 0, 0, 0,
+						0);
 			}
 
 			void setIsMorning(boolean isMorning) {
