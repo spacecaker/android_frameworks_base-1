@@ -888,7 +888,7 @@
     <style name="TextAppearance.RingLockScreen.Clock" parent="TextAppearance.RingLockScreen">
         <item name="android:textSize">100sp</item>
         <item name="android:ellipsize">none</item>
-        <item name="android:fontFamily">sans-serif-condensed</item>
+    <!--    <item name="android:fontFamily">sans-serif-condensed</item>-->
     </style>
 
     <style name="TextAppearance.RingLockScreen.Clock.AmPm" parent="TextAppearance.RingLockScreen.Clock">
