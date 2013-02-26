@@ -708,12 +708,18 @@ public class LockPatternKeyguardView extends KeyguardViewBase {
 
     View createLockScreen() {
     	// use sense 3 lockscreen?
-    	if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.USE_SENSE3_LOCKSCREEN, 0) == 1) {
-		    return new WaveLockerComplexView(
+    	if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.ACHEP_RING_LOCKSCREEN, 0) == 1) {
+		return new WaveLockerComplexView(
 		            mContext,
 		            mKeyguardScreenCallback);
-        }
-        else {
+        } else if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.USE_SENSE3_LOCKSCREEN, 0) == 1) {
+		return new GdxLock(
+		            mContext,
+		            mConfiguration,
+		            mLockPatternUtils,
+		            mUpdateMonitor,
+		            mKeyguardScreenCallback);
+        } else {
 	        return new LockScreen(
 		            mContext,
 		            mConfiguration,
