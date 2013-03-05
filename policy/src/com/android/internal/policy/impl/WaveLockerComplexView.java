@@ -58,6 +58,23 @@ public class WaveLockerComplexView extends RelativeLayout implements KeyguardScr
 
 		WaveView wv = new WaveView(context, callback);
 
+		TextView brandingLeft = new TextView(context);
+		brandingLeft.setText("GingerDX " + android.os.SystemProperties.get("ro.gdx.version.id"));
+		TextView brandingRight = new TextView(context);
+		brandingLeft.setText("TeamFun");
+		
+	        RelativeLayout.LayoutParams brandingLeftLp = 
+                	new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        	brandingLeftLp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        
+        	RelativeLayout.LayoutParams brandingRightLp = 
+                	new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+       		brandingRightLp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        	brandingRightLp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        	
+		addView(brandingLeft, brandingLeftLp);
+		addView(brandingRight, brandingRightLp);
+
 		addView(dc, dcLayoutParams);
 		addView(dv, dvLayoutParams);
 		addView(wv);
