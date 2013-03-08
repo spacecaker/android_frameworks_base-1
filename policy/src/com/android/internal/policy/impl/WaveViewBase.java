@@ -36,6 +36,7 @@ public class WaveViewBase extends View {
 	private static final int[] RINGS_COLOR_RGB = new int[] { 255, 255, 255 };
 
 	private int mRequiredRadius;
+	private float mDensity;
 
 	private Ring[] mRings;
 	private int[] mFingersTrack;
@@ -54,30 +55,43 @@ public class WaveViewBase extends View {
 		public void onTouchUp();
 	};
 
+	public WaveViewBase(Context context, OnActionListener onActionListener) {
+		super(context);
+		init(context);
+
+		setOnActionListener(onActionListener);
+	}
+
 	public WaveViewBase(Context context) {
-		this(context, null);
+		super(context);
+		init(context);
 	}
 
 	public WaveViewBase(Context context, AttributeSet attrs) {
-		this(context, attrs, 0);
+		super(context, attrs);
+		init(context);
 	}
 
 	public WaveViewBase(Context context, AttributeSet attrs, int styles) {
 		super(context, attrs, styles);
+		init(context);
+	}
 
+	private void init(Context context) {
 		mRings = new Ring[RINGS_MAX_NUMBER];
 		mFingersTrack = new int[FINGERS_MAX_NUMBER];
 		for (int i = 0; i < RINGS_MAX_NUMBER; i++) {
 			mRings[i] = new Ring();
 			mFingersTrack[i] = -1;
 		}
+
+		mDensity = (float) getResources().getDisplayMetrics().density;
 	}
 
 	@Override
 	public void onSizeChanged(int w, int h, int oldw, int oldh) {
 		// Calculate the size of required ring radius
-		int max = w > h ? w : h;
-		mRequiredRadius = Math.round(max - max / 2.6f);
+		mRequiredRadius = (int) (Math.sqrt(w * w + h * h) / 3);
 	}
 
 	@Override
@@ -172,19 +186,20 @@ public class WaveViewBase extends View {
 
 			// Draw center circle
 			mPaint.setStyle(Style.FILL);
-			mPaint.setStrokeWidth(2);
+			mPaint.setStrokeWidth(2 * mDensity);
 			mPaint.setARGB(mAlpha, RINGS_COLOR_RGB[0], RINGS_COLOR_RGB[1],
 					RINGS_COLOR_RGB[2]);
-			canvas.drawCircle(mTouchDownX, mTouchDownY, 3f, mPaint);
+			canvas.drawCircle(mTouchDownX, mTouchDownY, 3f * mDensity, mPaint);
 
 			// Draw touch point
 			if (mInteractive)
 				// Do not draw the touch point after death
-				canvas.drawCircle(mTouchMoveX, mTouchMoveY, 7f, mPaint);
+				canvas.drawCircle(mTouchMoveX, mTouchMoveY, 7f * mDensity,
+						mPaint);
 
 			// Draw circle with required radius
 			mPaint.setStyle(Style.STROKE);
-			mPaint.setStrokeWidth(1);
+			mPaint.setStrokeWidth(2 * mDensity);
 			mPaint.setAlpha(mAlpha / 5);
 			canvas.drawCircle(mTouchDownX, mTouchDownY, mRequiredRadius, mPaint);
 
