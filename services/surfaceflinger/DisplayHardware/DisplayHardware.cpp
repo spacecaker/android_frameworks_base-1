@@ -44,6 +44,7 @@
 
 using namespace android;
 
+int nativeServerWindow (0);
 
 static __attribute__((noinline))
 void checkGLErrors()
