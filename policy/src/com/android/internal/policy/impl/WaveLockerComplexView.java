@@ -22,7 +22,13 @@ import java.util.Calendar;
 
 import com.android.internal.R;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.os.Handler;
+import android.provider.Settings;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -40,8 +46,29 @@ public class WaveLockerComplexView extends RelativeLayout implements KeyguardScr
 	private TextView mClockMinutesView;
 	private TextView mClockHoursView;
 	private TextView mClockAmPmView;
+	
+	private Calendar mCalendar;
+	private ContentObserver mFormatChangeObserver;
+	private boolean mAttached;
 
 	private TextView mDateView;
+	
+	/* called by system on minute ticks */
+	private final Handler mHandler = new Handler();
+	private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
+				mCalendar = Calendar.getInstance();
+			}
+			// Post a runnable to avoid blocking the broadcast.
+			mHandler.post(new Runnable() {
+				public void run() {
+					updateContent();
+				}
+			});
+		}
+	};
 
 	public WaveLockerComplexView(Context context,
 			KeyguardScreenCallback callback) {
@@ -65,6 +92,9 @@ public class WaveLockerComplexView extends RelativeLayout implements KeyguardScr
 				.findViewById(R.id.clock_ampm);
 
 		mDateView = (TextView) mContentLayout.findViewById(R.id.date);
+
+		// Clock and date
+		mCalendar = Calendar.getInstance();
 
 		// Add wave control
 		WaveViewBase waveViewBase = new WaveViewBase(context, new WaveViewBase.OnActionListener(){
@@ -135,22 +165,67 @@ public class WaveLockerComplexView extends RelativeLayout implements KeyguardScr
 	@Override
 	public void onAttachedToWindow() {
 		super.onAttachedToWindow();
-		Calendar calendar = Calendar.getInstance();
+
+		if (mAttached)
+			return;
+		mAttached = true;
+
+		/* monitor time ticks, time changed, timezone */
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_TIME_TICK);
+		filter.addAction(Intent.ACTION_TIME_CHANGED);
+		filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+		getContext().registerReceiver(mIntentReceiver, filter);
+
+		/* monitor 12/24-hour display preference */
+		mFormatChangeObserver = new FormatChangeObserver();
+		getContext().getContentResolver().registerContentObserver(
+				Settings.System.CONTENT_URI, true, mFormatChangeObserver);
+
+		updateContent();
+	}
+
+	private class FormatChangeObserver extends ContentObserver {
+		public FormatChangeObserver() {
+			super(new Handler());
+		}
+
+		@Override
+		public void onChange(boolean selfChange) {
+			updateContent();
+		}
+	}
+
+	@Override
+	protected void onDetachedFromWindow() {
+		super.onDetachedFromWindow();
+
+		if (!mAttached)
+			return;
+		mAttached = false;
+
+		getContext().unregisterReceiver(mIntentReceiver);
+		getContext().getContentResolver().unregisterContentObserver(
+				mFormatChangeObserver);
+	}
+
+	private void updateContent() {
+		mCalendar.setTimeInMillis(System.currentTimeMillis());
 
 		boolean hour24Mode = get24HourMode();
-		int mins = calendar.get(Calendar.MINUTE);
-		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		int mins = mCalendar.get(Calendar.MINUTE);
+		int hour = mCalendar.get(Calendar.HOUR_OF_DAY);
 
 		CharSequence hours = "" + (hour > 12 && !hour24Mode ? hour - 12 : hour);
 		CharSequence minutes = ":" + (mins > 9 ? mins : "0" + mins);
-		CharSequence ampm = !hour24Mode ? getAmPmText(calendar
+		CharSequence ampm = !hour24Mode ? getAmPmText(mCalendar
 				.get(Calendar.AM_PM)) : null;
 
 		setClockContent(hours, minutes, ampm);
 
 		// Update date
 		mDateView.setText(new SimpleDateFormat("EEE, MMMM d").format(
-				calendar.getTime()).toUpperCase());
+				mCalendar.getTime()).toUpperCase());
 	}
 
 	private void setClockContent(CharSequence h, CharSequence m,
