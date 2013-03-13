@@ -862,8 +862,8 @@
     <string name="perms_show_all" msgid="2671791163933091180"><b>"Tout afficher"</b></string>
     <string name="usb_storage_activity_title" msgid="2399289999608900443">"Stockage de masse USB"</string>
     <string name="usb_storage_title" msgid="5901459041398751495">"Connecté à l\'aide d\'un câble USB"</string>
-    <string name="usb_storage_message" product="nosdcard" msgid="115779324551502062">"Vous avez connecté votre téléphone à votre ordinateur à l\'aide d\'un câble USB. Sélectionnez le bouton ci-dessous pour copier des fichiers de votre ordinateur vers la mémoire de stockage USB de votre Android, ou inversement."</string>
-    <string name="usb_storage_message" product="default" msgid="4796759646167247178">"Vous avez connecté votre téléphone à votre ordinateur à l\'aide d\'un câble USB. Sélectionnez le bouton ci-dessous pour copier des fichiers de votre ordinateur vers la carte SD de votre Android, ou inversement."</string>
+    <string name="usb_storage_message" product="nosdcard" msgid="115779324551502062">"Vous avez connecté votre téléphone à votre ordinateur à l\'aide d\'un câble USB. Sélectionnez l'Android au-dessous pour copier des fichiers de votre ordinateur vers la mémoire de stockage USB de votre Android, ou inversement."</string>
+    <string name="usb_storage_message" product="default" msgid="4796759646167247178">"Vous avez connecté votre téléphone à votre ordinateur à l\'aide d\'un câble USB. Sélectionnez l'Android au-dessous pour copier des fichiers de votre ordinateur vers la carte SD de votre Android, ou inversement."</string>
     <string name="usb_storage_button_mount" msgid="1052259930369508235">"Activer la mémoire de stockage USB"</string>
     <string name="usb_storage_error_message" product="nosdcard" msgid="3276413764430468454">"Un problème est survenu lors de l\'utilisation de votre mémoire de stockage USB comme mémoire de stockage de masse."</string>
     <string name="usb_storage_error_message" product="default" msgid="120810397713773275">"Un problème est survenu lors de l\'utilisation de votre carte SD comme mémoire de stockage de masse USB."</string>

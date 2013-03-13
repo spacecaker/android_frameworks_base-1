@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
+#include <binder/MemoryDealerEclair.h>
+
 #ifndef ANDROID_MEMORY_DEALER_H
 #define ANDROID_MEMORY_DEALER_H
-
 
 #include <stdint.h>
 #include <sys/types.h>

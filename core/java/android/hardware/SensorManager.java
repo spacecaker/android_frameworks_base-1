@@ -1069,7 +1069,7 @@ public class SensorManager
                 delay = 60000;
                 break;
             case SENSOR_DELAY_NORMAL:
-                delay = 200000;
+                delay = 60000;
                 break;
             default:
                 delay = rate;

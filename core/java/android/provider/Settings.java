@@ -16,14 +16,9 @@
 
 package android.provider;
 
-import com.google.android.collect.Maps;
-
-import org.apache.commons.codec.binary.Base64;
-
 import android.annotation.SdkConstant;
 import android.annotation.SdkConstant.SdkConstantType;
 import android.content.ComponentName;
-import android.content.ContentQueryMap;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -38,19 +33,14 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
 import android.os.*;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.AndroidException;
 import android.util.Config;
 import android.util.Log;
 
 import java.net.URISyntaxException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 
 /**
@@ -1116,6 +1106,532 @@ public final class Settings {
          */
         public static final Uri CONTENT_URI =
             Uri.parse("content://" + AUTHORITY + "/system");
+            
+        // dx: settings.system
+        /**
+         * Whether the notification LED is disabled during nights or not
+         * The value is boolean (1 or 0).
+         * @hide
+         */
+        public static final String NOTIFICATION_LIGHT_DISABLED = "notification_light_disabled";
+
+        /**
+         * Start time for LED disabled night
+         * @hide
+         */
+        public static final String NOTIFICATION_LIGHT_DISABLED_START = "notification_light_disabled_start";
+
+        /**
+         * End time for LED disabled night
+         * @hide
+         */
+        public static final String NOTIFICATION_LIGHT_DISABLED_END = "notification_light_disabled_end";
+
+        /**
+         * CallMeLouder: louder ringer when phone is inside bags
+         *
+         * @hide
+         */
+        public static final String CALL_ME_LOUDER = "call_me_louder";
+
+        /**
+         * Whether flipping down mutes ringer or not
+         */
+        public static final String FLIPPING_DOWN_MUTES_RINGER = "flipping_down_mutes_ringer";
+
+        /**
+         * Whether flipping down snoozes alarm or not
+         */
+        public static final String FLIPPING_DOWN_SNOOZES_ALARM = "flipping_down_snoozes_alarm";
+
+        /**
+         * Whether back button ends call or not
+         *
+         * @hide
+         */
+        public static final String BACK_BUTTON_ENDS_CALL = "back_button_ends_call";
+
+		/**
+         * Whether back button ends call or not
+         *
+         * @hide
+         */
+        public static final String MENU_BUTTON_ANSWERS_CALL = "menu_button_answers_call";
+		
+		/**
+         * in dialer when phone is picked up, it calls the number
+         *
+         * @hide
+         */
+        public static final String PICK_UP_TO_CALL = "pick_up_to_call";
+        
+        /**
+         * Location of the pie in the screen
+         * 0 = Gravity.LEFT
+         * 1 = Gravity.TOP
+         * 2 = Gravity.RIGHT
+         * 3 = Gravity.BOTTOM (default)
+         * @hide
+         */
+        public static final String PIE_GRAVITY = "pie_gravity";
+
+        /**
+         * Pie status report
+         * 0 = Bare
+         * 1 = Quick
+         * 2 = Default
+         * 3 = Slow
+         * @hide
+         */
+        public static final String PIE_MODE = "pie_mode";
+
+        /**
+         * Pie size fraction
+         * @hide
+         */
+        public static final String PIE_SIZE = "pie_size";
+
+        /**
+         * Pie color
+         * @hide
+         */
+        public static final String PIE_BUTTON_COLOR = "pie_button_color";
+
+        /**
+         * Pie color
+         * @hide
+         */
+        public static final String PIE_BACKGROUND_BUTTON_COLOR = "pie_background_button_color";
+
+        /**
+         * Pie color
+         * @hide
+         */
+        public static final String PIE_CHOICE_BUTTON_COLOR = "pie_choice_button_color";
+
+        /**
+         * Pie color
+         * @hide
+         */
+        public static final String PIE_BATTERY_COLOR = "pie_battery_color";
+
+        /**
+         * Pie color
+         * @hide
+         */
+        public static final String PIE_CHEVRON_COLOR = "pie_chevron_color";
+
+        /**
+         * Pie color
+         * @hide
+         */
+        public static final String PIE_CLOCK_COLOR = "pie_clock_color";
+
+        /**
+         * Pie color
+         * @hide
+         */
+        public static final String PIE_ENABLE_COLOR = "pie_enable_color";
+
+        /**
+         * Pie color
+         * @hide
+         */
+        public static final String PIE_OUTLINE_COLOR = "pie_outline_color";
+
+        /**
+         * Pie trigger
+         * @hide
+         */
+        public static final String PIE_TRIGGER = "pie_trigger";
+
+        /**
+         * Pie enable/disable
+         * @hide
+         */
+        public static final String PIE_CONTROL_ENABLE = "pie_control_enable";
+        
+        /**
+         * Center Pie? Should default to 1 (yes, center)
+         * @hide
+         */
+        public static final String PIE_CENTER = "pie_center";
+        
+        /**
+         * Pie gap angle, should default to 1
+         * @hide
+         */
+        public static final String PIE_GAP = "pie_gap";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_MENU = "pie_button_menu";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_MENU1 = "pie_button_menu1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_MENU2 = "pie_button_menu2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_MENU3 = "pie_button_menu3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_MENU4 = "pie_button_menu4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_MENU_LEVEL = "pie_enable_button_menu_level";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_MENU_APP = "pie_enable_button_menu_app";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_MENU_APP1 = "pie_custom_button_menu_app1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_MENU_APP2 = "pie_custom_button_menu_app2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_MENU_APP3 = "pie_custom_button_menu_app3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_MENU_APP4 = "pie_custom_button_menu_app4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_SEARCH = "pie_button_search";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_SEARCH1 = "pie_button_search1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_SEARCH2 = "pie_button_search2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_SEARCH3 = "pie_button_search3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_SEARCH4 = "pie_button_search4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_SEARCH_LEVEL = "pie_enable_button_search_level";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_SEARCH_APP = "pie_enable_button_search_app";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_SEARCH_APP1 = "pie_custom_button_search_app1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_SEARCH_APP2 = "pie_custom_button_search_app2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_SEARCH_APP3 = "pie_custom_button_search_app3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_SEARCH_APP4 = "pie_custom_button_search_app4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_RECENT = "pie_button_recent";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_RECENT1 = "pie_button_recent1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_RECENT2 = "pie_button_recent2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_RECENT3 = "pie_button_recent3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_RECENT4 = "pie_button_recent4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_RECENT_LEVEL = "pie_enable_button_recent_level";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_RECENT_APP = "pie_enable_button_recent_app";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_RECENT_APP1 = "pie_custom_button_recent_app1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_RECENT_APP2 = "pie_custom_button_recent_app2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_RECENT_APP3 = "pie_custom_button_recent_app3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_RECENT_APP4 = "pie_custom_button_recent_app4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_HOME = "pie_button_home";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_HOME1 = "pie_button_home1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_HOME2 = "pie_button_home2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_HOME3 = "pie_button_home3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_HOME4 = "pie_button_home4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_HOME_LEVEL = "pie_enable_button_home_level";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_HOME_APP = "pie_enable_button_home_app";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_HOME_APP1 = "pie_custom_button_home_app1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_HOME_APP2 = "pie_custom_button_home_app2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_HOME_APP3 = "pie_custom_button_home_app3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_HOME_APP4 = "pie_custom_button_home_app4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_BACK = "pie_button_back";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_BACK1 = "pie_button_back1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_BACK2 = "pie_button_back2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_BACK3 = "pie_button_back3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_BACK4 = "pie_button_back4";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_BACK_LEVEL = "pie_enable_button_back_level";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_BUTTON_BACK_APP = "pie_enable_button_back_app";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_BACK_APP1 = "pie_custom_button_back_app1";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_BACK_APP2 = "pie_custom_button_back_app2";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_BACK_APP3 = "pie_custom_button_back_app3";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CUSTOM_BUTTON_BACK_APP4 = "pie_custom_button_back_app4";
+		
+        /**
+         * Transparent notification bar
+         *
+         * @hide
+         */
+        public static final String TRANSPARENT_STATUS_BAR = "transparent_status_bar";
+        
+         /**
+         * update-check hour
+         *
+         * @hide
+         */
+        public static final String UPDATE_CHECK_HOUR = "update_check_hour";
+
+        /**
+         * Hide avatar in message
+         *
+         * @hide
+         */
+        public static final String HIDE_AVATAR_MESSAGE = "hide_avatar_message";
+
+        /**
+         * Quick copy / Quick paste feature
+         *
+         * @hide
+         */
+        public static final String QUICK_COPY_PASTE = "quick_copy_paste";
+
+        /**
+         * Ringer loop
+         *
+         * @hide
+         */
+        public static final String RINGER_LOOP = "ringer_loop";
+
+        /**
+         * Custom carrier string in lockscreen
+         *
+         * @hide
+         */
+        public static final String CUSTOM_CARRIER_TEXT = "custom_carrier_text";
+
+        /**
+         * Number of about clicks
+         *
+         * @hide
+         */
+        public static final String ABOUT_CLICKED = "about_clicked";
+
+        /**
+         * Whether or not use gingerdx sense 3 lockscreen
+         *
+         * @hide
+         */
+        public static final String USE_SENSE3_LOCKSCREEN = "use_sense3_lockscreen";
+
+        /**
+         * Whether or not use smart dialer 
+         *
+         * @hide
+         */
+        public static final String SMART_DIALER = "smart_dialer";
+
+        /**
+         * Whether or not use recent apps in status bar
+         *
+         * @hide
+         */
+        public static final String RECENT_APPS_STATUS_BAR = "recent_apps_status_bar";
+
+        /**
+         * Whether or not use center clock in status_bar
+         *
+         * @hide
+         */
+        public static final String CENTER_CLOCK_STATUS_BAR = "center_clock_status_bar";
+        
+        
+        //AChep's alarm additional options
+        public static final String ACHEP_ALARM_INCREASING_VOLUME_ENABLED = "achep_alarm_increasing_volume_enabled";
+        public static final String ACHEP_ALARM_MATH_QUESTIONS_ENABLED = "achep_alarm_math_questions_enabled";
+        public static final String ACHEP_ALARM_SHAKE_ACTION = "achep_alarm_shake_action";
+        public static final String ACHEP_ALARM_FLIP_ACTION = "achep_alarm_flip_action";
+        //AChep's jelly beans
+        public static final String ACHEP_JB_STATUS_BAR = "achep_jb_status_bar";
+        public static final String ACHEP_JB_STATUS_BAR_PANEL_BACKGROUND_TRANSPARENCY = "achep_jb_status_bar_panel_background_transparency";
+        public static final String ACHEP_JB_STATUS_BAR_NOTIFICATION = "achep_jb_status_bar_notification";
+        public static final String ACHEP_JB_STATUS_BAR_NOTIFICATION_BIGGER = "achep_jb_status_bar_notification_bigger";
+        //Additional data for ultra brightness
+        public static final String ACHEP_ULTRA_BRIGHTNESS = "achep_ultra_brightness";
+        //Some of funny things here
+        public static final String ACHEP_STATUS_BAR_BACKGROUND_TRANSPARENCY = "achep_status_bar_background_transparency";
+        public static final String ACHEP_RING_LOCKSCREEN = "achep_ring_lockscreen";
+        
 
         /**
          * Whether we keep the device on while the device is plugged in.
@@ -2312,12 +2828,18 @@ public final class Settings {
         /**
          * Display style of the status bar battery information
          * 0: Display the stock battery information
-         * 1: Display cm battery percentage implementation / dont show stock icon
+         * 1: Display cm battery percentage
          * 2: Hide the battery information
+         * 3: Display status bar battery
          * default: 0
          * @hide
          */
         public static final String STATUS_BAR_BATTERY = "status_bar_battery";
+
+		/**
+		 * Color for the status bar battery style
+		 */
+		public static final String STATUS_BAR_BATTERY_COLOR = "status_bar_battery_color";
 
         /**
          * Whether to show the clock in status bar
@@ -2564,7 +3086,7 @@ public final class Settings {
          * @hide
          */
         public static final String LOCKSCREEN_CUSTOM_APP_ACTIVITY = "lockscreen_custom_app_activity";
-
+        
         /**
          * Ring Apps to launch with ring style and custom app toggle enabled
          * @hide
@@ -2736,6 +3258,12 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_ALWAYS_BATTERY = "lockscreen_always_battery";
 
+        /**
+         * Whether to toggle the flashlight when HOME button is long pressed while at the lockscreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_FLASHLIGHT = "lockscreen_flashlight";
+        
         /**
          * Whether to show the next calendar event
          * @hide

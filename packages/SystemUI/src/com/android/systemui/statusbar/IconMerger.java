@@ -22,6 +22,7 @@ import android.util.AttributeSet;
 import android.util.Slog;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.provider.Settings;
 
 import com.android.internal.statusbar.StatusBarIcon;
 
@@ -56,6 +57,10 @@ public class IconMerger extends LinearLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
+		
+		if ((Settings.System.getInt(getContext().getContentResolver(), Settings.System.CENTER_CLOCK_STATUS_BAR, 0) == 1)) {
+            r = (((LinearLayout) this.getParent()).getRight() / 2) - 15;
+        }
 
         final int maxWidth = r - l;
         final int N = getChildCount();

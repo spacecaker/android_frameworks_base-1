@@ -18,7 +18,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Name of the status bar as seen in the applications info settings page. -->
-    <string name="app_label">Status Bar</string>
+    <string name="app_label_gdx">GingerDX</string>
 
     <!-- The text for the button in the notification window-shade that clears
          all of the currently visible notifications. -->
@@ -73,4 +73,17 @@
     <string name="always_use_accessory">Use by default for this USB accessory</string>
 
     <string name="powerwidget_screen_timeout_toast">Screen timeout set to: %1$d %2$s</string>
+    
+    <!-- djnilse PIE -->
+    <string name="pie_date_format">ccc, dd MMM yyyy</string>
+    <string name="pie_hour_format_12">hh:mm</string>
+    <string name="pie_hour_format_24">HH:mm</string>
+    <string name="pie_am_pm">a</string>
+    
+    <string name="pie_mobile_data_title">Mobile Data</string>
+    <string name="pie_wifi_not_connected">Not Connected</string>
+    <string name="pie_wifi_no_network">No Network</string>
+    
+    <string name="battery_fulls_percent_format"><xliff:g id="number">%d%%</xliff:g> fully charged.</string>
+    <string name="battery_charging_format">Charging, <xliff:g id="number">%d%%</xliff:g></string>
 </resources>

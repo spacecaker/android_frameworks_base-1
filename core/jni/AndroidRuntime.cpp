@@ -177,6 +177,7 @@ extern int register_android_view_MotionEvent(JNIEnv* env);
 extern int register_android_content_res_ObbScanner(JNIEnv* env);
 extern int register_android_content_res_Configuration(JNIEnv* env);
 extern int register_android_content_res_PackageRedirectionMap(JNIEnv* env);
+extern int register_android_animationing_PropertyValuesHolder(JNIEnv *env);
 
 static AndroidRuntime* gCurRuntime = NULL;
 
@@ -1310,6 +1311,8 @@ static const RegJNIRec gRegJNI[] = {
     REG_JNI(register_android_content_res_Configuration),
 
     REG_JNI(register_android_content_res_PackageRedirectionMap),
+    
+    REG_JNI(register_android_animationing_PropertyValuesHolder),
 };
 
 /*

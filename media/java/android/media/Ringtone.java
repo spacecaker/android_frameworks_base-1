@@ -268,4 +268,15 @@ public class Ringtone {
     void setTitle(String title) {
         mTitle = title;
     }
+    
+    /** 
+     * Get duration of the ringtone
+     */
+    public int getDuration() {
+    	int duration = 0;
+    	if (mAudio != null) {
+    		duration = mAudio.getDuration();
+    	}
+    	return duration;
+    }
 }

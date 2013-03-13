@@ -33,6 +33,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.format.DateFormat;
 import android.text.style.CharacterStyle;
+import android.content.res.TypedArray;
 import android.text.style.RelativeSizeSpan;
 import android.util.AttributeSet;
 import android.view.View;
@@ -45,6 +46,7 @@ import com.android.internal.R;
  * minutes.
  */
 public class Clock extends TextView {
+	
     private boolean mAttached;
     private Calendar mCalendar;
     private String mClockFormatString;
@@ -58,6 +60,7 @@ public class Clock extends TextView {
 
     private int mAmPmStyle;
     private boolean mShowClock;
+    private boolean mIsCenterClock;
 
     Handler mHandler;
 
@@ -72,6 +75,8 @@ public class Clock extends TextView {
                     Settings.System.STATUS_BAR_AM_PM), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CLOCK), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.CENTER_CLOCK_STATUS_BAR), false, this);
         }
 
         @Override public void onChange(boolean selfChange) {
@@ -88,13 +93,18 @@ public class Clock extends TextView {
     }
 
     public Clock(Context context, AttributeSet attrs, int defStyle) {
+        this(context, attrs, defStyle, false);
+    }
+    
+    public Clock(Context context, AttributeSet attrs, int defStyle, boolean isCenterClock) {
         super(context, attrs, defStyle);
-
+		
         mHandler = new Handler();
         SettingsObserver settingsObserver = new SettingsObserver(mHandler);
-        settingsObserver.observe();
-
-        updateSettings();
+        settingsObserver.observe();		
+		
+	mIsCenterClock = isCenterClock;
+    	updateSettings();
     }
 
     @Override
@@ -248,11 +258,14 @@ public class Clock extends TextView {
 
         mShowClock = (Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_CLOCK, 1) == 1);
-
-        if(mShowClock)
-            setVisibility(View.VISIBLE);
-        else
-            setVisibility(View.GONE);
+	final boolean centerClock = (Settings.System.getInt(resolver,
+                Settings.System.CENTER_CLOCK_STATUS_BAR, 0) == 1);
+				
+				
+	if(mShowClock && (mIsCenterClock ? centerClock : !centerClock)) 
+		setVisibility(View.VISIBLE);
+	else
+		setVisibility(View.GONE);
     }
 }
 

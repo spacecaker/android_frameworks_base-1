@@ -57,7 +57,7 @@ static int doCommand(const char *cmd, char *replybuf, int replybuflen)
 
     if ((err = ::wifi_command(cmd, replybuf, &reply_len)) != 0) {
 
-        LOGD(LOG_TAG " doCommand: ret=%d", err);
+        //LOGD(LOG_TAG " doCommand: ret=%d", err);
         return -1;
 
     } else {

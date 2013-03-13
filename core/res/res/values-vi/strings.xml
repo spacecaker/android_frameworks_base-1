@@ -801,8 +801,8 @@
     <string name="perms_show_all" msgid="2671791163933091180"><b>"Hiển thị tất cả"</b></string>
     <string name="usb_storage_activity_title" msgid="2399289999608900443">"Thiết bị lưu trữ USB"</string>
     <string name="usb_storage_title" msgid="5901459041398751495">"USB đã kết nối"</string>
-    <string name="usb_storage_message" product="nosdcard" msgid="115779324551502062">"Bạn đã kết nối điện thoại với máy tính của mình qua USB. Chọn nút bên dưới nếu bạn muốn sao chép các tệp giữa máy tính và bộ nhớ USB của Android của mình."</string>
-    <string name="usb_storage_message" product="default" msgid="4796759646167247178">"Bạn đã kết nối điện thoại với máy tính của mình qua USB. Hãy chọn nút bên dưới nếu bạn muốn sao chép các tệp giữa máy tính và thẻ SD của Android của mình."</string>
+    <string name="usb_storage_message" product="nosdcard" msgid="115779324551502062">"Bạn đã kết nối điện thoại với máy tính của mình qua USB. Chọn biểu tượng Android phía trên nếu bạn muốn sao chép các tệp giữa máy tính và bộ nhớ USB của Android của mình."</string>
+    <string name="usb_storage_message" product="default" msgid="4796759646167247178">"Bạn đã kết nối điện thoại với máy tính của mình qua USB. Hãy chọn biểu tượng Android phía trên nếu bạn muốn sao chép các tệp giữa máy tính và thẻ SD của Android của mình."</string>
     <string name="usb_storage_button_mount" msgid="1052259930369508235">"Bật bộ lưu trữ USB"</string>
     <string name="usb_storage_error_message" product="nosdcard" msgid="3276413764430468454">"Đã xảy ra sự cố khi sử dụng bộ nhớ USB của bạn cho bộ nhớ dung lượng lớn USB."</string>
     <string name="usb_storage_error_message" product="default" msgid="120810397713773275">"Đã xảy ra sự cố khi sử dụng thẻ SD của bạn cho bộ nhớ dung lượng lớn USB."</string>

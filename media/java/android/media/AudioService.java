@@ -989,11 +989,37 @@ public class AudioService extends IAudioService.Stub {
         }
     }
 
+    /** @see AudioManager#setSpeakerMediaOn() */
+    public void setSpeakerMediaOn(boolean on){
+	//Log.e(TAG, "setSpeakerMediaOn called!");
+        if (on) {
+	    Log.e(TAG, "Routing to speaker");
+            AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_SPEAKER);
+            mForcedUseForComm = AudioSystem.FORCE_SPEAKER;
+        } else {
+	    Log.e(TAG, "Routing to headphones");
+            AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_WIRED_ACCESSORY);
+            mForcedUseForComm = AudioSystem.FORCE_WIRED_ACCESSORY;
+        }
+    }
+
     /** @see AudioManager#isSpeakerphoneOn() */
     public boolean isSpeakerphoneOn() {
         if (mForcedUseForComm == AudioSystem.FORCE_SPEAKER) {
             return true;
         } else {
+            return false;
+        }
+    }
+
+    /** Hack for getting SE FM app working */
+    public boolean isSpeakerMediaOn() {
+	//Log.e(TAG, "isSpeakerMediaOn called!");
+        if (mForcedUseForComm == AudioSystem.FORCE_SPEAKER) {
+	    //Log.e(TAG, "RETURNING TRUE");
+            return true;
+        } else {
+	    //Log.e(TAG, "RETURNING FALSE");
             return false;
         }
     }
