@@ -32,10 +32,10 @@ public class PlatLogoActivity extends Activity {
         final String text;
         final int resource;
         if (getIntent().getBooleanExtra("special", false)) {
-            text = "Brought to you by your friends at TeamDouche";
+            text = "Brought to you by TeamFun";
             resource = com.android.internal.R.drawable.tdyacht;
         } else {
-            text = "Zombie art by Jack Larson";
+            text = "GingerDX Project";
             resource = com.android.internal.R.drawable.platlogo;
         }
         
